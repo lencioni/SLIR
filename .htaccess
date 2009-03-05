@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule . index.php [L]
+</IfModule>
+
+# prevent viewing of the log file
+<files slir-error-log>
+order allow,deny
+deny from all
+</files>
