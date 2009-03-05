@@ -1448,8 +1448,7 @@ Example usage:
 		// cache this content. If this is being served over HTTPS, there may be
 		// sensitive content and therefore should probably not be cached by
 		// proxy servers.
-		$public	= (!$this->isHTTPS()) ? ', public' : '';
-		header('Cache-Control: max-age=' . SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS . $public);
+		header('Cache-Control: max-age=' . SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS . ', public');
 
 		$this->doConditionalGet($lastModified);
 
@@ -1459,20 +1458,6 @@ Example usage:
 		// size will not properly work for images in the browser's cache
 		header('Connection: close');
 	} // serveHeaders()
-
-	/**
-	 * Determines if the connection is over HTTPS
-	 *
-	 * @since 2.0
-	 * @return bool
-	 */
-	private function isHTTPS()
-	{
-		if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on')
-			return FALSE;
-		else
-			return TRUE;
-	} // isHTTPS()
 
 	/**
 	 * Converts a UNIX timestamp into the format needed for the Last-Modified
