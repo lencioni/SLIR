@@ -17,10 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @package SLIR
  * @copyright Copyright © 2009, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * @since 2.0
+ * @date $Date$
+ * @version $Revision$
+ * @package SLIR
  */
+ 
+/* $Id$ */
  
 /**
  * How long (in seconds) the web browser should use its cached copy of the image

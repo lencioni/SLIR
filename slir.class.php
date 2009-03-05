@@ -17,10 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @package SLIR
  * @copyright Copyright © 2009, Joe Lencioni
- * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
+ * License version 3 (GPLv3)
+ * @since 2.0
+ * @package SLIR
  */
+ 
+/* $Id$ */
 
 /**
  * SLIR (Smart Lencioni Image Resizer)
@@ -77,8 +81,8 @@
  * alt="Don't forget your alt text" /></code>
  *
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * @version 2.0b2
- * @date March 4, 2009
+ * @date $Date$
+ * @version $Revision$
  * @package SLIR
  *
  * @uses PEL

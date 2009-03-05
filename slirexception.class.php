@@ -17,15 +17,21 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @package SLIR
  * @copyright Copyright © 2009, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * @since 2.0
+ * @package SLIR
  */
 
+/* $Id$ */
+ 
 /**
  * Exception and error handler
  * 
  * @since 2.0
+ * @author Joe Lencioni <joe@shiftingpixel.com>
+ * @date $Date$
+ * @version $Revision$
  * @package SLIR
  */
 class SLIRException extends Exception

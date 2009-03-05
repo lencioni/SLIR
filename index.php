@@ -17,11 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @package SLIR
  * @copyright Copyright © 2009, Joe Lencioni
- * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
+ * License version 3 (GPLv3)
+ * @since 2.0
+ * @package SLIR
+ * @date $Date$
+ * @version $Revision$
  */
-error_reporting(E_ALL);
+ 
+ /* $Id$ */
 
 require 'slir.class.php';
 $i = new SLIR();
