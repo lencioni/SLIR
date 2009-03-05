@@ -1,0 +1,1879 @@
+ChangeLog file for PEL: PHP Exif Library.  A library with support for
+reading and writing Exif headers in JPEG and TIFF images using PHP.
+
+Copyright (C) 2004, 2005, 2006  Martin Geisler.
+Licensed under the GNU GPL, see COPYING for details.
+
+
+2006-12-19  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r479] make-release.sh: Fixed svn copy.
+
+2006-12-18  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r478] INSTALL, NEWS, README: Last-minute changes and
+	  spell-checking... Oh, and $(date -u) tells me that today is
+	  December 18th and not 19th as I though, so I will now delay the
+	  release five minutes until we pass midnight UTC... :-)
+
+	* [r477] make-release.sh: Fixed SVN URLs to the repository, fixed
+	  locale to C to make sure that date doesn't try to be clever and
+	  translates its output.
+
+	* [r476] ., NEWS, make-release.sh: Let us try this as 0.9.1.
+	  
+	  There has been a lot of changes since version 0.9, but I would
+	  still like to hold off on the 1.0 release until I feel that I
+	  can support it properly with more frequent releases than what
+	  we've seen until now (the rewritten make-release.sh script might
+	  help with that).
+
+	* [r475] README: Just a small note about the SVN code: people
+	  should always try it out before submitting bug reports.
+
+2006-12-13  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r474] README: Added an overview of the documentation.
+
+2006-11-23  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r473] PelJpeg.php: A tiny bit of debug tracing...
+
+2006-11-19  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r472] PelTag.php, po/da.po: Better title: 'JPEGProc' -> 'JPEG
+	  Process'. Added a couple of new translations and removed
+	  obsolete ones from the Danish translation.
+
+	* [r471] po/da.po, po/de.po, po/es.po, po/fr.po, po/ja.po,
+	  po/pel.pot, po/pl.po: Updated locales after deleting
+	  PelTag::getDescription().
+
+	* [r470] NEWS, PelTag.php: Removed the getDescriptions() method
+	  since I don't see any good use of it as long as the strings it
+	  return are taken directly from the Exif specification. If
+	  someone can come up with good (smaller!) descriptions for the
+	  tags, then we can add it back.
+
+2006-11-18  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r463] INSTALL, NEWS, Pel.php, tutorials/PEL/using.pkg: Getting
+	  rid of loadFile(), noted latest changes in NEWS.
+
+	* [r462] test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/sony-dsc-v1.php: Regenerated test cases.
+
+	* [r461] test/image-tests/read-write.php: Update to new PelJpeg
+	  constructor too.
+
+	* [r460] test/image-tests/make-image-test.php: Updated to use the
+	  new fancy constructor of PelJpeg.
+
+	* [r459] examples/resize.php: An example of how to resize an image
+	  while keeping the Exif data intact. This was inspired by the
+	  code from Dave on the PEL Devel list.
+
+	* [r458] PelJpeg.php, PelTiff.php: A more convenient interface for
+	  creating new PelJpeg and PelTiff objects: simply pass a filename
+	  or an image resource.
+
+2006-11-04  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r450] AUTHORS: Credit David Lesieur for the French translation.
+
+	* [r449] NEWS: News about the improved PelEntryTime and the
+	  translation updates.
+
+	* [r448] po/da.po: Tiny update of the Danish translation.
+
+	* [r447] po/da.po, po/de.po, po/es.po, po/fr.po, po/ja.po,
+	  po/pel.pot, po/pl.po: Updated pel.pot and all .po files with new
+	  strings and correct line numbers.
+
+	* [r446] po/fr.po: Updated French translation from David Lesieur.
+	  Thanks!
+
+2006-09-17  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r445] test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php: Updated with correct
+	  timestamps.
+
+	* [r444] test/ascii.php: New test cases for the Julian Day Count
+	  magic.
+
+	* [r443] PelEntryAscii.php, PelIfd.php: Changed PelEntryTime to
+	  use a Julian Day Count internally instead of the more limited
+	  UNIX timestamp. This enables use of the full range of Exif
+	  timestamps, all the way from 0000:01:01 to 9999:12:31. The
+	  setValue() and getValue() methods still default to UNIX
+	  timestamps.
+	  
+	  Actually using dates in year 0 is pushing things a bit too far.
+	  This is simply because there is no such thing as year 0: the
+	  first year was year 1 and the year before that was year -1. But
+	  apart from that all dates from year 1 to year 9999 should work.
+	  
+	  Also note, that by a lucky coincidence the illegal date
+	  '0000:00:00 00:00:00' is mapped to 0 which is mapped back to the
+	  string again. Many cameras store that string when the date is
+	  unknown.
+	  
+	  There might be some trouble with time zones... please let me
+	  know if you spot any problems.
+
+	* [r442] PelEntry.php: Suppress the PrintIM tags too, they contain
+	  binary stuff.
+
+2006-09-07  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r441] NEWS: Reworded slightly.
+
+	* [r440] make-release.sh: Updated to work with SVN instead of CVS.
+
+	* [r439] authors.xml, users: New mapping file for use with svn2cl.
+
+2006-09-06  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r438] run-phpdoc.sh: New path to phpDocumentor... it now
+	  apparently /requires/ the base directory of it's installation to
+	  be named PhpDocumentor, bumpy-cased and all?!
+
+	* [r437] tutorials/PEL/PEL.pkg, tutorials/PEL/faq.pkg,
+	  tutorials/PEL/using.pkg: Removed the ugly <!-- /// --> kludge to
+	  prevent line breaks in places where phpDocumentor couldn't parse
+	  them. The solution was to have Emacs avoid the line breaks using
+	  this code:
+	  
+	  (defun mg-phpdocumentor-no-break () "Is point directly after a
+	  phpDocumentor construction which cannot be broken?"
+	  (looking-back "{@\\(link\\|tutorial\\) ")) (add-to-list
+	  'fill-nobreak-predicate 'mg-phpdocumentor-no-break)
+
+	* [r436] PelJpeg.php: Made getExif() return null in case there
+	  were no Exif data.
+
+	* [r435] README: Correct spelling.
+
+	* [r434] README: Added a piece about trying the SVN version before
+	  reporting bugs.
+
+2006-09-05  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r433] NEWS: Documented latest changes.
+
+	* [r432] PelJpeg.php, PelJpegMarker.php, examples/dirsort.php,
+	  examples/rename.php, test/image-tests/make-image-test.php,
+	  test/image-tests/read-write.php: Promote the use of the
+	  PelJpeg::getExif() method.
+
+	* [r431] INSTALL, test/README, test/run-tests.php, test/test.php:
+	  Renamed test.php to run-tests.php.
+
+	* [r430] test/test.php: Implemented a simple search function for
+	  the SimpleTest installation (walking up the directory tree until
+	  a suitable directory is found).
+
+	* [r429] test/image-tests/read-write.php, test/number.php: With
+	  SimpleTest 1.0.1alpha3 we no longer need to tell which test
+	  cases to ignore, declaring them abstract is enough.
+
+2006-07-14  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r428] .cvsignore: Remove left-over .cvsignore file.
+
+2006-07-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r427] test/ifd.php: Added small test cases for SPL
+	  functionality.
+
+	* [r426] NEWS, PelJpeg.php, examples/edit-description.php: Added
+	  PelJpeg::getExif() and setExif() methods. These convenience
+	  methods should be used to read and write the Exif data stored in
+	  the PelJpeg object since they will take care of ensuring that
+	  there is exactly one Exif section.
+
+	* [r425] examples/edit-description.php: Make edit-description.php
+	  use the new setExif() method.
+
+	* [r424] test/image-tests/read-write.php, test/number.php: There
+	  seems to be a change in the way one tells SimpleTest to ignore a
+	  class...
+
+	* [r423] test/test.php: Reworked test-driver. One can now give a
+	  list of filenames on the command line, and then only those will
+	  be loaded and run. If no arguments is given, then all tests are
+	  run, as before.
+
+	* [r422] PelJpeg.php: Added new simple method for adding Exif
+	  data, please use setExif() instead of appendSection().
+
+2006-05-13  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r421] examples/edit-description.php: The PelIfd constructor now
+	  tages an IFD type as first argument. Thanks goes to Michael
+	  Dempfle of TinyWebGallery for noticing this.
+
+2006-02-20  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r420] NEWS: Document the documentation! :-)
+
+	* [r419] PelEntryByte.php, PelEntryLong.php, PelEntryNumber.php,
+	  PelEntryRational.php, PelEntryShort.php: Explicit name for
+	  vararg parameter.
+
+	* [r418] PelIfd.php: Document the ArrayAccess methods.
+
+	* [r417] PelEntryRational.php: Cool, now I know how to spell
+	  "numerator"...
+
+2006-01-15  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r416] PelEntryAscii.php: Hmm... so now you cannot give a string
+	  (like "42") to gmdate?!
+
+	* [r415] test/ascii.php, test/number.php, test/undefined.php: I
+	  get more errors with SimpleTest 1.0 and PHP 5.1.1, so update the
+	  test cases to match.
+
+	* [r414] Pel.php, PelIfd.php: Reformatting.
+
+	* [r413] examples/dump-image.php: Fixed to use accessor functions.
+
+	* [r412] test/ascii.php, test/number.php, test/undefined.php:
+	  Updated test cases to work with SimpleTest 1.0, in which
+	  assertError() matches on the exact error string.
+
+	* [r411] PelTag.php: Fixed doubly defined XP_COMMENT constant.
+	  Removed one of the two doubly defined CFA_PATTERN constants
+	  which isn't mentioned in the Exif-2.2 standard (show me an image
+	  with the other one and we can add it back).
+
+2006-01-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r410] NEWS: Added news about the Japanese translation.
+
+	* [r409] po/da.po, po/de.po, po/es.po, po/fr.po, po/ja.po,
+	  po/pel.pot, po/pl.po: Updated Danish translation slightly.
+	  Updated all files with GPS related strings and resynched line
+	  numbers.
+
+	* [r408] AUTHORS, po/ja.po: Added Japanese translation by Tadashi
+	  Jokagi. Reordered names alphabetically.
+
+2006-01-08  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r406] NEWS, make-release.sh: Ups! Two small last-minute fixes.
+
+	* [r405] make-release.sh: My perl stopped working -- use sed
+	  instead then...
+
+	* [r404] make-release.sh: Get ready for PEL 0.9! :-)
+
+	* [r403] tutorials/PEL/faq.pkg: Argh, fixed newlines in links...
+
+	* [r402] TODO, test/image-tests/read-write.php, test/test.php:
+	  Fixed read-write unit tests. It tests the DATE_TIME tags and
+	  COPYRIGHT tag, though. But these are tested a bit in their own
+	  core test case.
+
+	* [r401] PelEntry.php, PelIfd.php: Cleaned the mess about
+	  PelEntry::$ifd_type up a bit with proper getters and setters.
+	  Added PelIfd::isValidTag() which has a concept of private tags
+	  (those with values larger than 0xF000) useful for testing (as in
+	  our unit tests).
+
+	* [r400] NEWS: American English spell check.
+
+	* [r399] tutorials/PEL/faq.pkg: Added an explaination about
+	  commercial use of PEL. If anybody knows better on this subject,
+	  then *please* contact me!
+
+2005-10-23  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r398] TODO: Cleared JPEG comment TODO.
+
+	* [r397] NEWS, PelJpeg.php, PelJpegComment.php: Support for JPEG
+	  comments. Reading and writing those are done through the
+	  PelJpegComment class which works very similarly to PelEntry with
+	  a getValue() and a setValue() method.
+
+	* [r396] PelException.php: Exception used by PelIfd.
+
+	* [r395] tutorials/PEL/faq.pkg: Adding more method names should
+	  make the question easier to find.
+
+2005-10-16  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r394] PelIfd.php: Made PelIfd act like an array! So you can now
+	  do things like $ifd[PelTag::IMAGE_WIDTH]->getValue() to get
+	  access to the ImageWidth tag.
+	  
+	  Beware that you'll still have to check for the entry first, just
+	  like with normal array.
+
+2005-10-13  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r393] README, tutorials/PEL/PEL.pkg, tutorials/PEL/faq.pkg:
+	  More info about the PHP 5 requirement.
+
+2005-10-12  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r392] tutorials/PEL/faq.pkg: Updates to match
+	  Pel::getExceptions(), and my try at making a funny FAQ! :-)
+
+	* [r391] INSTALL: Added small paragraph on upgrading.
+
+2005-10-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r390] PelEntryNumber.php, PelJpeg.php, PelTag.php: Small fixes
+	  in the doc comments.
+
+	* [r389] Pel.php, examples/dump-image.php,
+	  test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/make-image-test.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/read-write.php,
+	  test/image-tests/sony-dsc-v1.php, test/number.php: Removed
+	  public access to Pel::$debug and friends. Having them private is
+	  cleaner and some PHP errors were reported coming from constructs
+	  like Pel::$debug...
+
+2005-10-06  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r388] NEWS, PelIfd.php, TODO: Iteration of PelIfd with
+	  foreach().
+
+2005-10-05  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r387] PelConvert.php, PelDataWindow.php: Remove unnecessary
+	  calls by references since PHP will only copy data on write
+	  anyway. Likewise for PelDataWindow: the PHP5 clone is faster and
+	  uses the same amount of memory since a window is read-only.
+
+2005-10-04  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r386] PelTag.php: Added titles and descriptions for all GPS
+	  related tags.
+
+	* [r385] TODO: Rearranged items per targeted release.
+
+	* [r384] make-release.sh: Removed unnecessary anchor.
+
+	* [r383] tutorials/PEL/PEL.pkg, tutorials/PEL/faq.pkg: Fixed EXIF
+	  -> Exif, corrected phpdoc links.
+
+	* [r382] ., .cvsignore, run-phpdoc.sh: A missing ChangeLog file
+	  would make phpDocumentor skip all README, INSTALL, NEWS, etc.
+	  files.
+
+2005-10-03  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r381] tutorials/PEL/PEL.pkg, tutorials/PEL/faq.pkg,
+	  tutorials/PEL/using.pkg: Aarrgh! Something weird happened with
+	  PHP version 5.0.5... now the phpdoc XML parser suddenly decided
+	  to interpret {@link xxx yyy} inside a comment?!
+	  
+	  As if the new trend in PHP 5.0.5 of throwing "Fatal error: Only
+	  variables can be passed by reference" wasn't enough...
+
+	* [r380] AUTHORS, INSTALL, NEWS, Pel.php, PelConvert.php,
+	  PelDataWindow.php, PelEntry.php, PelEntryAscii.php,
+	  PelEntryByte.php, PelEntryLong.php, PelEntryNumber.php,
+	  PelEntryRational.php, PelEntryShort.php, PelEntryUndefined.php,
+	  PelException.php, PelExif.php, PelFormat.php, PelIfd.php,
+	  PelJpeg.php, PelJpegContent.php, PelJpegMarker.php, PelTag.php,
+	  PelTiff.php, README, TODO, examples/README,
+	  examples/dirsort.php, examples/dump-image.php,
+	  examples/edit-description.php, examples/rename.php,
+	  make-release.sh, po/da.po, po/de.po, po/es.po, po/fr.po,
+	  po/pel.pot, po/pl.po, run-phpdoc.sh, test/ascii.php,
+	  test/convert.php, test/data-window.php, test/image-tests/README,
+	  test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/make-image-test.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/read-write.php,
+	  test/image-tests/sony-dsc-v1.php, test/number.php,
+	  test/test.php, test/undefined.php, tutorials/PEL/PEL.pkg,
+	  tutorials/PEL/faq.pkg, tutorials/PEL/using.pkg,
+	  update-locales.sh, update-pot.sh: Fixed capitalization of Exif
+	  to follow the standard.
+
+2005-10-02  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r379] PelConvert.php, PelDataWindow.php, PelEntry.php,
+	  PelEntryAscii.php, PelEntryByte.php, PelEntryLong.php,
+	  PelEntryNumber.php, PelEntryRational.php, PelEntryShort.php,
+	  PelEntryUndefined.php, PelException.php, PelExif.php,
+	  PelFormat.php, PelIfd.php, PelJpeg.php, PelJpegContent.php,
+	  PelJpegMarker.php, PelTag.php, PelTiff.php,
+	  examples/dirsort.php, examples/dump-image.php,
+	  examples/edit-description.php, examples/rename.php,
+	  make-release.sh, run-phpdoc.sh, test/README, test/ascii.php,
+	  test/convert.php, test/data-window.php,
+	  test/image-tests/COPYING, test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/make-image-test.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/read-write.php,
+	  test/image-tests/sony-dsc-v1.php, test/number.php,
+	  test/undefined.php, update-locales.sh, update-pot.sh: Updated
+	  FSF address.
+
+	* [r378] test/test.php: read-write.php is broken, skip for now.
+
+	* [r377] Pel.php: Updated example to match new PelTag::getName()
+
+	* [r376] PelTiff.php: Updated example to match new
+	  PelIfd::getSubIfd().
+
+	* [r375] NEWS, PelIfd.php, PelJpeg.php: Changed
+	  PelIfd::getSubIfd() to take an IFD type as argument instead of a
+	  PelTag. Added PelIfd::addSubIfd().
+
+	* [r374] test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/make-image-test.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/sony-dsc-v1.php: Updated to handle adressing of
+	  sub-IFDs by IFD type instead of tag.
+
+	* [r373] NEWS, TODO: Latest changes: full support for GPS
+	  information.
+
+	* [r372] PelEntryRational.php: Handle GPS latitude and longitude.
+
+	* [r371] PelTiff.php: Enforce IFD0 as first IFD in TIFF files.
+
+	* [r370] PelEntry.php, PelIfd.php: Moved PelEntry::newFromData()
+	  to PelIfd::newEntryFromData(), added PelIfd::getValidTags() for
+	  enforcing standard compliance, began using constants denoting
+	  different IFD types.
+
+	* [r369] PelTag.php: Added GPS tags, Gamma tag, and PrintIM tag.
+	  Reformatted.
+
+	* [r368] PelJpeg.php: Removed unnecessary warning.
+
+	* [r367] test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/read-write.php,
+	  test/image-tests/sony-dsc-v1.php: Regenerated test files using
+	  new make-image-test.php script. This made the tests aware of the
+	  Pel::$exceptions array.
+
+	* [r366] test/image-tests/make-image-test.php: Fixed so the right
+	  class name is used instead of us trying to figure it out.
+
+2005-10-01  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r365] test/image-tests/make-image-test.php: Updated to handle
+	  the new strict/non-strict business: exceptions while parsing are
+	  now checked too.
+
+	* [r364] test/test.php: Update for new strict PHP5 handling of
+	  temporary variables: the "only variables can be passed by
+	  reference" error.
+
+	* [r363] tutorials/PEL/faq.pkg: Answers to two questions nobody
+	  has asked: how to get Gettext working and how to use the new
+	  system with strict and non-strict parsing.
+
+	* [r362] COPYING: Updated with current address of FSF.
+
+	* [r361] examples/README, examples/dirsort.php,
+	  examples/dump-image.php, examples/edit-description.php,
+	  examples/rename.php: Changed paths in example shell scripts to
+	  /usr/bin/php and explained in the README how to execute them.
+
+2005-09-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r360] PelEntry.php: Added a $tag field to the PelEntryException.
+
+	* [r359] PelException.php: Small consistancy fix.
+
+	* [r358] Pel.php, PelEntryNumber.php, PelIfd.php, PelJpeg.php,
+	  examples/dump-image.php, test/number.php: Added a flag
+	  Pel::$strict which determines how hard PEL will try to continue
+	  despite errors: when Pel::$strict is false, loading will
+	  continue as far as possible.
+	  
+	  Exceptions will still be produced, but instead of being thrown
+	  they are stored in Pel::$exceptions, which the user can check if
+	  special error handling is required. See the description on
+	  Pel::$exceptions.
+
+	* [r357] TODO: Noted the problem with PelEntryWindowsString and
+	  non Latin-1 characters. Added more details to all items.
+
+	* [r356] PelIfd.php: Better (more detailed) debug output.
+
+	* [r355] PelDataWindow.php: Wrong links in doc comments.
+
+	* [r354] PelTag.php: Fixed indention and typos.
+
+	* [r353] PelEntry.php, PelEntryByte.php, PelTag.php: Added support
+	  for the non-standard Windows XP author, comment, title, subject,
+	  and keywords tags. The tags are backed by a new class
+	  PelEntryWindowsString which behaves like PelEntryAscii except
+	  that it reads and writes the strings in the Microsoft format
+	  instead of the standard EXIF ASCII format.
+
+	* [r352] PelEntryAscii.php: Spelling inconsistancy: Subsec ->
+	  SubSec.
+
+	* [r351] examples/edit-description.php: Exit upon error.
+
+2005-08-18  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r350] AUTHORS, NEWS: Added Jakub Bogusz as the author of the
+	  Polish translation.
+
+	* [r349] PelJpegMarker.php: Cutting down on the number of strings
+	  to translate.
+
+2005-08-17  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r348] po/da.po, po/de.po, po/es.po, po/fr.po, po/pel.pot,
+	  po/pl.po: Some minor differences between PHP and C (such as
+	  using %d instead of %i in format strings) had caused a number of
+	  translations to be marked as "fuzzy". Added a couple of extra
+	  translations to the Danish translation.
+
+	* [r347] po/pl.po: Added Polish translation by Jakub Bogusz from
+	  the libexif project.
+
+	* [r346] PelEntryShort.php: Added support for Adobe RGB color
+	  space. From libexif, see
+	  
+	  http://sf.net/mailarchive/message.php?msg_id=12646603
+
+	* [r345] PelTag.php: Incorporated updates to the doc comments by
+	  Jakub Bogusz <qboosh@pld-linux.org> on libexif. See
+	  
+	  http://sf.net/mailarchive/message.php?msg_id=12656443
+
+2005-07-30  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r344] NEWS, examples/edit-description.php: Correctly add an
+	  empty EXIF structure in case the original image has none.
+
+	* [r343] PelJpeg.php: Hmm, I thought I had committed that: begone
+	  evil getSite() method!
+
+2005-07-19  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r342] NEWS: Document latest changes.
+
+	* [r341] make-release.sh: Actually commit the change --- use
+	  run-phpdoc.sh to generate API documentation.
+
+	* [r340] PelJpegContent.php: Remove getSize() method. It produced
+	  an error when called from the PelExif subclass and was not used.
+
+	* [r339] PelExif.php, PelIfd.php, PelJpeg.php: Better doc comments
+	  and small code cleanups.
+
+	* [r338] PelEntry.php: Let PelEntry.php include the class
+	  definitions of all the different types of entries. The problem
+	  with the conditional inclusion of the files is that it works
+	  fine when parsing a JPEG image --- files are included as needed
+	  and everybody is happy.
+	  
+	  So any JPEG image can be parsed by simply including PelJpeg.php.
+	  But if this PelJpeg object is stored somewhere---in a session
+	  for example---then things break since PelJpeg only includes
+	  which itself only includes PelEntry which didn't include any of
+	  the real entry class definitions.
+
+2005-07-09  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r337] PelDataWindow.php, PelEntryAscii.php, PelEntryLong.php,
+	  PelEntryRational.php, PelIfd.php, PelTag.php: Removed
+	  apostrophes from the doc comments.
+
+2005-07-08  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r336] PelEntryAscii.php, PelEntryUndefined.php, PelIfd.php: Why
+	  did I use the self::func() form instead of the normal
+	  $this->func() form? If somebody knows, then please remind me!
+
+2005-06-29  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r335] PelEntry.php: Better output when an unexpected format is
+	  found during loading.
+
+	* [r334] README: Reworded.
+
+	* [r333] PelIfd.php: Added a setThumbnail() method which does what
+	  it says. Thanks goes to David Weingart for making me aware that
+	  we needed such a function.
+
+2005-05-29  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r332] NEWS: Updated with info about the newest commits.
+
+	* [r331] PelTag.php: Updated doc comments with information about
+	  the constrains on the format and number of component for each
+	  tag.
+
+	* [r330] PelFormat.php: Updated doc comments.
+
+	* [r329] PelEntry.php: Updated documentation to make it clear that
+	  newFromData() shouldn't be used to generate entries, except when
+	  the data is from an image.
+
+	* [r328] run-phpdoc.sh: An external script to run phpdoc with
+	  consistant arguments.
+
+2005-05-28  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r327] PelEntryShort.php: Fixed a typo in the example, reported
+	  by the sharp-eyed Jeff Park.
+
+	* [r326] AUTHORS, Pel.php, PelConvert.php, PelDataWindow.php,
+	  PelEntry.php, PelEntryAscii.php, PelEntryByte.php,
+	  PelEntryLong.php, PelEntryNumber.php, PelEntryRational.php,
+	  PelEntryShort.php, PelEntryUndefined.php, PelException.php,
+	  PelExif.php, PelFormat.php, PelIfd.php, PelJpeg.php,
+	  PelJpegContent.php, PelJpegMarker.php, PelTag.php, PelTiff.php,
+	  po/da.po, po/de.po, po/es.po, po/fr.po, tutorials/PEL/PEL.pkg,
+	  tutorials/PEL/faq.pkg, tutorials/PEL/using.pkg, users: Updated
+	  email addresses to match my new username on SF: mgeisler.
+
+2005-04-07  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r325] make-release.sh: Updated link to scripts.com.
+
+2005-02-18  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r323] NEWS: Correct date of 0.8 release.
+
+	* [r322] make-release.sh: This marks the release of PEL version
+	  0.8. Updated to handle the 'tutorials' directory which should
+	  not be distributed in a release.
+
+2005-02-17  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r321] NEWS: Documented the latest additions. Version 0.8 is
+	  coming very soon now.
+
+	* [r320] tutorials/PEL/faq.pkg: Updated FAQ with a link to PJMT,
+	  the PHP JPEG Metadata Toolkit.
+
+	* [r319] tutorials, tutorials/PEL, tutorials/PEL/PEL.pkg,
+	  tutorials/PEL/PEL.pkg.ini, tutorials/PEL/faq.pkg,
+	  tutorials/PEL/schemas.xml, tutorials/PEL/using.pkg: The
+	  beginnings of a more user-oriented kind of documentation.
+
+2005-02-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r318] PelExif.php: Fixed another mis-spelled exception.
+
+	* [r317] README, examples/README, test/README: Added README files
+	  to the subdirectories to better explain to people what they are
+	  all about.
+
+	* [r316] examples/dirsort.php: A small example showing how to sort
+	  photos into monthly directories.
+
+	* [r315] examples, examples/dump-image.php,
+	  examples/edit-description.php, examples/rename.php,
+	  test/dump-image.php, test/edit-description.php, test/rename.php:
+	  Moved example scripts from the 'test' directory to a new
+	  'examples' directory.
+
+2005-02-10  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r314] test/test.php: Fixed the inclusion of tests from the
+	  'image-tests' directory so that the make-image-test.php script
+	  wont be mistaken for a test case. Updated the copyright
+	  statement to include year 2005.
+
+	* [r313] TODO: Added a note about investigating the JPEG comment
+	  section, and updated the copyright statement to include year
+	  2005.
+
+	* [r312] README: Synched the 'Features' list with the homepage,
+	  and corrected the copyright statement to include year 2005.
+
+	* [r311] NEWS: Corrected copyright statement to include year 2005.
+
+	* [r310] AUTHORS, INSTALL, Pel.php, PelConvert.php,
+	  PelDataWindow.php, PelEntry.php, PelEntryAscii.php,
+	  PelEntryByte.php, PelEntryLong.php, PelEntryNumber.php,
+	  PelEntryRational.php, PelEntryShort.php, PelEntryUndefined.php,
+	  PelException.php, PelExif.php, PelFormat.php, PelIfd.php,
+	  PelJpeg.php, PelJpegContent.php, PelJpegMarker.php, PelTag.php,
+	  PelTiff.php, make-release.sh, test/ascii.php, test/convert.php,
+	  test/data-window.php, test/dump-image.php,
+	  test/edit-description.php, test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/make-image-test.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/read-write.php,
+	  test/image-tests/sony-dsc-v1.php, test/number.php,
+	  test/rename.php, test/undefined.php, update-locales.sh,
+	  update-pot.sh: Updated copyright statements to year 2005, and
+	  removed the email address because the line got too long, and
+	  because people should be able to find it easily in the AUTHORS
+	  file anyway.
+
+	* [r309] test/image-tests/README: Updated copyright statement to
+	  year 2005, reworded slightly.
+
+2005-02-06  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r308] NEWS, PelEntry.php, PelIfd.php, PelTag.php: Instead of
+	  aborting on erranous entries, they are now skipped.
+
+	* [r307] test/rename.php: Added comments to explain what this
+	  script actually does.
+
+	* [r306] NEWS: Described the latest changes.
+
+2005-01-30  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r305] test/edit-description.php: Added lots of comments to make
+	  this a better example.
+
+	* [r304] test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.php,
+	  test/image-tests/leica-d-lux.php,
+	  test/image-tests/make-image-test.php,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.php,
+	  test/image-tests/olympus-c5050z.php,
+	  test/image-tests/olympus-c50z.php,
+	  test/image-tests/olympus-c765uz.php,
+	  test/image-tests/pentax-istDS.php,
+	  test/image-tests/sony-dsc-v1.php: Adding more extensive tests
+	  for all images, created with a new script. The script loads the
+	  image using PEL itself, then traverses the tree structure
+	  returned and creates tests that will ensure that future code can
+	  be validated up against this known good state.
+
+2005-01-29  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r303] test/edit-description.php: Wrong class name --- there has
+	  never been a PelEntryString class, it was always PelEntryAscii.
+
+	* [r302] AUTHORS, test/image-tests/leica-d-lux-thumb.jpg,
+	  test/image-tests/leica-d-lux.jpg,
+	  test/image-tests/olympus-c5050z-thumb.jpg,
+	  test/image-tests/olympus-c5050z.jpg,
+	  test/image-tests/olympus-c50z-thumb.jpg,
+	  test/image-tests/olympus-c765.jpg,
+	  test/image-tests/olympus-c765uz-thumb.jpg,
+	  test/image-tests/olympus-c765uz.jpg,
+	  test/image-tests/pentax-istDS-thumb.jpg,
+	  test/image-tests/pentax-istDS.jpg: Added new test images from
+	  Thomas B. Pedersen, Lisbeth Nygaard Pedersen, and Paul Mitchum.
+
+	* [r301] PelEntry.php: More information in the
+	  PelWrongComponentcountException.
+
+	* [r300] test/image-tests/README: Reworded slightly.
+
+2004-11-03  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r299] PelIfd.php: Added a doc comment.
+
+	* [r298] PelEntry.php: Fixed a bug where the name of the exception
+	  class was misspelled. Added abstract getValue() and setValue()
+	  methods to document that all entries have such methods.
+
+2004-10-31  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r297] Pel.php, PelEntryNumber.php, PelExif.php, PelJpeg.php,
+	  PelJpegMarker.php: Documentation updates.
+
+2004-10-29  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r296] NEWS: Fixed typo, the camera model is Canon PowerShot,
+	  and now PowerShow.
+
+2004-10-10  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r294] make-release.sh: Updated to handle the splitting of image
+	  tests into their own file.
+
+	* [r293] NEWS: Latest news about PEL version 0.7.
+
+	* [r292] PelEntry.php: Better output for entries: now both the raw
+	  value and the formatted value is printed.
+
+	* [r291] test/image-tests/canon-powershot-s60-thumb.jpg,
+	  test/image-tests/canon-powershot-s60.php: Test case for the
+	  Canon PowerShot S60 image.
+
+	* [r290] INSTALL, README, test/image-tests/README: Updated
+	  instructions on how to contribute test images.
+
+	* [r289] Pel.php: Added doc comments for the stub dgettext()
+	  function.
+
+	* [r288] test/test.php: Give a proper warning if people try to run
+	  the tests without having downloaded the image tests.
+
+	* [r287] test/test.php: Moved tests to the image-tests directory.
+	  Any file ending with '.php' in that directory will be added as a
+	  GroupTest.
+
+	* [r286] test/image-tests, test/image-tests/COPYING,
+	  test/image-tests/README,
+	  test/image-tests/canon-ixus-ii-thumb.jpg,
+	  test/image-tests/canon-ixus-ii.jpg,
+	  test/image-tests/canon-ixus-ii.php,
+	  test/image-tests/canon-powershot-s60.jpg,
+	  test/image-tests/nikon-coolscan-iv.jpg,
+	  test/image-tests/nikon-coolscan-iv.php,
+	  test/image-tests/nikon-e5000-thumb.jpg,
+	  test/image-tests/nikon-e5000.jpg,
+	  test/image-tests/nikon-e5000.php,
+	  test/image-tests/nikon-e950-thumb.jpg,
+	  test/image-tests/nikon-e950.jpg,
+	  test/image-tests/nikon-e950.php, test/image-tests/no-exif.jpg,
+	  test/image-tests/olympus-c50z.jpg,
+	  test/image-tests/olympus-c765.jpg,
+	  test/image-tests/read-write.php,
+	  test/image-tests/sony-dsc-v1-thumb.jpg,
+	  test/image-tests/sony-dsc-v1.jpg,
+	  test/image-tests/sony-dsc-v1.php: Moved here from the test and
+	  test/images directories.
+
+	* [r285] test/canon-ixus-ii.php, test/images,
+	  test/nikon-coolscan-iv.php, test/nikon-e5000.php,
+	  test/nikon-e950.php, test/read-write.php, test/sony-dsc-v1.php:
+	  These files are being moved to a new image-tests directory.
+
+	* [r284] PelConvert.php, PelEntryLong.php, PelEntryShort.php: The
+	  internal handling of large integers (larger than 2^31-1 =
+	  2147483647, which is the largest integer that can be represented
+	  in the signed 32 bit integers that PHP use) has been changed
+	  between PHP version 5.0.1 and 5.0.2.
+	  
+	  The change manifests itself when the arguments to operators like
+	  >> and % and functions like chr() is too large: previously this
+	  would go unnoticed, but now the argument is clipped to 2^31-1.
+	  
+	  For example, this means that 0xFFFFFFFF >> 24 gives 0xFF in
+	  version 5.0.1, but 0x7F in version 5.0.2 where it looks as if
+	  the left argument is first clipped to 0x7FFFFFFF (the largest
+	  signed 32 bit integer) and then shifted as expected.
+	  
+	  Using base_convert() instead of the shift and modulo operations
+	  gives correct results in both new and older versions of PHP 5.
+
+	* [r283] AUTHORS: Added Mikkel Kr�ig�rd to the list of test image
+	  contributors.
+
+	* [r282] test/images/canon-powershot-s60.jpg: New test image taken
+	  with a Canon PowerShot S60 by Mikkel Kr�ig�rd.
+
+	* [r281] README: Linked to the SourceForge Patch Tracker so that
+	  people know where to submit test images for PEL.
+
+	* [r280] make-release.sh: PEL is now also listed on NeedScripts.
+
+	* [r279] INSTALL: Added links to Debian packages and Windows
+	  binaries with PHP 5.
+
+2004-10-04  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r278] PelConvert.php: Some EXIF papers prefer to talk about
+	  Intel (little-endian) and Motorola (big-endian) byte orders, so
+	  it is convenient if the doc comments tells you which is which.
+
+2004-09-27  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r277] NEWS: Added a little description of the Gettext
+	  work-around.
+
+2004-09-13  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r276] Pel.php: When there is no dgettext() function, we create
+	  a stub. This should allow PEL to run in environments without
+	  support for Gettext. PEL will then run with the default English
+	  texts. This should fix the error reported in bug #1022143.
+
+2004-08-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r275] test/rename.php: A test script illustrating how PEL can
+	  be used to mass-rename files accourding to their timestamps.
+
+2004-08-02  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r274] README: Added instructions on how to contribute test
+	  images.
+
+2004-07-31  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r273] NEWS: Comments on the latest changes.
+
+	* [r272] po/da.po: Small update.
+
+	* [r271] po/pel.pot: Regenerated with the newest strings and
+	  correct line numbers.
+
+	* [r270] INSTALL: Reworded.
+
+	* [r269] Pel.php, PelConvert.php: Removed trailing newlines.
+
+	* [r268] TODO: Done --- one can now construct new data from
+	  scratch with version 0.6.
+
+2004-07-21  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r266] make-release.sh: This is PEL version 0.6.
+
+	* [r265] PelJpeg.php: Added doc comments.
+
+	* [r264] NEWS: Detailed the changed interface and other recent
+	  changes.
+
+	* [r263] INSTALL: Updated the example to match the new interface
+	  in PelJpeg.
+
+	* [r262] test/canon-ixus-ii.php, test/nikon-coolscan-iv.php,
+	  test/nikon-e5000.php, test/nikon-e950.php, test/sony-dsc-v1.php:
+	  Updated to match new interface in PelJpeg. Fixed timestamps to
+	  match the UTC time.
+
+	* [r261] PelEntry.php: The timestamps should be treated uniformly
+	  as UTC time, and not local time, otherwise we cannot guarantee a
+	  safe round trip where an entry is written to a file and then
+	  later retrieved.
+
+	* [r260] test/read-write.php: New tests of PelEntryAscii and its
+	  descendent classes.
+
+	* [r259] test/edit-description.php: Updated to match interface
+	  changes in PelJpeg.
+
+	* [r258] test/dump-image.php: Updated to match the new interfaces
+	  in PelJpeg and PelTiff.
+
+	* [r257] PelExif.php, PelIfd.php, PelJpeg.php, PelTiff.php: New
+	  infrastructure that allows one to construct empty objects, and
+	  then later add content.
+
+	* [r256] test/test.php: Link in the new test cases.
+
+	* [r255] PelException.php: The PelInvalidDataException is a new
+	  generic exception when invalid data is found.
+
+	* [r254] test/read-write.php: Test cases covering reading and
+	  writing files.
+
+	* [r253] NEWS, PelConvert.php: The conversion from bytes to signed
+	  shorts were off by one.
+
+	* [r252] NEWS, PelEntry.php: The loading of signed bytes was wrong.
+
+	* [r251] PelEntry.php: Check the format before trying to load the
+	  data.
+
+2004-07-20  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r250] NEWS, PelJpegMarker.php: Rename
+	  PelJpegMarker::isValidMarker() into PelJpegMarker::isValid().
+
+	* [r249] PelJpeg.php, PelTiff.php: The static functions
+	  PelJpeg::isValid() and PelTiff::isValid() is better described as
+	  functions than methods.
+
+	* [r248] TODO: New plans.
+
+2004-07-18  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r247] PelEntry.php: Removed old unneeded TODO.
+
+	* [r246] README: Moved to AUTHORS.
+
+	* [r245] INSTALL: Updated INSTALL file now that PHP 5 stable has
+	  been released.
+
+	* [r244] test/images/no-exif.jpg: An image without EXIF
+	  information.
+
+	* [r243] AUTHORS: Credits to the people who have helped.
+
+	* [r242] test/nikon-e5000.php, test/nikon-e950.php, test/test.php:
+	  Tests for the Nikon models E950 and E5000.
+
+	* [r241] test/test.php: Add the Nikon Coolscan IV test case.
+
+	* [r240] test/canon-ixus-ii.php: Updated tests to match updated
+	  image. There are now 15 test cases with 727 individual tests in
+	  the test suite.
+
+	* [r239] test/sony-dsc-v1.php: Updated tests to match the updated
+	  image.
+
+	* [r238] test/nikon-coolscan-iv.php: Reading tests for the new
+	  Nikon Coolscan IV image.
+
+	* [r237] NEWS: Added something about the new test images and other
+	  updated lately.
+
+	* [r236] PelEntry.php: The DATE_TIME tag in the Nikon Coolscan IV
+	  image has the date and time delimited with '.' instead of ':' as
+	  specified by the Exif standard.
+
+2004-07-17  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r235] test/images/nikon-coolscan-iv.jpg: A sample image from a
+	  Nikon Coolscan IV ED film scanner.
+
+2004-07-10  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r234] test/images/canon-ixus-ii-thumb.jpg,
+	  test/images/canon-ixus-ii.jpg,
+	  test/images/sony-dsc-v1-thumb.jpg, test/images/sony-dsc-v1.jpg:
+	  New images, taken directly from the cameras instead of being
+	  resized in the Gimp.
+
+	* [r233] test/images/nikon-e5000-thumb.jpg,
+	  test/images/nikon-e5000.jpg, test/images/nikon-e950-thumb.jpg,
+	  test/images/nikon-e950.jpg: New test images from Nikon models
+	  E950 and E5000.
+
+	* [r232] test/dump-image.php, test/edit-description.php: The
+	  scripts could only be run from the test directory because of the
+	  use of relative paths in the require_once() statements.
+
+2004-07-09  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r231] NEWS: Descriptions of the latest changes since version
+	  0.5 was released.
+
+2004-06-29  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r230] test/edit-description.php: Updated code to match the
+	  changes in PelJpeg::getSection().
+
+	* [r229] PelException.php: Updated doc comments.
+
+	* [r228] PelJpeg.php: Fixed converting PelJpeg objects into bytes.
+	  Updated the doc comments to match the latest changes in the code.
+
+	* [r227] PelTiff.php: Having a default byte order is convenient
+	  --- little-endian byte order was chosen arbitrarily.
+
+2004-06-28  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r226] test/number.php: The new tests that caught the missing
+	  return statement.
+
+	* [r225] PelEntryRational.php: The output generated in the default
+	  case was not returned, and so one did not get the expected 'x/y'
+	  text for a plain rational number.
+
+	* [r223] make-release.sh: The Perl code was wrong.
+
+	* [r222] NEWS: Version 0.5 is out.
+
+	* [r221] make-release.sh: PEL version 0.5 is coming soon to a
+	  mirror near you!
+
+	* [r220] users: A file for manual translation of SourceForge
+	  usernames to real names.
+
+	* [r219] po/pel.pot: Regenerated with updated line numbers.
+
+	* [r218] NEWS, TODO: Hurray! PEL should now be fully documented.
+
+	* [r217] PelJpeg.php, PelTiff.php: Updated doc comments.
+
+2004-06-27  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r216] PelExif.php: Added doc comments.
+
+	* [r215] NEWS: Bug #976782 should now finally be dealt with.
+
+	* [r214] PelJpeg.php: Some images have some content following the
+	  EOI marker --- that content is now stored as a PelJpegContent
+	  object associated with the fictive marker 0x00. All the images
+	  reported in bug #976782 can now be parsed by PEL.
+
+	* [r213] PelIfd.php: The thumbnails would lack the very last byte,
+	  fixed.
+
+	* [r212] PelDataWindow.php: Fixed indention.
+
+	* [r211] PelIfd.php: Fixes for images with broken length
+	  information for the thumbnail.
+
+	* [r210] PelTag.php: Added some links in the doc comments.
+
+2004-06-26  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r209] INSTALL, NEWS, README: Removed the apostrophes in
+	  contractions.
+
+	* [r208] make-release.sh: PEL got added to another online
+	  directory.
+
+	* [r207] INSTALL, NEWS, Pel.php, PelConvert.php,
+	  PelDataWindow.php, PelEntry.php, PelEntryAscii.php,
+	  PelEntryByte.php, PelEntryLong.php, PelEntryNumber.php,
+	  PelEntryRational.php, PelEntryShort.php, PelEntryUndefined.php,
+	  PelException.php, PelExif.php, PelFormat.php, PelIfd.php,
+	  PelJpeg.php, PelJpegContent.php, PelJpegMarker.php, PelTag.php,
+	  PelTiff.php, README, TODO, make-release.sh, test/ascii.php,
+	  test/canon-ixus-ii.php, test/convert.php, test/data-window.php,
+	  test/dump-image.php, test/edit-description.php, test/number.php,
+	  test/sony-dsc-v1.php, test/test.php, test/undefined.php,
+	  update-locales.sh, update-pot.sh: Updated the standard file
+	  prefix now that PEL can parse TIFF images.
+
+	* [r206] NEWS: Updated with news about the progress of fixing bug
+	  #976782.
+
+2004-06-25  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r205] PelConvert.php: Another off-by-one bug!
+
+	* [r204] test/convert.php: Extensive tests of longs, shorts, and
+	  bytes.
+
+	* [r203] test/convert.php, test/test.php: Added tests of the
+	  conversion of bytes into integers, with emphasis on the
+	  conversion of bytes to large integers.
+
+	* [r202] test/data-window.php: Added a test case to exercise the
+	  parsing of big integers, that is, integers that overflow a
+	  signed 32 bit integer.
+
+2004-06-24  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r201] PelConvert.php: The bytesToLong() method didn't work
+	  correctly with integers larger that would overflow the PHP
+	  signed 32 bit integers. But when multiplying and adding the
+	  integers are promoted to 64 bit floats, which can then be used
+	  in place of a true unsigned 32 bit integer type.
+
+	* [r200] PelEntryNumber.php: The %d format specifier converts the
+	  argument into a signed 32 bit integer --- the %f format
+	  specifier works with 64 bit floats and so it can be used when
+	  faking 32 bit unsigned integers.
+
+	* [r199] PelJpeg.php: Remove the private $count variable.
+
+	* [r198] PelExif.php, PelJpeg.php, PelJpegContent.php: Removed
+	  PelJpegSection from the doc comments.
+
+	* [r197] test/canon-ixus-ii.php, test/sony-dsc-v1.php: Updated to
+	  match the newly changed PelJpeg::getSection() method.
+
+	* [r196] PelJpeg.php, PelJpegSection.php: Removed the
+	  PelJpegSection class, since it was just acting as a simple pair.
+	  This lead to a rewrite of the PelJpeg::getSection() method, so
+	  that it now takes a PelJpegMarker as argument instead of the
+	  section number. Added doc comments as well.
+
+	* [r195] PelTiff.php: The byte order can now be specified when
+	  turning a TIFF object into bytes. This makes the private $order
+	  variable unnecessary. Added and updated doc comments.
+
+2004-06-21  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r194] NEWS: News for the next release.
+
+	* [r193] PelJpeg.php: Catch the exception thrown if the APP1 data
+	  cannot be parsed as EXIF data. This fixes #976782.
+
+	* [r192] PelEntry.php: Ups! The size of a byte is... one byte!
+
+	* [r191] PelConvert.php: Fixed spelling mistakes in doc comments.
+
+	* [r190] test/dump-image.php: Non-debug output didn't work.
+
+	* [r189] test/dump-image.php: New -d argument will turn on
+	  debugging.
+
+	* [r188] PelIfd.php: Fixed getBytes() so that the byte order
+	  argument now actually is used. Added doc comments.
+
+	* [r187] Pel.php, PelEntry.php, PelEntryRational.php: Added and
+	  updated doc comments.
+
+	* [r186] PelDataWindow.php, PelEntryNumber.php: Added doc comments.
+
+2004-06-11  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r185] INSTALL: Added a note about PEL being tested with PHP5
+	  RC3.
+
+2004-06-10  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r184] make-release.sh: PEL is now listed at
+	  http://www.scripts.com/.
+
+	* [r183] PelTiff.php: Added a simple getByteOrder() method.
+
+	* [r182] TODO: Dropped the idea about making PEL a replacement for
+	  the builtin PHP functions. This is because they don't depend on
+	  anything outside PHP, so one would expect them to be available
+	  in most PHP installations, and second, the output will be
+	  somewhat tedious to reproduce.
+
+2004-06-09  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r181] make-release.sh: The HTML ChangeLog is now modified
+	  (using Perl magic) to contain proper anchors indicating each
+	  release, so that the release notest can link to the proper
+	  section. Added comments.
+
+	* [r180] TODO: Another goal for PEL: handle USER_COMMENT tags
+	  correctly, including converting to and from specified encodings.
+
+	* [r178] NEWS, make-release.sh: Version 0.4 is out.
+
+	* [r177] po/da.po: Last updates to the Danish translation before
+	  version 0.4 is out.
+
+	* [r176] make-release.sh: Updated so to generate locales for
+	  inclusion with releases. Added a list of sites where new
+	  releases of PEL can be announced.
+
+	* [r175] po/da.po: Adjustments to the output.
+
+	* [r174] PelJpeg.php, po/pel.pot: Small white-space adjustments to
+	  the output.
+
+	* [r173] po/da.po: Massive updates.
+
+	* [r172] po/pel.pot: Updates with new string from
+	  PelDataWindow.php and changes from PelFormat.php.
+
+	* [r171] PelDataWindow.php: Found yet another string that is
+	  eligible for translation.
+
+	* [r170] PelFormat.php: Better output when the getName() and
+	  getSize() functions are presented with an unknown format.
+
+	* [r169] PelEntry.php, PelEntryAscii.php: Code cleanups, albeit
+	  small ones...
+
+	* [r168] NEWS: More news.
+
+	* [r167] PelDataWindow.php: Indention.
+
+	* [r166] po/pel.pot: Remove the generic strings which are no
+	  longer marked as translatable in teh source.
+
+	* [r165] NEWS: Note the Danish translation.
+
+	* [r164] README: Reworded.
+
+	* [r163] INSTALL: Explaination of the fact that PEL is a library
+	  and not an application.
+
+	* [r162] PelFormat.php, PelTag.php: The names of EXIF formats and
+	  EXIF tags are generic terms which shouldn't be translated after
+	  all.
+
+2004-06-08  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r161] po/da.po, po/pel.pot: The latest strings, and the latest
+	  Danish translations.
+
+	* [r160] PelTag.php: Fixed capitalisation.
+
+	* [r159] PelEntryShort.php: Added punctuation.
+
+2004-06-06  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r158] PelTag.php: Added a couple of links in the doc comments.
+
+	* [r157] PelFormat.php: Added doc comments.
+
+	* [r156] po/da.po: Lots of updates for the Danish translation.
+
+	* [r155] po/pel.pot: Merged in the newest strings.
+
+	* [r154] Pel.php, update-locales.sh: Updated to match the new
+	  pel.pot/pel.mo naming scheme.
+
+	* [r153] po/PEL.pot: Renamed to pel.po.
+
+	* [r152] update-pot.sh: Updated to match the new name for the po
+	  template file.
+
+	* [r151] po/pel.pot: Renamed from PEL.pot to pel.pot since I
+	  actually like lower-case filenames better.
+
+	* [r150] PelEntryRational.php: Another couple of strings which
+	  should be translated.
+
+	* [r149] NEWS: Note the disabling of GPS related tags.
+
+	* [r148] PelTag.php: Added doc comments to the class constants ---
+	  the comments are the corresponding titles and descriptions as
+	  given by the functions getTitle() and getDescription().
+	  
+	  The code for finding the tile and description of the GPS related
+	  tags were commented out. These tags seem to conflict with a
+	  number of other tags, e.g., the tags have the same hexadecimal
+	  value, so they have to be treated specially somehow.
+
+	* [r147] PelFormat.php: Marked the names of EXIF entry formats as
+	  translatable.
+
+	* [r146] PelEntryUndefined.php: Added translatable strings for the
+	  version tags.
+
+	* [r145] PelEntryShort.php: This was broken, the call to
+	  Pel::tra() lacked the final ). Also added required files to the
+	  require_once() block.
+
+2004-06-05  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r144] PelEntryShort.php: This makes the output for the
+	  SUBJECT_AREA tag translatable.
+
+	* [r143] PelEntryAscii.php: Mark more translatable strings.
+
+	* [r142] po/PEL.pot: Updated with the new strings from the
+	  PelTag.php file.
+
+	* [r141] INSTALL: Changed the example to use require_once()
+	  instead of include_once() since the intented semantics is to
+	  really fail if the files cannot be read --- continuing with a
+	  warning is no good.
+
+	* [r140] README: Added note about internationalisation, and
+	  credited the libexif project for providing the translations.
+
+	* [r139] NEWS: Note the new internationalisation stuff.
+
+	* [r138] po/de.po, po/es.po, po/fr.po: Added German, Spanish, and
+	  French translations made by Lutz M�ller, Fabian Mandelbaum, and
+	  Arnaud Launay, respectively. The translations were made for the
+	  libexif project, but since PEL is a port of that project, the
+	  translations can be used here too.
+
+2004-06-04  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r137] PelEntryShort.php, PelTag.php: More strings marked for
+	  translation. Some of the strings were split across several lines
+	  in the source, but they are now all on single (but unfortunately
+	  very long) lines, because the xgettext program couldn't extract
+	  the splitted strings properly.
+
+	* [r136] po/PEL.pot, po/da.po: Added new strings so that the
+	  output of dump-image.php is mostly translatable. Updated the
+	  Danish translation with translations for those strings.
+
+	* [r135] PelEntry.php, PelExif.php, PelIfd.php, PelTag.php,
+	  PelTiff.php: Marked string for translation and made the files
+	  require Pel.php, which is needed by any file which contain
+	  translatable strings.
+
+	* [r134] po/PEL.pot: Updated with latest strings from PelJpeg.php.
+
+	* [r133] po/da.po: Translations...
+
+	* [r132] PelJpeg.php: Mark strings for translation.
+
+	* [r131] TODO: The internationalization process has now been
+	  started, so this TODO item can be removed.
+
+	* [r130] ., .cvsignore: Ignore the auto-generated locale directory.
+
+	* [r129] test/dump-image.php: Enable the use of Gettext.
+
+	* [r128] PelJpegMarker.php: Marked more strings for translation.
+
+	* [r127] PelTag.php: Mark string for translation.
+
+	* [r126] po/da.po: Preliminary Danish translation of PEL.
+
+	* [r125] po, po/PEL.pot: The template PO file on which other
+	  translations are based. Translators should merge this file into
+	  their own translations whenever this file is updated.
+
+	* [r124] update-locales.sh: Maintaince script for generating MO
+	  files. All PO files in the po subdirectory will be processed and
+	  the result will be put in the corresponding directory under the
+	  locale subdirectory.
+
+	* [r123] update-pot.sh: Maintaince script for updating the PO
+	  template file po/PEL.pot. This is the file containing all the
+	  string that are marked for translation in PEL. Translators
+	  should merge it into their translations whenever it is updated.
+
+	* [r122] Pel.php: Added two new static functions for
+	  internationalization. This is the beginning of making PEL speak
+	  other languages than just English.
+
+	* [r121] PelEntryShort.php: Wrong format codes used: PHP does not
+	  have %i. This was found using Gettext which knows about the
+	  valid PHP format specifiers... cool!
+
+	* [r120] PelEntryAscii.php: Fixed more spelling mistakes.
+
+2004-05-28  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r119] Pel.php, PelConvert.php, PelDataWindow.php, PelEntry.php,
+	  PelEntryNumber.php, PelEntryRational.php, PelEntryShort.php,
+	  PelJpeg.php, PelTag.php, README, TODO: Spell check.
+
+2004-05-25  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r118] NEWS, PelJpegContent.php: As always: added doc comments.
+
+	* [r116] make-release.sh: Version 0.3 is out.
+
+	* [r115] NEWS: Last minute updated before version 0.3 is out.
+
+	* [r114] INSTALL: Updated example to match the new class and
+	  method names.
+
+	* [r113] README: Updated feature list.
+
+	* [r112] TODO: PEL can now parse TIFF images.
+
+	* [r111] PelDataWindow.php, PelExif.php, PelIfd.php: Added
+	  standard doc comment for require_once() blocks.
+
+	* [r110] PelEntry.php, PelEntryNumber.php, PelJpeg.php: Added doc
+	  comments.
+
+	* [r109] PelTiff.php: Added doc comments.
+
+	* [r108] PelJpegContent.php, PelJpegMarker.php,
+	  PelJpegSection.php: Added standard doc comments for
+	  require_once() blocks.
+
+	* [r107] PelEntryAscii.php, PelEntryByte.php, PelEntryLong.php,
+	  PelEntryRational.php, PelEntryShort.php, PelEntryUndefined.php:
+	  Added standard doc comments for require_once blocks.
+
+	* [r106] Pel.php, PelConvert.php: Updated doc comments.
+
+	* [r105] NEWS, README: Announce support for TIFF images and other
+	  changes.
+
+	* [r104] test/canon-ixus-ii.php, test/sony-dsc-v1.php: Added extra
+	  indirection due to the new class structure where the PelExif
+	  object holds a PelTiff object with the real data.
+
+	* [r103] test/ascii.php: The class was renamed to
+	  PelEntryCopyright.
+
+	* [r102] PelEntry.php, PelEntryAscii.php, PelEntryByte.php,
+	  PelEntryLong.php, PelEntryNumber.php, PelEntryRational.php,
+	  PelEntryShort.php, PelEntryUndefined.php, PelFormat.php,
+	  PelIfd.php, PelJpegContent.php, PelJpegMarker.php,
+	  PelJpegSection.php, PelTag.php: Removed @subpackage tags except
+	  for the exceptions. This gives a better overview in the
+	  documentation.
+
+	* [r101] test/dump-image.php: Updated to handle both JPEG and TIFF
+	  images.
+
+	* [r100] PelJpeg.php, PelTiff.php: Added PelTiff for parsing TIFF
+	  files and added an isValid() method to both classes so that it's
+	  easy to test unknown data to see if it's JPEG or TIFF data.
+
+	* [r99] PelExif.php: Updated to use a PelTiff object as the
+	  internal representation of the EXIF data.
+
+	* [r98] PelDataWindow.php: Added extra check on the offset given.
+
+2004-05-24  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r97] test/canon-ixus-ii.php, test/dump-image.php,
+	  test/edit-description.php, test/sony-dsc-v1.php, test/test.php:
+	  Updated to match the newly renamed classes.
+
+	* [r96] test/exif-entry-undefined.php, test/undefined.php: Renamed
+	  exif-entry-undefined.php to just undefined.php
+
+	* [r95] test/exif-entry-number.php, test/number.php: Renamed
+	  exif-entry-number.php to just number.php
+
+	* [r94] test/ascii.php, test/exif-entry-ascii.php: Renamed
+	  exif-entry-ascii.php to just ascii.php
+
+	* [r93] Pel.php: More flexible control of the debug output. This
+	  should probably be turned into a general scheme with a verbosity
+	  level.
+
+	* [r92] PelJpeg.php, PelJpegData.php: Renamed PelJpegData.php to
+	  PelJpeg.php
+
+	* [r91] PelExif.php, PelExifData.php: Renamed PelExifData.php to
+	  PelExif.php
+
+	* [r90] PelEntryNumber.php, PelExifEntryNumber.php: Renamed
+	  PelExifEntryNumber.php to PelEntryNumber.php
+
+	* [r89] PelExifTag.php, PelTag.php: Renamed PelExifTag.php to
+	  PelTag.php
+
+	* [r88] PelExifIfd.php, PelIfd.php: Renamed PelExifIfd.php to
+	  PelIfd.php
+
+	* [r87] PelExifFormat.php, PelFormat.php: Renamed
+	  PelExifFormat.php to PelFormat.php
+
+	* [r86] PelEntryUndefined.php, PelExifEntryUndefined.php: Renamed
+	  PelExifEntryUndefined.php to PelEntryUndefined.php
+
+	* [r85] PelEntryShort.php, PelExifEntryShort.php: Renamed
+	  PelExifEntryShort.php to PelEntryShort.php
+
+	* [r84] PelEntryRational.php, PelExifEntryRational.php: Renamed
+	  PelExifEntryRational.php to PelEntryRational.php
+
+	* [r83] PelEntryLong.php, PelExifEntryLong.php: Renamed
+	  PelExifEntryLong.php to PelEntryLong.php
+
+	* [r82] PelEntryByte.php, PelExifEntryByte.php: Renamed
+	  PelExifEntryByte.php to PelEntryByte.php
+
+	* [r81] PelEntryAscii.php, PelExifEntryAscii.php: Renamed
+	  PelExifEntryAscii.php to PelEntryAscii.php
+
+	* [r80] PelEntry.php, PelExifEntry.php: Renamed PelExifEntry.php
+	  to PelEntry.php
+
+	* [r79] PelExifEntryRational.php: Removed old TODO.
+
+	* [r78] TODO: Parsing TIFF images would be a nice feature for
+	  completeness.
+
+	* [r77] PelExifData.php: The size of the EXIF data was checked
+	  several times, these checks are now combined into one check.
+
+2004-05-22  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r76] INSTALL: Some information about SimpleTest.
+
+	* [r75] make-release.sh: Added standard header to the ChangeLog
+	  file.
+
+	* [r74] NEWS: Making test cases with SimpleTest is easy ---
+	  there's now over 400 tests included with PEL!
+
+	* [r73] test/test.php: Add the new tests.
+
+2004-05-21  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r72] test/canon-ixus-ii.php,
+	  test/images/canon-ixus-ii-thumb.jpg,
+	  test/images/canon-ixus-ii.jpg: Test images and unit tests for
+	  Canon IXUS II.
+
+	* [r71] test/sony-dsc-v1.php: Added test for a forgotten entry.
+
+	* [r70] NEWS, PelDataWindow.php, test/data-window.php: Added a
+	  test case for PelDataWindow, and fixed an offset bug in getBytes
+	  which was found using these tests.
+
+2004-05-20  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r69] NEWS: Latest bells and whistles.
+
+	* [r68] PelExifEntryUndefined.php: Fix the FILE_SOURCE tag and add
+	  support for SCENE_TYPE.
+
+	* [r67] test/test.php: Hook in the new test.
+
+	* [r66] test/sony-dsc-v1.php: Test case for the SONY DSC V1 image.
+
+	* [r65] test/images, test/images/sony-dsc-v1-thumb.jpg,
+	  test/images/sony-dsc-v1.jpg: A test image from a SONY DSC V1,
+	  with thumbnail.
+
+	* [r64] test/test.jpg: Moved to test/images/sony-dsc-v1.jpg. The
+	  idea is to have a library of test images from different camera
+	  models.
+
+	* [r63] TODO: More plans...
+
+	* [r62] PelExifEntryUndefined.php: Fixed output of integer version
+	  numbers: version 2.0 would be output as just version 2.
+
+	* [r61] test/exif-entry-undefined.php: Version 2.0 should return
+	  '2.0' and not just '2'.
+
+2004-05-19  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r60] TODO: Plans...
+
+	* [r59] Pel.php: Fixes in doc comments.
+
+	* [r58] PelConvert.php: Added doc comments.
+
+2004-05-18  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r57] PelExifIfd.php: Added a getThumbnailData() method and some
+	  doc comments.
+
+	* [r56] test/exif-entry-ascii.php: Wrapped long lines.
+
+	* [r55] PelExifEntryNumber.php, PelExifEntryRational.php: The
+	  values of these numeric EXIF entries are stored in $this->value,
+	  not $this->numbers. Or at least that's how it's supposed to be.
+
+	* [r54] PelDataWindow.php: Added doc comment for the clear()
+	  method --- this method is for debugging only.
+
+	* [r53] test/exif-entry-ascii.php, test/exif-entry-number.php,
+	  test/exif-entry-undefined.php: Added forgotten ?> to the files.
+
+2004-05-16  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r52] NEWS: Document the include_once() -> require_once() change.
+
+	* [r51] PelDataWindow.php, PelExifData.php, PelExifEntry.php,
+	  PelExifEntryAscii.php, PelExifEntryByte.php,
+	  PelExifEntryLong.php, PelExifEntryNumber.php,
+	  PelExifEntryRational.php, PelExifEntryShort.php,
+	  PelExifEntryUndefined.php, PelExifIfd.php, PelJpegContent.php,
+	  PelJpegData.php, PelJpegSection.php: Don't just try to include
+	  the files, we actually require those files to be able to run.
+
+	* [r50] Pel.php: Added a Pel::warning() function which is used for
+	  what one would expect in the code. The warnings are only output
+	  if PEL_DEBUG is defined to a true value, perhaps this should be
+	  changed.
+
+	* [r49] PelExifIfd.php: Re-enabled debug output, using the
+	  Pel::debug() function.
+
+	* [r48] NEWS: Re-filled paragraphs, and made room for post-0.2
+	  items.
+
+	* [r46] PelConvert.php: Small typo.
+
+	* [r45] make-release.sh: Version 0.2 is coming to a mirror near
+	  you! Now with ChangeLog, and better-looking documentation.
+
+	* [r44] NEWS: Updated with latest new cool features.
+
+	* [r43] PelExifEntryAscii.php: Updated to match unit tests. All
+	  classes now have setValue() and getValue() methods.
+
+	* [r42] test/exif-entry-ascii.php: Revised tests.
+
+	* [r41] test/test.php: Hook in the new PelExifEntryAscii tests.
+
+	* [r40] test/exif-entry-undefined.php: Removed old debug cruft.
+
+	* [r39] test/exif-entry-ascii.php: Unit tests for the
+	  PelExifEntryAscii class and its decendants.
+
+	* [r38] PelExifEntry.php, PelJpegData.php: Updated doc comments.
+
+	* [r37] PelExifEntryRational.php: Doc comments again, and again,
+	  and...
+
+	* [r36] Pel.php: The Pel class doesn't belong to any subpackage.
+
+	* [r35] PelExifEntryRational.php: The PelExifEntryRational and
+	  PelExifEntrySRational classes now work like the other numeric
+	  EXIF entry classes --- each number (rational) is represented as
+	  an two-element array. Updated doc comments.
+
+	* [r34] PelExifEntryByte.php, PelExifEntryLong.php,
+	  PelExifEntryNumber.php, PelExifEntryShort.php: Updated doc
+	  comments.
+
+	* [r33] PelException.php, PelExifData.php: Grouped exceptions in
+	  the Exception subpackage.
+
+2004-05-15  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r32] PelExifEntryUndefined.php: Renamed get*() and set*()
+	  methods to getValue() and setValue(), respectively. Fixed subtle
+	  bug in formatting of bytes from a PelExifEntryVersion object ---
+	  this was found using the newly committed unit test.
+
+	* [r31] test/test.php: Run the new tests for the
+	  PelExifEntryUndefined classes.
+
+	* [r30] test/exif-entry-undefined.php: Test cases for the
+	  PelExifEntryUndefined class and subclasses.
+
+	* [r29] test/exif-entry-number.php, test/exif-entry.php: Renamed
+	  exif-entry.php to exif-entry-number.php to reflect that the file
+	  contains test cases for the subclasses of the PelExifEntryNumber
+	  class.
+
+	* [r28] NEWS, README: Added note about SimpleTest and other new
+	  things.
+
+	* [r27] test/exif-entry.php: Test cases for the subclasses of
+	  PelExifEntry. The tests will test for proper range checking
+	  (overflows) and test that values can be retrieved correctly.
+
+	* [r26] test/test.php: The main SimpleTest file --- run this and
+	  all tests will be executed.
+
+	* [r25] PelJpegData.php: Make use of the new Pel::debug() method
+	  for output.
+
+	* [r24] Pel.php: A class full of misc methods.
+
+	* [r23] PelExifEntryRational.php: Updated doc comment. The PHP
+	  type is int, and the documentation should reflect that.
+
+	* [r22] PelExifEntry.php: Added support for the signed variants of
+	  the number classes. Delayed including the class definitions of
+	  the PelExifEntry* classes until they are needed.
+
+	* [r21] PelExifEntryNumber.php: Changed the getNumbers and
+	  setNumbers methods to getValue and setValue, these methods shall
+	  be the new standard way of retrieving and changing the value of
+	  any descendant of PelExifEntry.
+
+	* [r20] PelExifEntryLong.php: Renamed references to the getNumbers
+	  and setNumbers methods to getValue and setValue, respectively,
+	  to match the change in PelExifEntryNumber.
+
+	* [r19] PelExifEntryShort.php: Added PelExifEntrySShort class for
+	  signed shorts. Renamed references to the getNumbers and
+	  setNumbers methods to getValue and setValue, respectively, to
+	  match the change in PelExifEntryNumber.
+
+	* [r18] PelExifEntryByte.php: Classes to handle signed and
+	  unsigned bytes.
+
+	* [r17] PelDataWindow.php: Added methods to read signed numbers.
+	  Added and updated doc comments.
+
+	* [r16] PelConvert.php: Signed and unsigned numbers (bytes,
+	  shorts, and longs) are now handled correctly.
+
+2004-05-14  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r15] TODO: The SimpleTest (http://sf.net/projects/simpletest)
+	  unit testing framework looks like just the right, and rather
+	  advanced, tool for writing automated tests.
+
+2004-05-12  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r14] TODO: Future plans: convenience functions and MakerNotes
+	  parsing.
+
+2004-05-10  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r13] NEWS, PelConvert.php, PelDataWindow.php, PelException.php,
+	  PelExifData.php, PelExifEntry.php, PelExifEntryAscii.php,
+	  PelExifEntryLong.php, PelExifEntryNumber.php,
+	  PelExifEntryRational.php, PelExifEntryShort.php,
+	  PelExifEntryUndefined.php, PelExifFormat.php, PelExifIfd.php,
+	  PelExifTag.php, PelJpegContent.php, PelJpegData.php,
+	  PelJpegMarker.php, PelJpegSection.php, make-release.sh: Added
+	  @date tag to the doc comments, and adjusted the release script
+	  so that phpDocumentor will accept the new tag.
+
+2004-05-09  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r12] NEWS: Release specific news will be put in this file.
+
+	* [r11] PelExifEntry.php, PelExifEntryUndefined.php: Two new
+	  classes: PelExifEntryVersion and PelExifEntryUserComment. The
+	  version class is used to handle the EXIF_VERSION,
+	  FLASH_PIX_VERSION, and INTEROPERABILITY_VERSION tags, whereas
+	  the comment class handles the USER_COMMENT tag.
+
+2004-05-07  Martin Geisler <mgeisler@users.sourceforge.net>
+
+	* [r9] make-release.sh: The generated API documentation will now
+	  also be uploaded so that it is available at
+	  http://pel.sf.net/doc/.
+
+	* [r8] README: Added a section about the API documentation ---
+	  people should read that first, and then ask questions afterwards.
+
+	* [r7] PelExifEntryShort.php: Fixes ported from libexif, see
+	  http://tinyurl.com/2r7re for the corresponding diff from the
+	  libexif source.
+
+	* [r6] INSTALL, README, TODO: Added a section about getting
+	  support to the README, and reformatted all three files.
+
+	* [r5] make-release.sh: The script that will be used to make new
+	  PEL releases.
+
+	* [r4] ., .cvsignore: Ignore the autogenerated documentation for
+	  now.
+
+	* [r3] INSTALL, PelConvert.php, PelDataWindow.php,
+	  PelException.php, PelExifData.php, PelExifEntry.php,
+	  PelExifEntryAscii.php, PelExifEntryLong.php,
+	  PelExifEntryNumber.php, PelExifEntryRational.php,
+	  PelExifEntryShort.php, PelExifEntryUndefined.php,
+	  PelExifFormat.php, PelExifIfd.php, PelExifTag.php,
+	  PelJpegContent.php, PelJpegData.php, PelJpegMarker.php,
+	  PelJpegSection.php, README, TODO, test, test/dump-image.php,
+	  test/edit-description.php, test/test.jpg: Initial commit.
+
+	* [r2] COPYING: PEL is licensed under the GNU GPL.
+
+2004-05-07  
+
+	* [r1] branches, tags, .: New repository initialized by cvs2svn.
+

@@ -1,0 +1,1525 @@
+# German translation for the PHP Exif Library (PEL).
+# Originally from libexif.
+# Copyright (C) 2004, 2005, 2006 Martin Geisler
+# This file is distributed under the term of the GPL.
+# Lutz Müller <lutz@users.sourceforge.net>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PEL\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-11-19 20:48+0100\n"
+"PO-Revision-Date: 2005-10-03 13:39+0200\n"
+"Last-Translator: Hans Ulrich Niedermann <gp@n-dimensional.de>\n"
+"Language-Team: Deutsch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: PelDataWindow.php:517
+#, php-format
+msgid "DataWindow: %d bytes in [%d, %d] of %d bytes"
+msgstr ""
+
+#: PelEntryAscii.php:465
+msgid "(Photographer)"
+msgstr ""
+
+#: PelEntryAscii.php:466
+msgid "(Editor)"
+msgstr ""
+
+#: PelEntry.php:369
+#, php-format
+msgid "  Tag: 0x%04X (%s)\n"
+msgstr "Unbekannt 0x%04X (%s)\n"
+
+#: PelEntry.php:371
+#, php-format
+msgid "    Format    : %d (%s)\n"
+msgstr ""
+
+#: PelEntry.php:373
+#, php-format
+msgid "    Components: %d\n"
+msgstr ""
+
+#: PelEntry.php:376
+#, php-format
+msgid "    Value     : %s\n"
+msgstr ""
+
+#: PelEntry.php:377
+#, php-format
+msgid "    Text      : %s\n"
+msgstr ""
+
+#: PelEntryRational.php:136 PelEntryRational.php:141
+#, php-format
+msgid "f/%.01f"
+msgstr ""
+
+#: PelEntryRational.php:146
+#, php-format
+msgid "%.1f mm"
+msgstr ""
+
+#: PelEntryRational.php:151
+#, php-format
+msgid "%.1f m"
+msgstr ""
+
+#: PelEntryRational.php:157
+#, php-format
+msgid "1/%d sec."
+msgstr ""
+
+#: PelEntryRational.php:159
+#, php-format
+msgid "%d sec."
+msgstr ""
+
+#: PelEntryRational.php:267
+#, php-format
+msgid "%.0f/%.0f sec. (APEX: %d)"
+msgstr ""
+
+#: PelEntryShort.php:142 PelEntryShort.php:209 PelEntryShort.php:507
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: PelEntryShort.php:144
+msgid "Average"
+msgstr "Durchschnitt"
+
+#: PelEntryShort.php:146
+#, fuzzy
+msgid "Center-Weighted Average"
+msgstr "zentriert"
+
+#: PelEntryShort.php:148
+#, fuzzy
+msgid "Spot"
+msgstr "Weich"
+
+#: PelEntryShort.php:150
+msgid "Multi Spot"
+msgstr ""
+
+#: PelEntryShort.php:152
+msgid "Pattern"
+msgstr "Muster"
+
+#: PelEntryShort.php:154
+msgid "Partial"
+msgstr "Partiell"
+
+#: PelEntryShort.php:156 PelEntryShort.php:247
+msgid "Other"
+msgstr "Andere"
+
+#: PelEntryShort.php:165
+msgid "Uncompressed"
+msgstr "Unkomprimiert"
+
+#: PelEntryShort.php:167
+msgid "JPEG compression"
+msgstr "JPEG Kompression"
+
+#: PelEntryShort.php:177
+msgid "chunky format"
+msgstr ""
+
+#: PelEntryShort.php:179
+msgid "planar format"
+msgstr ""
+
+#: PelEntryShort.php:188 PelEntryShort.php:268
+msgid "Not defined"
+msgstr "Undefiniert"
+
+#: PelEntryShort.php:190
+msgid "One-chip color area sensor"
+msgstr ""
+
+#: PelEntryShort.php:192
+msgid "Two-chip color area sensor"
+msgstr ""
+
+#: PelEntryShort.php:194
+msgid "Three-chip color area sensor"
+msgstr ""
+
+#: PelEntryShort.php:196
+msgid "Color sequential area sensor"
+msgstr ""
+
+#: PelEntryShort.php:198
+msgid "Trilinear sensor"
+msgstr ""
+
+#: PelEntryShort.php:200
+msgid "Color sequential linear sensor"
+msgstr ""
+
+#: PelEntryShort.php:211
+msgid "Daylight"
+msgstr "Tageslicht"
+
+#: PelEntryShort.php:213
+#, fuzzy
+msgid "Fluorescent"
+msgstr "Dateiquelle"
+
+#: PelEntryShort.php:215
+msgid "Tungsten (incandescent light)"
+msgstr ""
+
+#: PelEntryShort.php:217 PelTag.php:1808
+msgid "Flash"
+msgstr "Blitz"
+
+#: PelEntryShort.php:219
+msgid "Fine weather"
+msgstr "Gutes Wetter"
+
+#: PelEntryShort.php:221
+msgid "Cloudy weather"
+msgstr "Wolkiges Wetter"
+
+#: PelEntryShort.php:223
+msgid "Shade"
+msgstr ""
+
+#: PelEntryShort.php:225
+msgid "Daylight fluorescent"
+msgstr ""
+
+#: PelEntryShort.php:227
+msgid "Day white fluorescent"
+msgstr ""
+
+#: PelEntryShort.php:229
+msgid "Cool white fluorescent"
+msgstr ""
+
+#: PelEntryShort.php:231
+#, fuzzy
+msgid "White fluorescent"
+msgstr "Dateiquelle"
+
+#: PelEntryShort.php:233
+#, fuzzy
+msgid "Standard light A"
+msgstr "Standard"
+
+#: PelEntryShort.php:235
+#, fuzzy
+msgid "Standard light B"
+msgstr "Standard"
+
+#: PelEntryShort.php:237
+#, fuzzy
+msgid "Standard light C"
+msgstr "Standard"
+
+#: PelEntryShort.php:239
+msgid "D55"
+msgstr ""
+
+#: PelEntryShort.php:241
+msgid "D65"
+msgstr ""
+
+#: PelEntryShort.php:243
+msgid "D75"
+msgstr ""
+
+#: PelEntryShort.php:245
+msgid "ISO studio tungsten"
+msgstr ""
+
+#: PelEntryShort.php:257
+msgid "Inch"
+msgstr ""
+
+#: PelEntryShort.php:259
+msgid "Centimeter"
+msgstr "Zentimeter"
+
+#: PelEntryShort.php:270
+msgid "Manual"
+msgstr "Manuell"
+
+#: PelEntryShort.php:272
+msgid "Normal program"
+msgstr "Normalprogramm"
+
+#: PelEntryShort.php:274
+msgid "Aperture priority"
+msgstr ""
+
+#: PelEntryShort.php:276
+msgid "Shutter priority"
+msgstr ""
+
+#: PelEntryShort.php:278
+msgid "Creative program (biased toward depth of field)"
+msgstr ""
+
+#: PelEntryShort.php:280
+msgid "Action program (biased toward fast shutter speed)"
+msgstr ""
+
+#: PelEntryShort.php:282
+msgid "Portrait mode (for closeup photos with the background out of focus"
+msgstr ""
+
+#: PelEntryShort.php:284
+msgid "Landscape mode (for landscape photos with the background in focus"
+msgstr ""
+
+#: PelEntryShort.php:293
+msgid "top - left"
+msgstr "oben - links"
+
+#: PelEntryShort.php:295
+msgid "top - right"
+msgstr "oben - rechts"
+
+#: PelEntryShort.php:297
+msgid "bottom - right"
+msgstr "unten - rechts"
+
+#: PelEntryShort.php:299
+msgid "bottom - left"
+msgstr "unten - links"
+
+#: PelEntryShort.php:301
+msgid "left - top"
+msgstr "links - oben"
+
+#: PelEntryShort.php:303
+msgid "right - top"
+msgstr "rechts - oben"
+
+#: PelEntryShort.php:305
+msgid "right - bottom"
+msgstr "rechts - unten"
+
+#: PelEntryShort.php:307
+msgid "left - bottom"
+msgstr "links - unten"
+
+#: PelEntryShort.php:316
+msgid "centered"
+msgstr "zentriert"
+
+#: PelEntryShort.php:318
+msgid "co-sited"
+msgstr ""
+
+#: PelEntryShort.php:351
+msgid "Uncalibrated"
+msgstr "Unkalibriert"
+
+#: PelEntryShort.php:360
+msgid "Flash did not fire."
+msgstr "Blitz löste nicht aus."
+
+#: PelEntryShort.php:362
+msgid "Flash fired."
+msgstr "Blitz löste aus."
+
+#: PelEntryShort.php:364
+msgid "Strobe return light not detected."
+msgstr "Blitzlicht nicht erkannt."
+
+#: PelEntryShort.php:366
+msgid "Strobe return light detected."
+msgstr "Blitzlicht erkannt."
+
+#: PelEntryShort.php:368
+#, fuzzy
+msgid "Flash fired, compulsory flash mode."
+msgstr "Blitz löste nicht aus."
+
+#: PelEntryShort.php:370
+#, fuzzy
+msgid "Flash fired, compulsory flash mode, return light not detected."
+msgstr "Blitzlicht nicht erkannt."
+
+#: PelEntryShort.php:372
+msgid "Flash fired, compulsory flash mode, return light detected."
+msgstr ""
+
+#: PelEntryShort.php:374
+#, fuzzy
+msgid "Flash did not fire, compulsory flash mode."
+msgstr "Blitz löste nicht aus."
+
+#: PelEntryShort.php:376
+#, fuzzy
+msgid "Flash did not fire, auto mode."
+msgstr "Blitz löste nicht aus."
+
+#: PelEntryShort.php:378
+#, fuzzy
+msgid "Flash fired, auto mode."
+msgstr "Blitz löste aus."
+
+#: PelEntryShort.php:380
+#, fuzzy
+msgid "Flash fired, auto mode, return light not detected."
+msgstr "Blitzlicht nicht erkannt."
+
+#: PelEntryShort.php:382
+#, fuzzy
+msgid "Flash fired, auto mode, return light detected."
+msgstr "Blitzlicht erkannt."
+
+#: PelEntryShort.php:384
+msgid "No flash function."
+msgstr "Keine Blitzlichtfunktion."
+
+#: PelEntryShort.php:386
+msgid "Flash fired, red-eye reduction mode."
+msgstr ""
+
+#: PelEntryShort.php:388
+#, fuzzy
+msgid "Flash fired, red-eye reduction mode, return light not detected."
+msgstr "Blitzlicht nicht erkannt."
+
+#: PelEntryShort.php:390
+msgid "Flash fired, red-eye reduction mode, return light detected."
+msgstr ""
+
+#: PelEntryShort.php:392
+msgid "Flash fired, compulsory flash mode, red-eye reduction mode."
+msgstr ""
+
+#: PelEntryShort.php:394
+msgid ""
+"Flash fired, compulsory flash mode, red-eye reduction mode, return light not "
+"detected."
+msgstr ""
+
+#: PelEntryShort.php:396
+msgid ""
+"Flash fired, compulsory flash mode, red-eye reduction mode, return light "
+"detected."
+msgstr ""
+
+#: PelEntryShort.php:398
+#, fuzzy
+msgid "Flash did not fire, auto mode, red-eye reduction mode."
+msgstr "Blitz löste nicht aus."
+
+#: PelEntryShort.php:400
+msgid "Flash fired, auto mode, red-eye reduction mode."
+msgstr ""
+
+#: PelEntryShort.php:402
+msgid ""
+"Flash fired, auto mode, return light not detected, red-eye reduction mode."
+msgstr ""
+
+#: PelEntryShort.php:404
+msgid "Flash fired, auto mode, return light detected, red-eye reduction mode."
+msgstr ""
+
+#: PelEntryShort.php:413
+msgid "Normal process"
+msgstr "Normalprogramm"
+
+#: PelEntryShort.php:415
+#, fuzzy
+msgid "Custom process"
+msgstr "Kompression"
+
+#: PelEntryShort.php:424
+msgid "Auto exposure"
+msgstr "Automatische Belichtungzeit"
+
+#: PelEntryShort.php:426
+msgid "Manual exposure"
+msgstr "Manuelle Belichtungszeit"
+
+#: PelEntryShort.php:428
+msgid "Auto bracket"
+msgstr ""
+
+#: PelEntryShort.php:437
+msgid "Auto white balance"
+msgstr ""
+
+#: PelEntryShort.php:439
+msgid "Manual white balance"
+msgstr ""
+
+#: PelEntryShort.php:448
+msgid "Standard"
+msgstr "Standard"
+
+#: PelEntryShort.php:450
+msgid "Landscape"
+msgstr "Landschaft"
+
+#: PelEntryShort.php:452
+msgid "Portrait"
+msgstr "Portrait"
+
+#: PelEntryShort.php:454
+#, fuzzy
+msgid "Night scene"
+msgstr "Lichtquelle"
+
+#: PelEntryShort.php:463 PelEntryShort.php:480 PelEntryShort.php:494
+msgid "Normal"
+msgstr "Normal"
+
+#: PelEntryShort.php:465
+msgid "Low gain up"
+msgstr ""
+
+#: PelEntryShort.php:467
+msgid "High gain up"
+msgstr ""
+
+#: PelEntryShort.php:469
+msgid "Low gain down"
+msgstr ""
+
+#: PelEntryShort.php:471
+msgid "High gain down"
+msgstr "Hohe Sättigung"
+
+#: PelEntryShort.php:482
+msgid "Low saturation"
+msgstr "Geringe Sättigung"
+
+#: PelEntryShort.php:484
+msgid "High saturation"
+msgstr "Hohe Sättigung"
+
+#: PelEntryShort.php:496
+msgid "Soft"
+msgstr "Weich"
+
+#: PelEntryShort.php:498
+msgid "Hard"
+msgstr "Hart"
+
+#: PelEntryShort.php:509
+msgid "Macro"
+msgstr "Macro"
+
+#: PelEntryShort.php:511
+msgid "Close view"
+msgstr "Geringe Entfernung"
+
+#: PelEntryShort.php:513
+msgid "Distant view"
+msgstr "Hohe Entfernung"
+
+#: PelEntryShort.php:521
+#, php-format
+msgid "(x,y) = (%d,%d)"
+msgstr ""
+
+#: PelEntryShort.php:523
+#, php-format
+msgid "Within distance %d of (x,y) = (%d,%d)"
+msgstr "Innerhalb einer Entfernung %d von (x,y) = (%d,%d)"
+
+#: PelEntryShort.php:526
+#, php-format
+msgid "Within rectangle (width %d, height %d) around (x,y) = (%d,%d)"
+msgstr "Innerhalb eines Rechtecks (Breite %d, Höhe %d) um (x,y) = (%d,%d)"
+
+#: PelEntryShort.php:531
+#, php-format
+msgid "Unexpected number of components (%d, expected 2, 3, or 4)."
+msgstr "Unerwartete Nummer von Komponenten (%d, erwartete 2, 3 oder 4)."
+
+#: PelEntryUndefined.php:390
+#, php-format
+msgid "Exif %s"
+msgstr "Exif %s"
+
+#: PelEntryUndefined.php:392
+#, php-format
+msgid "Exif Version %s"
+msgstr "Exif Version %s"
+
+#: PelEntryUndefined.php:396
+#, php-format
+msgid "FlashPix %s"
+msgstr "FlashPix %s"
+
+#: PelEntryUndefined.php:398
+#, php-format
+msgid "FlashPix Version %s"
+msgstr "FlashPix Version %s"
+
+#: PelEntryUndefined.php:402
+#, php-format
+msgid "Interoperability %s"
+msgstr ""
+
+#: PelEntryUndefined.php:404
+#, php-format
+msgid "Interoperability Version %s"
+msgstr ""
+
+#: PelEntryUndefined.php:410
+#, php-format
+msgid "Version %s"
+msgstr "Version %s"
+
+#: PelExif.php:169
+msgid "Dumping Exif data...\n"
+msgstr ""
+
+#: PelFormat.php:192 PelFormat.php:220
+#, fuzzy, php-format
+msgid "Unknown format: 0x%X"
+msgstr "Unbekannt 0x%04X"
+
+#: PelIfd.php:1180
+#, php-format
+msgid "Dumping IFD %s with %d entries...\n"
+msgstr ""
+
+#: PelIfd.php:1186
+#, php-format
+msgid "Dumping %d sub IFDs...\n"
+msgstr ""
+
+#: PelJpegMarker.php:288 PelJpegMarker.php:430
+#, php-format
+msgid "Unknown marker: 0x%02X"
+msgstr ""
+
+#: PelJpegMarker.php:302
+msgid "Encoding (baseline)"
+msgstr ""
+
+#: PelJpegMarker.php:304
+msgid "Encoding (extended sequential)"
+msgstr ""
+
+#: PelJpegMarker.php:306
+msgid "Encoding (progressive)"
+msgstr ""
+
+#: PelJpegMarker.php:308
+msgid "Encoding (lossless)"
+msgstr ""
+
+#: PelJpegMarker.php:310
+msgid "Encoding (differential sequential)"
+msgstr ""
+
+#: PelJpegMarker.php:312
+msgid "Encoding (differential progressive)"
+msgstr ""
+
+#: PelJpegMarker.php:314
+msgid "Encoding (differential lossless)"
+msgstr ""
+
+#: PelJpegMarker.php:316
+msgid "Encoding (extended sequential, arithmetic)"
+msgstr ""
+
+#: PelJpegMarker.php:318
+msgid "Encoding (progressive, arithmetic)"
+msgstr ""
+
+#: PelJpegMarker.php:320
+msgid "Encoding (lossless, arithmetic)"
+msgstr ""
+
+#: PelJpegMarker.php:322
+msgid "Encoding (differential sequential, arithmetic)"
+msgstr ""
+
+#: PelJpegMarker.php:324
+msgid "Encoding (differential progressive, arithmetic)"
+msgstr ""
+
+#: PelJpegMarker.php:326
+msgid "Encoding (differential lossless, arithmetic)"
+msgstr ""
+
+#: PelJpegMarker.php:328
+msgid "Start of image"
+msgstr ""
+
+#: PelJpegMarker.php:330
+msgid "End of image"
+msgstr ""
+
+#: PelJpegMarker.php:332
+msgid "Start of scan"
+msgstr ""
+
+#: PelJpegMarker.php:334 PelJpegMarker.php:428
+msgid "Comment"
+msgstr "Anmerkung des Nutzers"
+
+#: PelJpegMarker.php:336
+msgid "Define Huffman table"
+msgstr ""
+
+#: PelJpegMarker.php:338
+#, fuzzy
+msgid "Extension"
+msgstr "Exif Version"
+
+#: PelJpegMarker.php:340
+msgid "Define arithmetic coding conditioning"
+msgstr ""
+
+#: PelJpegMarker.php:342 PelJpegMarker.php:344 PelJpegMarker.php:346
+#: PelJpegMarker.php:348 PelJpegMarker.php:350 PelJpegMarker.php:352
+#: PelJpegMarker.php:354 PelJpegMarker.php:356
+#, php-format
+msgid "Restart %d"
+msgstr ""
+
+#: PelJpegMarker.php:358
+msgid "Define quantization table"
+msgstr ""
+
+#: PelJpegMarker.php:360
+msgid "Define number of lines"
+msgstr ""
+
+#: PelJpegMarker.php:362
+msgid "Define restart interval"
+msgstr ""
+
+#: PelJpegMarker.php:364
+msgid "Define hierarchical progression"
+msgstr ""
+
+#: PelJpegMarker.php:366
+msgid "Expand reference component"
+msgstr ""
+
+#: PelJpegMarker.php:368 PelJpegMarker.php:370 PelJpegMarker.php:372
+#: PelJpegMarker.php:374 PelJpegMarker.php:376 PelJpegMarker.php:378
+#: PelJpegMarker.php:380 PelJpegMarker.php:382 PelJpegMarker.php:384
+#: PelJpegMarker.php:386 PelJpegMarker.php:388 PelJpegMarker.php:390
+#: PelJpegMarker.php:392 PelJpegMarker.php:394 PelJpegMarker.php:396
+#: PelJpegMarker.php:398
+#, php-format
+msgid "Application segment %d"
+msgstr ""
+
+#: PelJpegMarker.php:400 PelJpegMarker.php:402 PelJpegMarker.php:404
+#: PelJpegMarker.php:406 PelJpegMarker.php:408 PelJpegMarker.php:410
+#: PelJpegMarker.php:412 PelJpegMarker.php:414 PelJpegMarker.php:416
+#: PelJpegMarker.php:418 PelJpegMarker.php:420 PelJpegMarker.php:422
+#: PelJpegMarker.php:424 PelJpegMarker.php:426
+#, fuzzy, php-format
+msgid "Extension %d"
+msgstr "Exif Version"
+
+#: PelJpeg.php:543
+msgid "Dumping JPEG data...\n"
+msgstr ""
+
+#: PelJpeg.php:547
+#, php-format
+msgid "Section %d (marker 0x%02X - %s):\n"
+msgstr ""
+
+#: PelJpeg.php:549
+#, php-format
+msgid "  Description: %s\n"
+msgstr "Beschreibung: %s\n"
+
+#: PelJpeg.php:557
+msgid "  Content    : Exif data\n"
+msgstr ""
+
+#: PelJpeg.php:560
+#, fuzzy, php-format
+msgid "  Content    : %s\n"
+msgstr "Kontrast"
+
+#: PelJpeg.php:562
+msgid "  Content    : Unknown\n"
+msgstr ""
+
+#: PelTag.php:1649
+#, php-format
+msgid "Unknown: 0x%04X"
+msgstr "Unbekannt 0x%04X"
+
+#: PelTag.php:1678
+msgid "Interoperability Index"
+msgstr ""
+
+#: PelTag.php:1680
+msgid "Interoperability Version"
+msgstr ""
+
+#: PelTag.php:1682
+msgid "Image Width"
+msgstr "Bildbreite"
+
+#: PelTag.php:1684
+msgid "Image Length"
+msgstr "Bildlänge"
+
+#: PelTag.php:1686
+msgid "Bits per Sample"
+msgstr ""
+
+#: PelTag.php:1688
+msgid "Compression"
+msgstr "Kompression"
+
+#: PelTag.php:1690
+msgid "Photometric Interpretation"
+msgstr "Fotometrische Interpretation"
+
+#: PelTag.php:1692
+msgid "Fill Order"
+msgstr ""
+
+#: PelTag.php:1694
+msgid "Document Name"
+msgstr "Dokumentenname"
+
+#: PelTag.php:1696
+msgid "Image Description"
+msgstr "Bildbeschreibung"
+
+#: PelTag.php:1698
+msgid "Manufacturer"
+msgstr "Hersteller"
+
+#: PelTag.php:1700
+msgid "Model"
+msgstr "Modell"
+
+#: PelTag.php:1702
+msgid "Strip Offsets"
+msgstr ""
+
+#: PelTag.php:1704
+msgid "Orientation"
+msgstr "Orientierung"
+
+#: PelTag.php:1706
+msgid "Samples per Pixel"
+msgstr ""
+
+#: PelTag.php:1708
+msgid "Rows per Strip"
+msgstr ""
+
+#: PelTag.php:1710
+msgid "Strip Byte Count"
+msgstr ""
+
+#: PelTag.php:1712
+msgid "x-Resolution"
+msgstr "Auflösung in x-Richtung"
+
+#: PelTag.php:1714
+msgid "y-Resolution"
+msgstr "Auflösung in y-Richtung"
+
+#: PelTag.php:1716
+msgid "Planar Configuration"
+msgstr ""
+
+#: PelTag.php:1718
+msgid "Resolution Unit"
+msgstr "Maßeinheit der Auflösung"
+
+#: PelTag.php:1720
+msgid "Transfer Function"
+msgstr ""
+
+#: PelTag.php:1722
+msgid "Software"
+msgstr "Software"
+
+#: PelTag.php:1724
+msgid "Date and Time"
+msgstr "Datum und Uhrzeit"
+
+#: PelTag.php:1726
+msgid "Artist"
+msgstr "Künstler"
+
+#: PelTag.php:1728
+msgid "White Point"
+msgstr ""
+
+#: PelTag.php:1730
+msgid "Primary Chromaticities"
+msgstr ""
+
+#: PelTag.php:1732
+msgid "Transfer Range"
+msgstr ""
+
+#: PelTag.php:1734
+msgid "JPEGProc"
+msgstr ""
+
+#: PelTag.php:1736
+msgid "JPEG Interchange Format"
+msgstr ""
+
+#: PelTag.php:1738
+msgid "JPEG Interchange Format Length"
+msgstr ""
+
+#: PelTag.php:1740
+msgid "YCbCr Coefficients"
+msgstr "YCbCr Koeffizienten"
+
+#: PelTag.php:1742
+msgid "YCbCr Sub-Sampling"
+msgstr ""
+
+#: PelTag.php:1744
+msgid "YCbCr Positioning"
+msgstr "YCbCr Positionierung"
+
+#: PelTag.php:1746
+msgid "Reference Black/White"
+msgstr ""
+
+#: PelTag.php:1748
+#, fuzzy
+msgid "Related Image File Format"
+msgstr "Bildbreite"
+
+#: PelTag.php:1750
+#, fuzzy
+msgid "Related Image Width"
+msgstr "Bildbreite"
+
+#: PelTag.php:1752
+#, fuzzy
+msgid "Related Image Length"
+msgstr "Bildlänge"
+
+#: PelTag.php:1754
+msgid "CFA Repeat Pattern Dim"
+msgstr ""
+
+#: PelTag.php:1756
+msgid "CFA Pattern"
+msgstr ""
+
+#: PelTag.php:1758
+msgid "Battery Level"
+msgstr "Batteriestatus"
+
+#: PelTag.php:1760
+msgid "Copyright"
+msgstr "Copyright"
+
+#: PelTag.php:1762
+msgid "Exposure Time"
+msgstr "Belichtungszeit"
+
+#: PelTag.php:1764
+msgid "FNumber"
+msgstr ""
+
+#: PelTag.php:1766
+msgid "IPTC/NAA"
+msgstr ""
+
+#: PelTag.php:1768
+msgid "Exif IFD Pointer"
+msgstr ""
+
+#: PelTag.php:1770
+msgid "Inter Color Profile"
+msgstr ""
+
+#: PelTag.php:1772
+#, fuzzy
+msgid "Exposure Program"
+msgstr "Belichtungszeit"
+
+#: PelTag.php:1774
+msgid "Spectral Sensitivity"
+msgstr ""
+
+#: PelTag.php:1776
+msgid "GPS Info IFD Pointer"
+msgstr ""
+
+#: PelTag.php:1778
+msgid "ISO Speed Ratings"
+msgstr ""
+
+#: PelTag.php:1780
+msgid "OECF"
+msgstr ""
+
+#: PelTag.php:1782
+msgid "Exif Version"
+msgstr "Exif Version"
+
+#: PelTag.php:1784
+msgid "Date and Time (original)"
+msgstr "Datum und Uhrzeit (original)"
+
+#: PelTag.php:1786
+msgid "Date and Time (digitized)"
+msgstr "Datum und Uhrzeit (digitalisiert)"
+
+#: PelTag.php:1788
+msgid "Components Configuration"
+msgstr ""
+
+#: PelTag.php:1790
+msgid "Compressed Bits per Pixel"
+msgstr ""
+
+#: PelTag.php:1792
+msgid "Shutter speed"
+msgstr ""
+
+#: PelTag.php:1794
+msgid "Aperture"
+msgstr ""
+
+#: PelTag.php:1796
+msgid "Brightness"
+msgstr "Helligkeit"
+
+#: PelTag.php:1798
+msgid "Exposure Bias"
+msgstr ""
+
+#: PelTag.php:1800
+msgid "Max Aperture Value"
+msgstr ""
+
+#: PelTag.php:1802
+msgid "Subject Distance"
+msgstr "Entfernung des Objekts"
+
+#: PelTag.php:1804
+msgid "Metering Mode"
+msgstr ""
+
+#: PelTag.php:1806
+msgid "Light Source"
+msgstr "Lichtquelle"
+
+#: PelTag.php:1810
+msgid "Focal Length"
+msgstr ""
+
+#: PelTag.php:1812
+msgid "Maker Note"
+msgstr "Anmerkungen des Herstellers"
+
+#: PelTag.php:1814
+msgid "User Comment"
+msgstr "Anmerkung des Nutzers"
+
+#: PelTag.php:1816
+#, fuzzy
+msgid "SubSec Time"
+msgstr "Datum und Uhrzeit (original)"
+
+#: PelTag.php:1818
+#, fuzzy
+msgid "SubSec Time Original"
+msgstr "Datum und Uhrzeit (original)"
+
+#: PelTag.php:1820
+#, fuzzy
+msgid "SubSec Time Digitized"
+msgstr "Datum und Uhrzeit (digitalisiert)"
+
+#: PelTag.php:1832
+msgid "FlashPix Version"
+msgstr "FlashPix Version"
+
+#: PelTag.php:1834
+msgid "Color Space"
+msgstr ""
+
+#: PelTag.php:1836
+msgid "Pixel x-Dimension"
+msgstr ""
+
+#: PelTag.php:1838
+msgid "Pixel y-Dimension"
+msgstr ""
+
+#: PelTag.php:1840
+msgid "Related Sound File"
+msgstr ""
+
+#: PelTag.php:1842
+msgid "Interoperability IFD Pointer"
+msgstr ""
+
+#: PelTag.php:1844
+msgid "Flash Energy"
+msgstr "Energie des Blitzes"
+
+#: PelTag.php:1846
+msgid "Spatial Frequency Response"
+msgstr ""
+
+#: PelTag.php:1848
+msgid "Focal Plane x-Resolution"
+msgstr ""
+
+#: PelTag.php:1850
+msgid "Focal Plane y-Resolution"
+msgstr ""
+
+#: PelTag.php:1852
+msgid "Focal Plane Resolution Unit"
+msgstr ""
+
+#: PelTag.php:1854
+msgid "Subject Location"
+msgstr "Ort des Objektes"
+
+#: PelTag.php:1856
+msgid "Exposure index"
+msgstr "Belichtungsart"
+
+#: PelTag.php:1858
+msgid "Sensing Method"
+msgstr ""
+
+#: PelTag.php:1860
+msgid "File Source"
+msgstr "Dateiquelle"
+
+#: PelTag.php:1862
+msgid "Scene Type"
+msgstr ""
+
+#: PelTag.php:1864
+msgid "Subject Area"
+msgstr ""
+
+#: PelTag.php:1866
+msgid "Custom Rendered"
+msgstr ""
+
+#: PelTag.php:1868
+msgid "Exposure Mode"
+msgstr "Belichtungsart"
+
+#: PelTag.php:1870
+msgid "White Balance"
+msgstr ""
+
+#: PelTag.php:1872
+msgid "Digital Zoom Ratio"
+msgstr ""
+
+#: PelTag.php:1874
+msgid "Focal Length In 35mm Film"
+msgstr ""
+
+#: PelTag.php:1876
+msgid "Scene Capture Type"
+msgstr ""
+
+#: PelTag.php:1878
+msgid "Gain Control"
+msgstr ""
+
+#: PelTag.php:1880
+msgid "Contrast"
+msgstr "Kontrast"
+
+#: PelTag.php:1882
+msgid "Saturation"
+msgstr "Sättigung"
+
+#: PelTag.php:1884
+msgid "Sharpness"
+msgstr "Schärfe"
+
+#: PelTag.php:1886
+msgid "Device Setting Description"
+msgstr ""
+
+#: PelTag.php:1888
+msgid "Subject Distance Range"
+msgstr ""
+
+#: PelTag.php:1890
+msgid "Image Unique ID"
+msgstr "Eindeutige Bildnummer"
+
+#: PelTag.php:1892
+msgid "Gamma"
+msgstr ""
+
+#: PelTag.php:1894
+msgid "Print IM"
+msgstr ""
+
+#: PelTag.php:1964
+#, php-format
+msgid "Unknown Tag: 0x%04X"
+msgstr "Unbekannt 0x%04X"
+
+#: PelTiff.php:255
+#, php-format
+msgid "Dumping TIFF data...\n"
+msgstr ""
+
+#~ msgid "Exposure time, given in seconds (sec)."
+#~ msgstr "Belichtungszeit in Sekunden."
+
+#, fuzzy
+#~ msgid "The F number."
+#~ msgstr "Eindeutige Bildnummer"
+
+#~ msgid "The date and time when the image was stored as digital data. "
+#~ msgstr "Das Datum und die Uhrzeit der Speicherung als digitale Daten."
+
+#~ msgid "The distance to the subject, given in meters."
+#~ msgstr "Die Entfernung zum Objekt (in Metern)."
+
+#~ msgid "The kind of light source."
+#~ msgstr "Die Art der Lichtquelle."
+
+#~ msgid ""
+#~ "This tag is recorded when an image is taken using a strobe light (flash)."
+#~ msgstr ""
+#~ "Dieser Eintrag wird aufgezeichnet, wenn das Bild mit einem Blitz gemacht "
+#~ "wurde."
+
+#, fuzzy
+#~ msgid "This tag indicates the distance to the subject."
+#~ msgstr "Die Entfernung zum Objekt (in Metern)."
+
+#, fuzzy
+#~ msgid "Indicates the distance to the destination point."
+#~ msgstr "Die Entfernung zum Objekt (in Metern)."
+
+#~ msgid "ImageWidth"
+#~ msgstr "Bildbreite"
+
+#~ msgid "ImageLength"
+#~ msgstr "Bildlänge"
+
+#~ msgid "PhotometricInterpretation"
+#~ msgstr "Fotometrische Interpretation"
+
+#~ msgid "DocumentName"
+#~ msgstr "Dokumentenname"
+
+#~ msgid "ImageDescription"
+#~ msgstr "Bildbeschreibung"
+
+#~ msgid "XResolution"
+#~ msgstr "Auflösung in x-Richtung"
+
+#~ msgid "YResolution"
+#~ msgstr "Auflösung in y-Richtung"
+
+#~ msgid "ResolutionUnit"
+#~ msgstr "Maßeinheit der Auflösung"
+
+#~ msgid "DateTime"
+#~ msgstr "Datum und Uhrzeit"
+
+#~ msgid "YCbCrCoefficients"
+#~ msgstr "YCbCr Koeffizienten"
+
+#~ msgid "YCbCrPositioning"
+#~ msgstr "YCbCr Positionierung"
+
+#~ msgid "BatteryLevel"
+#~ msgstr "Batteriestatus"
+
+#~ msgid "ExposureTime"
+#~ msgstr "Belichtungszeit"
+
+#~ msgid "BrightnessValue"
+#~ msgstr "Helligkeit"
+
+#, fuzzy
+#~ msgid "ExposureBiasValue"
+#~ msgstr "Belichtungszeit"
+
+#~ msgid "SubjectDistance"
+#~ msgstr "Entfernung des Objekts"
+
+#~ msgid "LightSource"
+#~ msgstr "Lichtquelle"
+
+#~ msgid "FocalLength"
+#~ msgstr "Bildlänge"
+
+#~ msgid "MakerNote"
+#~ msgstr "Anmerkungen des Herstellers"
+
+#~ msgid "UserComment"
+#~ msgstr "Anmerkung des Nutzers"
+
+#~ msgid "FlashEnergy"
+#~ msgstr "Energie des Blitzes"
+
+#~ msgid "FocalPlaneXResolution"
+#~ msgstr "Auflösung in x-Richtung"
+
+#~ msgid "FocalPlaneYResolution"
+#~ msgstr "Auflösung in y-Richtung"
+
+#~ msgid "FocalPlaneResolutionUnit"
+#~ msgstr "Maßeinheit der Auflösung"
+
+#~ msgid "SubjectLocation"
+#~ msgstr "Ort des Objektes"
+
+#~ msgid "ExposureIndex"
+#~ msgstr "Belichtungsart"
+
+#~ msgid "FileSource"
+#~ msgstr "Dateiquelle"
+
+#~ msgid "ExposureMode"
+#~ msgstr "Belichtungsart"
+
+#~ msgid "SubjectDistanceRange"
+#~ msgstr "Entfernung des Objekts"
+
+#~ msgid "ImageUniqueID"
+#~ msgstr "Eindeutige Bildnummer"
+
+#~ msgid "Invalid format '%s', expected '%s'."
+#~ msgstr "Ungültiges Format '%s', '%s' wurde erwartet."
+
+#~ msgid "Invalid number of components (%d, expected %d)."
+#~ msgstr "Ungültige Anzahl von Komponenten (%d, %d wurden erwartet)."
+
+#, fuzzy
+#~ msgid "Invalid size of entry (%d, expected %d x %d)."
+#~ msgstr "Ungültige Anzahl von Komponenten (%d, %d wurden erwartet)."
+
+#, fuzzy
+#~ msgid "Unknown Exif Version"
+#~ msgstr "Exif Version"
+
+#~ msgid "%d bytes unknown data"
+#~ msgstr "%d Byte(s) unbekannte Daten"
+
+#~ msgid "unknown"
+#~ msgstr "unbekannt"
+
+#~ msgid "portrait"
+#~ msgstr "Portrait"
+
+#~ msgid "landscape"
+#~ msgstr "Landschaft"
+
+#~ msgid "yes"
+#~ msgstr "Ja"
+
+#~ msgid "Undefined"
+#~ msgstr "Undefiniert"
+
+#, fuzzy
+#~ msgid "Image type"
+#~ msgstr "Bildbreite"
+
+#, fuzzy
+#~ msgid "Flash not fired"
+#~ msgstr "Blitz löste nicht aus."
+
+#, fuzzy
+#~ msgid "Night"
+#~ msgstr "Lichtquelle"
+
+#, fuzzy
+#~ msgid " / Saturation : "
+#~ msgstr "Sättigung"
+
+#, fuzzy
+#~ msgid " / Sharpness : "
+#~ msgstr "Schärfe"
+
+#, fuzzy
+#~ msgid "right"
+#~ msgstr "Copyright"
+
+#, fuzzy
+#~ msgid "center"
+#~ msgstr "zentriert"
+
+#, fuzzy
+#~ msgid " / Exposure mode : "
+#~ msgstr "Belichtungsart"
+
+#, fuzzy
+#~ msgid "Cloudy"
+#~ msgstr "Wolkiges Wetter"
+
+#, fuzzy
+#~ msgid "Right"
+#~ msgstr "Tageslicht"
+
+#, fuzzy
+#~ msgid "Center"
+#~ msgstr "Zentimeter"
+
+#, fuzzy
+#~ msgid "Subject Distance (mm)"
+#~ msgstr "Entfernung des Objekts"
+
+#, fuzzy
+#~ msgid "Unknown 1"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 3"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 4"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Flash Mode"
+#~ msgstr "Blitz"
+
+#, fuzzy
+#~ msgid "Sharpness Setting"
+#~ msgstr "Schärfe"
+
+#, fuzzy
+#~ msgid "Contrast Setting"
+#~ msgstr "Kontrast"
+
+#, fuzzy
+#~ msgid "Manual Focus"
+#~ msgstr "Manuelle Belichtungszeit"
+
+#, fuzzy
+#~ msgid "left to right"
+#~ msgstr "unten - rechts"
+
+#, fuzzy
+#~ msgid "right to left"
+#~ msgstr "rechts - oben"
+
+#, fuzzy
+#~ msgid "bottom to top"
+#~ msgstr "unten - links"
+
+#, fuzzy
+#~ msgid "top to bottom"
+#~ msgstr "links - unten"
+
+#, fuzzy
+#~ msgid "Manual: Unknown"
+#~ msgstr "unbekannt"
+
+#, fuzzy
+#~ msgid "Yes"
+#~ msgstr "Ja"
+
+#, fuzzy
+#~ msgid "Capture Mode"
+#~ msgstr "Belichtungsart"
+
+#, fuzzy
+#~ msgid "Quality Level"
+#~ msgstr "Batteriestatus"
+
+#, fuzzy
+#~ msgid "Focus Mode"
+#~ msgstr "Belichtungsart"
+
+#, fuzzy
+#~ msgid "Unknown 5"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 6"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 8"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 9"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 14"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 15"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 16"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 17"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 18"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 19"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 21"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 24"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "Unknown 25"
+#~ msgstr "Unbekannt"
+
+#, fuzzy
+#~ msgid "DaylightSavings"
+#~ msgstr "Tageslicht"
+
+#, fuzzy
+#~ msgid "Night-scene"
+#~ msgstr "Lichtquelle"
+
+#, fuzzy
+#~ msgid "Flash On"
+#~ msgstr "Blitz"
+
+#, fuzzy
+#~ msgid "Flash Off"
+#~ msgstr "Blitz"

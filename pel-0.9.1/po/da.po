@@ -1,0 +1,1182 @@
+# Danish translation for the PHP Exif Library (PEL).
+# Copyright (C) 2004, 2005, 2006 Martin Geisler
+# This file is distributed under the term of the GPL.
+# Martin Geisler <mgeisler@mgeisler.net>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PEL\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-11-19 21:26+0100\n"
+"PO-Revision-Date: 2006-11-19 21:27+0100\n"
+"Last-Translator: Martin Geisler <mgeisler@mgeisler.net>\n"
+"Language-Team: Danish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: PelDataWindow.php:517
+#, php-format
+msgid "DataWindow: %d bytes in [%d, %d] of %d bytes"
+msgstr "DataWindow: %d bytes i [%d, %d] af %d bytes"
+
+#: PelEntryAscii.php:465
+msgid "(Photographer)"
+msgstr "(Fotograf)"
+
+#: PelEntryAscii.php:466
+msgid "(Editor)"
+msgstr "(Redaktør)"
+
+#: PelEntry.php:369
+#, php-format
+msgid "  Tag: 0x%04X (%s)\n"
+msgstr "  Tag: 0x%04X (%s)\n"
+
+#: PelEntry.php:371
+#, php-format
+msgid "    Format    : %d (%s)\n"
+msgstr "    Format     : %d (%s)\n"
+
+#: PelEntry.php:373
+#, php-format
+msgid "    Components: %d\n"
+msgstr "    Komponenter: %d\n"
+
+#: PelEntry.php:376
+#, php-format
+msgid "    Value     : %s\n"
+msgstr "    Værdi      : %s\n"
+
+#: PelEntry.php:377
+#, php-format
+msgid "    Text      : %s\n"
+msgstr "    Tekst      : %s\n"
+
+#: PelEntryRational.php:136 PelEntryRational.php:141
+#, php-format
+msgid "f/%.01f"
+msgstr "f/%.01f"
+
+#: PelEntryRational.php:146
+#, php-format
+msgid "%.1f mm"
+msgstr "%.1f mm"
+
+#: PelEntryRational.php:151
+#, php-format
+msgid "%.1f m"
+msgstr "%.1f m"
+
+#: PelEntryRational.php:157
+#, php-format
+msgid "1/%d sec."
+msgstr "1/%d sek."
+
+#: PelEntryRational.php:159
+#, php-format
+msgid "%d sec."
+msgstr "%d sek."
+
+#: PelEntryRational.php:267
+#, php-format
+msgid "%.0f/%.0f sec. (APEX: %d)"
+msgstr "%.0f/%.0f sek. (APEX: %d)"
+
+#: PelEntryShort.php:142 PelEntryShort.php:209 PelEntryShort.php:507
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: PelEntryShort.php:144
+msgid "Average"
+msgstr "Gennemsnit"
+
+#: PelEntryShort.php:146
+msgid "Center-Weighted Average"
+msgstr "Centervægtet gennemsnit"
+
+#: PelEntryShort.php:148
+msgid "Spot"
+msgstr "Punkt"
+
+#: PelEntryShort.php:150
+msgid "Multi Spot"
+msgstr "Mange punktet"
+
+#: PelEntryShort.php:152
+msgid "Pattern"
+msgstr "Mønster"
+
+#: PelEntryShort.php:154
+msgid "Partial"
+msgstr "Delvis"
+
+#: PelEntryShort.php:156 PelEntryShort.php:247
+msgid "Other"
+msgstr "Anden"
+
+#: PelEntryShort.php:165
+msgid "Uncompressed"
+msgstr "Ukomprimeret"
+
+#: PelEntryShort.php:167
+msgid "JPEG compression"
+msgstr "JPEG kompression"
+
+#: PelEntryShort.php:177
+msgid "chunky format"
+msgstr "klumpet format"
+
+#: PelEntryShort.php:179
+msgid "planar format"
+msgstr "plant format"
+
+#: PelEntryShort.php:188 PelEntryShort.php:268
+msgid "Not defined"
+msgstr "Ikke defineret"
+
+#: PelEntryShort.php:190
+msgid "One-chip color area sensor"
+msgstr "En chip, farve-område sensor"
+
+#: PelEntryShort.php:192
+msgid "Two-chip color area sensor"
+msgstr "To chips, farve-område sensor"
+
+#: PelEntryShort.php:194
+msgid "Three-chip color area sensor"
+msgstr "Tre chips, farve-område sensor"
+
+#: PelEntryShort.php:196
+msgid "Color sequential area sensor"
+msgstr "Farvesekventiel områdesensor"
+
+#: PelEntryShort.php:198
+msgid "Trilinear sensor"
+msgstr "Trilinær sensor"
+
+#: PelEntryShort.php:200
+msgid "Color sequential linear sensor"
+msgstr "Farvesekventiel lineær sensor"
+
+#: PelEntryShort.php:211
+msgid "Daylight"
+msgstr "Dagslys"
+
+#: PelEntryShort.php:213
+msgid "Fluorescent"
+msgstr "Fluorescerende"
+
+#: PelEntryShort.php:215
+msgid "Tungsten (incandescent light)"
+msgstr "Tungsten (glødelampe)"
+
+#: PelEntryShort.php:217 PelTag.php:1808
+msgid "Flash"
+msgstr "Blitz"
+
+#: PelEntryShort.php:219
+msgid "Fine weather"
+msgstr "Fint vejr"
+
+#: PelEntryShort.php:221
+msgid "Cloudy weather"
+msgstr "Overskyet vejr"
+
+#: PelEntryShort.php:223
+msgid "Shade"
+msgstr "Skygge"
+
+#: PelEntryShort.php:225
+msgid "Daylight fluorescent"
+msgstr "Dagslys, fluorescerende"
+
+#: PelEntryShort.php:227
+msgid "Day white fluorescent"
+msgstr "Dagslys, hvidt fluorescerende"
+
+#: PelEntryShort.php:229
+msgid "Cool white fluorescent"
+msgstr "Koldt hvidt fluorescerende"
+
+#: PelEntryShort.php:231
+msgid "White fluorescent"
+msgstr "Hvidt fluorescerende"
+
+#: PelEntryShort.php:233
+msgid "Standard light A"
+msgstr "Standard lys A"
+
+#: PelEntryShort.php:235
+msgid "Standard light B"
+msgstr "Standard lys B"
+
+#: PelEntryShort.php:237
+msgid "Standard light C"
+msgstr "Standard lys A"
+
+#: PelEntryShort.php:239
+msgid "D55"
+msgstr "D55"
+
+#: PelEntryShort.php:241
+msgid "D65"
+msgstr "D65"
+
+#: PelEntryShort.php:243
+msgid "D75"
+msgstr "D75"
+
+#: PelEntryShort.php:245
+msgid "ISO studio tungsten"
+msgstr "ISO studie tungsten"
+
+#: PelEntryShort.php:257
+msgid "Inch"
+msgstr "Tommer"
+
+#: PelEntryShort.php:259
+msgid "Centimeter"
+msgstr "Centimeter"
+
+#: PelEntryShort.php:270
+msgid "Manual"
+msgstr "Manuel"
+
+#: PelEntryShort.php:272
+msgid "Normal program"
+msgstr "Normalt program"
+
+#: PelEntryShort.php:274
+msgid "Aperture priority"
+msgstr "Prioriteret blændetal"
+
+#: PelEntryShort.php:276
+msgid "Shutter priority"
+msgstr "Prioriteret lukketid"
+
+#: PelEntryShort.php:278
+msgid "Creative program (biased toward depth of field)"
+msgstr "Kreativt program (med henblik på fokusdybde)"
+
+#: PelEntryShort.php:280
+msgid "Action program (biased toward fast shutter speed)"
+msgstr "Aktivt program (med henblik på lille lukketid)"
+
+#: PelEntryShort.php:282
+msgid "Portrait mode (for closeup photos with the background out of focus"
+msgstr "Højformat indstilling (til nærbilleder med baggrunden ude af fokus)"
+
+#: PelEntryShort.php:284
+msgid "Landscape mode (for landscape photos with the background in focus"
+msgstr "Bredformat indstilling (til landskabsbilleder med baggrunden i fokus)"
+
+#: PelEntryShort.php:293
+msgid "top - left"
+msgstr "øverst - venstre"
+
+#: PelEntryShort.php:295
+msgid "top - right"
+msgstr "øverst - højre"
+
+#: PelEntryShort.php:297
+msgid "bottom - right"
+msgstr "nederst - højre"
+
+#: PelEntryShort.php:299
+msgid "bottom - left"
+msgstr "nederst - venstre"
+
+#: PelEntryShort.php:301
+msgid "left - top"
+msgstr "venstre - øverst"
+
+#: PelEntryShort.php:303
+msgid "right - top"
+msgstr "højre - øverst"
+
+#: PelEntryShort.php:305
+msgid "right - bottom"
+msgstr "højre - nederst"
+
+#: PelEntryShort.php:307
+msgid "left - bottom"
+msgstr "venstre - nederst"
+
+#: PelEntryShort.php:316
+msgid "centered"
+msgstr "centreret"
+
+#: PelEntryShort.php:318
+msgid "co-sited"
+msgstr ""
+
+#: PelEntryShort.php:351
+msgid "Uncalibrated"
+msgstr "Ukalibreret"
+
+#: PelEntryShort.php:360
+msgid "Flash did not fire."
+msgstr "Blitzen blev ikke brugt."
+
+#: PelEntryShort.php:362
+msgid "Flash fired."
+msgstr "Blitzen blev brugt."
+
+#: PelEntryShort.php:364
+msgid "Strobe return light not detected."
+msgstr "Stroboskoplys blev ikke detekteret."
+
+#: PelEntryShort.php:366
+msgid "Strobe return light detected."
+msgstr "Stroboskoplys blev detekteret."
+
+#: PelEntryShort.php:368
+msgid "Flash fired, compulsory flash mode."
+msgstr "Blitzen affyret, tvungen blitz indstilling."
+
+#: PelEntryShort.php:370
+msgid "Flash fired, compulsory flash mode, return light not detected."
+msgstr "Blitzen affyret, tvungen blitz indstilling, returlys ikke detekteret."
+
+#: PelEntryShort.php:372
+msgid "Flash fired, compulsory flash mode, return light detected."
+msgstr "Blitzen affyret, tvungen blitz indstilling, returlys detekteret."
+
+#: PelEntryShort.php:374
+msgid "Flash did not fire, compulsory flash mode."
+msgstr "Blitzen blev ikke affyret, tvungen blitz indstilling."
+
+#: PelEntryShort.php:376
+msgid "Flash did not fire, auto mode."
+msgstr "Blitzen blev ikke affyret, automatisk indstilling."
+
+#: PelEntryShort.php:378
+msgid "Flash fired, auto mode."
+msgstr "Blitzen affyret, automatisk indstilling."
+
+#: PelEntryShort.php:380
+msgid "Flash fired, auto mode, return light not detected."
+msgstr "Blitzen affyret, automatisk indstilling, returlys ikke detekteret."
+
+#: PelEntryShort.php:382
+msgid "Flash fired, auto mode, return light detected."
+msgstr "Blitzen affyret, automatisk indstilling, returlys detekteret."
+
+#: PelEntryShort.php:384
+msgid "No flash function."
+msgstr "Ingen blitzfuntion."
+
+#: PelEntryShort.php:386
+msgid "Flash fired, red-eye reduction mode."
+msgstr "Blitzen affyret, indstilling for reduktion af røde øjne."
+
+#: PelEntryShort.php:388
+msgid "Flash fired, red-eye reduction mode, return light not detected."
+msgstr ""
+"Blitzen affyret, indstilling for reduktion af røde øjne, returlys ikke "
+"detekteret."
+
+#: PelEntryShort.php:390
+msgid "Flash fired, red-eye reduction mode, return light detected."
+msgstr ""
+"Blitz affyret, indstilling for reduktion af røde øjne, returlys detekteret."
+
+#: PelEntryShort.php:392
+msgid "Flash fired, compulsory flash mode, red-eye reduction mode."
+msgstr ""
+"Blitz affyret, tvungen blitz indstilling, indstilling for reduktion af røde "
+"øjne."
+
+#: PelEntryShort.php:394
+msgid ""
+"Flash fired, compulsory flash mode, red-eye reduction mode, return light not "
+"detected."
+msgstr ""
+"Blitz affyret, tvungen blitz indstilling, indstilling for reduktion af røde "
+"øjne, returlys ikke detekteret."
+
+#: PelEntryShort.php:396
+msgid ""
+"Flash fired, compulsory flash mode, red-eye reduction mode, return light "
+"detected."
+msgstr ""
+"Blitz affyret, tvungen blitz indstilling, indstilling for reduktion af røde "
+"øjne, returlys detekteret."
+
+#: PelEntryShort.php:398
+msgid "Flash did not fire, auto mode, red-eye reduction mode."
+msgstr ""
+"Blitzen blev ikke affyret, automatisk indstilling, indstilling for reduktion "
+"af røde øjne."
+
+#: PelEntryShort.php:400
+msgid "Flash fired, auto mode, red-eye reduction mode."
+msgstr ""
+"Blitzen blev affyret, automatisk indstilling, indstilling for reduktion af "
+"røde øjne."
+
+#: PelEntryShort.php:402
+msgid ""
+"Flash fired, auto mode, return light not detected, red-eye reduction mode."
+msgstr ""
+"Blitzen blev affyret, automatisk indstilling, returlys ikke detekteret, "
+"indstilling for reduktion af røde øjne."
+
+#: PelEntryShort.php:404
+msgid "Flash fired, auto mode, return light detected, red-eye reduction mode."
+msgstr ""
+"Blitzen blev affyret, automatisk indstilling, returlys detekteret, "
+"indstilling for reduktion af røde øjne."
+
+#: PelEntryShort.php:413
+msgid "Normal process"
+msgstr "Normal proces"
+
+#: PelEntryShort.php:415
+msgid "Custom process"
+msgstr "Specialproces"
+
+#: PelEntryShort.php:424
+msgid "Auto exposure"
+msgstr "Automatisk belysning"
+
+#: PelEntryShort.php:426
+msgid "Manual exposure"
+msgstr "Manuel belysning"
+
+#: PelEntryShort.php:428
+msgid "Auto bracket"
+msgstr ""
+
+#: PelEntryShort.php:437
+msgid "Auto white balance"
+msgstr "Automatisk hvidbalance"
+
+#: PelEntryShort.php:439
+msgid "Manual white balance"
+msgstr "Manuel hvidbalance"
+
+#: PelEntryShort.php:448
+msgid "Standard"
+msgstr "Standard"
+
+#: PelEntryShort.php:450
+msgid "Landscape"
+msgstr "Bredformat"
+
+#: PelEntryShort.php:452
+msgid "Portrait"
+msgstr "Højformat"
+
+#: PelEntryShort.php:454
+msgid "Night scene"
+msgstr "Natscene"
+
+#: PelEntryShort.php:463 PelEntryShort.php:480 PelEntryShort.php:494
+msgid "Normal"
+msgstr "Normal"
+
+#: PelEntryShort.php:465
+msgid "Low gain up"
+msgstr ""
+
+#: PelEntryShort.php:467
+msgid "High gain up"
+msgstr ""
+
+#: PelEntryShort.php:469
+msgid "Low gain down"
+msgstr ""
+
+#: PelEntryShort.php:471
+msgid "High gain down"
+msgstr ""
+
+#: PelEntryShort.php:482
+msgid "Low saturation"
+msgstr "Svag farvemætning"
+
+#: PelEntryShort.php:484
+msgid "High saturation"
+msgstr "Stærk farvemætning"
+
+#: PelEntryShort.php:496
+msgid "Soft"
+msgstr "Blød"
+
+#: PelEntryShort.php:498
+msgid "Hard"
+msgstr "Hård"
+
+#: PelEntryShort.php:509
+msgid "Macro"
+msgstr "Makro"
+
+#: PelEntryShort.php:511
+msgid "Close view"
+msgstr "Lille afstand"
+
+#: PelEntryShort.php:513
+msgid "Distant view"
+msgstr "Stor afstand"
+
+#: PelEntryShort.php:521
+#, php-format
+msgid "(x,y) = (%d,%d)"
+msgstr "(x,y) = (%d,%d)"
+
+#: PelEntryShort.php:523
+#, php-format
+msgid "Within distance %d of (x,y) = (%d,%d)"
+msgstr "Indenfor en afstand %d af (x,y) = (%d,%d)"
+
+#: PelEntryShort.php:526
+#, php-format
+msgid "Within rectangle (width %d, height %d) around (x,y) = (%d,%d)"
+msgstr "Indenfor rektanglet (bredde %d, højre %d) omkring (x,y) = (%d,%d)"
+
+#: PelEntryShort.php:531
+#, php-format
+msgid "Unexpected number of components (%d, expected 2, 3, or 4)."
+msgstr "Uventet antal komponenter (%d, forventede 2, 3 eller 4)."
+
+#: PelEntryUndefined.php:390
+#, php-format
+msgid "Exif %s"
+msgstr "Exif %s"
+
+#: PelEntryUndefined.php:392
+#, php-format
+msgid "Exif Version %s"
+msgstr "Exif version %s"
+
+#: PelEntryUndefined.php:396
+#, php-format
+msgid "FlashPix %s"
+msgstr "FlashPix %s"
+
+#: PelEntryUndefined.php:398
+#, php-format
+msgid "FlashPix Version %s"
+msgstr "FlashPix version %s"
+
+#: PelEntryUndefined.php:402
+#, php-format
+msgid "Interoperability %s"
+msgstr "Interoperability %s"
+
+#: PelEntryUndefined.php:404
+#, php-format
+msgid "Interoperability Version %s"
+msgstr "Interoperability version %s"
+
+#: PelEntryUndefined.php:410
+#, php-format
+msgid "Version %s"
+msgstr "Version %s"
+
+#: PelExif.php:169
+msgid "Dumping Exif data...\n"
+msgstr "Dumper Exif data...\n"
+
+#: PelFormat.php:192 PelFormat.php:220
+#, php-format
+msgid "Unknown format: 0x%X"
+msgstr "Ukendt format: 0x%X"
+
+#: PelIfd.php:1180
+#, php-format
+msgid "Dumping IFD %s with %d entries...\n"
+msgstr "Dumper IFD %s med %d indgange...\n"
+
+#: PelIfd.php:1186
+#, php-format
+msgid "Dumping %d sub IFDs...\n"
+msgstr "Dumper %d under-IFD'er...\n"
+
+#: PelJpegMarker.php:288 PelJpegMarker.php:430
+#, php-format
+msgid "Unknown marker: 0x%02X"
+msgstr "Ukendt markering: 0x%02X"
+
+#: PelJpegMarker.php:302
+msgid "Encoding (baseline)"
+msgstr "Kodning (baseline)"
+
+#: PelJpegMarker.php:304
+msgid "Encoding (extended sequential)"
+msgstr "Kodning (udvided sekventiel)"
+
+#: PelJpegMarker.php:306
+msgid "Encoding (progressive)"
+msgstr "Kodning (baseline)"
+
+#: PelJpegMarker.php:308
+msgid "Encoding (lossless)"
+msgstr "Kodning (baseline)"
+
+#: PelJpegMarker.php:310
+msgid "Encoding (differential sequential)"
+msgstr "Kodning (differential sekventiel)"
+
+#: PelJpegMarker.php:312
+msgid "Encoding (differential progressive)"
+msgstr "Kodning (differential progressiv)"
+
+#: PelJpegMarker.php:314
+msgid "Encoding (differential lossless)"
+msgstr "Kodning (differential tabsfri)"
+
+#: PelJpegMarker.php:316
+msgid "Encoding (extended sequential, arithmetic)"
+msgstr "Kodning (udvided sekventiel, aritmetisk)"
+
+#: PelJpegMarker.php:318
+msgid "Encoding (progressive, arithmetic)"
+msgstr "Kodning (progressiv, aritmetisk)"
+
+#: PelJpegMarker.php:320
+msgid "Encoding (lossless, arithmetic)"
+msgstr "Kodning (tabsfri, aritmetisk)"
+
+#: PelJpegMarker.php:322
+msgid "Encoding (differential sequential, arithmetic)"
+msgstr "Kodning (differential sekventiel, aritmetisk)"
+
+#: PelJpegMarker.php:324
+msgid "Encoding (differential progressive, arithmetic)"
+msgstr "Kodning (differential progressiv, aritmetisk)"
+
+#: PelJpegMarker.php:326
+msgid "Encoding (differential lossless, arithmetic)"
+msgstr "Kodning (differential tabsfri, aritmetisk)"
+
+#: PelJpegMarker.php:328
+msgid "Start of image"
+msgstr "Start af billede"
+
+#: PelJpegMarker.php:330
+msgid "End of image"
+msgstr "Slutning af billede"
+
+#: PelJpegMarker.php:332
+msgid "Start of scan"
+msgstr "Start af skan"
+
+#: PelJpegMarker.php:334 PelJpegMarker.php:428
+msgid "Comment"
+msgstr "Kommentar"
+
+#: PelJpegMarker.php:336
+msgid "Define Huffman table"
+msgstr "Definér Huffman tabel"
+
+#: PelJpegMarker.php:338
+msgid "Extension"
+msgstr "Udvidelse"
+
+#: PelJpegMarker.php:340
+msgid "Define arithmetic coding conditioning"
+msgstr ""
+
+#: PelJpegMarker.php:342 PelJpegMarker.php:344 PelJpegMarker.php:346
+#: PelJpegMarker.php:348 PelJpegMarker.php:350 PelJpegMarker.php:352
+#: PelJpegMarker.php:354 PelJpegMarker.php:356
+#, php-format
+msgid "Restart %d"
+msgstr "Genstart %d"
+
+#: PelJpegMarker.php:358
+msgid "Define quantization table"
+msgstr "Definér kvantitationstabel"
+
+#: PelJpegMarker.php:360
+msgid "Define number of lines"
+msgstr "Definér antal linier"
+
+#: PelJpegMarker.php:362
+msgid "Define restart interval"
+msgstr "Definér genstart interval"
+
+#: PelJpegMarker.php:364
+msgid "Define hierarchical progression"
+msgstr "Definér hierarkisk progression"
+
+#: PelJpegMarker.php:366
+msgid "Expand reference component"
+msgstr ""
+
+#: PelJpegMarker.php:368 PelJpegMarker.php:370 PelJpegMarker.php:372
+#: PelJpegMarker.php:374 PelJpegMarker.php:376 PelJpegMarker.php:378
+#: PelJpegMarker.php:380 PelJpegMarker.php:382 PelJpegMarker.php:384
+#: PelJpegMarker.php:386 PelJpegMarker.php:388 PelJpegMarker.php:390
+#: PelJpegMarker.php:392 PelJpegMarker.php:394 PelJpegMarker.php:396
+#: PelJpegMarker.php:398
+#, php-format
+msgid "Application segment %d"
+msgstr "Applikationssegment %d"
+
+#: PelJpegMarker.php:400 PelJpegMarker.php:402 PelJpegMarker.php:404
+#: PelJpegMarker.php:406 PelJpegMarker.php:408 PelJpegMarker.php:410
+#: PelJpegMarker.php:412 PelJpegMarker.php:414 PelJpegMarker.php:416
+#: PelJpegMarker.php:418 PelJpegMarker.php:420 PelJpegMarker.php:422
+#: PelJpegMarker.php:424 PelJpegMarker.php:426
+#, php-format
+msgid "Extension %d"
+msgstr "Udvidelse %d"
+
+#: PelJpeg.php:543
+msgid "Dumping JPEG data...\n"
+msgstr "Dumper JPEG data...\n"
+
+#: PelJpeg.php:547
+#, php-format
+msgid "Section %d (marker 0x%02X - %s):\n"
+msgstr "Sektion %d (markering 0x%02X - %s):\n"
+
+#: PelJpeg.php:549
+#, php-format
+msgid "  Description: %s\n"
+msgstr "  Beskrivelse: %s\n"
+
+#: PelJpeg.php:557
+msgid "  Content    : Exif data\n"
+msgstr "  Indhold    : Exif data\n"
+
+#: PelJpeg.php:560
+#, php-format
+msgid "  Content    : %s\n"
+msgstr "  Indhold    : %s\n"
+
+#: PelJpeg.php:562
+msgid "  Content    : Unknown\n"
+msgstr "  Indhold    : Ukendt\n"
+
+#: PelTag.php:1649
+#, php-format
+msgid "Unknown: 0x%04X"
+msgstr "Ukendt: 0x%04X"
+
+#: PelTag.php:1678
+msgid "Interoperability Index"
+msgstr "Interoperability indeks"
+
+#: PelTag.php:1680
+msgid "Interoperability Version"
+msgstr "Interoperability version"
+
+#: PelTag.php:1682
+msgid "Image Width"
+msgstr "Billedbredde"
+
+#: PelTag.php:1684
+msgid "Image Length"
+msgstr "Billedlængde"
+
+#: PelTag.php:1686
+msgid "Bits per Sample"
+msgstr "Bits pr. prøve"
+
+#: PelTag.php:1688
+msgid "Compression"
+msgstr "Kompression"
+
+#: PelTag.php:1690
+msgid "Photometric Interpretation"
+msgstr "Farvefortolkning"
+
+#: PelTag.php:1692
+msgid "Fill Order"
+msgstr ""
+
+#: PelTag.php:1694
+msgid "Document Name"
+msgstr "Dokumentnavn"
+
+#: PelTag.php:1696
+msgid "Image Description"
+msgstr "Billedbeskrivelse"
+
+#: PelTag.php:1698
+msgid "Manufacturer"
+msgstr "Fremstiller"
+
+#: PelTag.php:1700
+msgid "Model"
+msgstr "Model"
+
+#: PelTag.php:1702
+msgid "Strip Offsets"
+msgstr ""
+
+#: PelTag.php:1704
+msgid "Orientation"
+msgstr "Orientering"
+
+#: PelTag.php:1706
+msgid "Samples per Pixel"
+msgstr "Prøver pr. pixel"
+
+#: PelTag.php:1708
+msgid "Rows per Strip"
+msgstr "Rækker pr. stribe"
+
+#: PelTag.php:1710
+msgid "Strip Byte Count"
+msgstr ""
+
+#: PelTag.php:1712
+msgid "x-Resolution"
+msgstr "x-opløsning"
+
+#: PelTag.php:1714
+msgid "y-Resolution"
+msgstr "y-opløsning"
+
+#: PelTag.php:1716
+msgid "Planar Configuration"
+msgstr "Plankonfiguration"
+
+#: PelTag.php:1718
+msgid "Resolution Unit"
+msgstr "Enhed for opløsning"
+
+#: PelTag.php:1720
+msgid "Transfer Function"
+msgstr "Overførselsfunktion"
+
+#: PelTag.php:1722
+msgid "Software"
+msgstr "Software"
+
+#: PelTag.php:1724
+msgid "Date and Time"
+msgstr "Dato og tid"
+
+#: PelTag.php:1726
+msgid "Artist"
+msgstr "Kunstner"
+
+#: PelTag.php:1728
+msgid "White Point"
+msgstr "Hvidpunkt"
+
+#: PelTag.php:1730
+msgid "Primary Chromaticities"
+msgstr ""
+
+#: PelTag.php:1732
+msgid "Transfer Range"
+msgstr "Overførselsområde"
+
+#: PelTag.php:1734
+msgid "JPEG Process"
+msgstr "JPEG proces"
+
+#: PelTag.php:1736
+msgid "JPEG Interchange Format"
+msgstr "JPEG Interchange Format"
+
+#: PelTag.php:1738
+msgid "JPEG Interchange Format Length"
+msgstr "JPEG Interchange Format Length"
+
+#: PelTag.php:1740
+msgid "YCbCr Coefficients"
+msgstr "YCbCr koefficienter"
+
+#: PelTag.php:1742
+msgid "YCbCr Sub-Sampling"
+msgstr "YCbCr del-prøvning"
+
+#: PelTag.php:1744
+msgid "YCbCr Positioning"
+msgstr "YCbCr placering"
+
+#: PelTag.php:1746
+msgid "Reference Black/White"
+msgstr "Reference sort/hvid"
+
+#: PelTag.php:1748
+msgid "Related Image File Format"
+msgstr "Filformat for relateret billed"
+
+#: PelTag.php:1750
+msgid "Related Image Width"
+msgstr "Bredde af relateret billed"
+
+#: PelTag.php:1752
+msgid "Related Image Length"
+msgstr "Længde af relateret billed"
+
+#: PelTag.php:1754
+msgid "CFA Repeat Pattern Dim"
+msgstr ""
+
+#: PelTag.php:1756
+msgid "CFA Pattern"
+msgstr "CFA mønster"
+
+#: PelTag.php:1758
+msgid "Battery Level"
+msgstr "Batteri niveau"
+
+#: PelTag.php:1760
+msgid "Copyright"
+msgstr "Ophavsret"
+
+#: PelTag.php:1762
+msgid "Exposure Time"
+msgstr "Belysningstid"
+
+#: PelTag.php:1764
+msgid "FNumber"
+msgstr "Blændetal"
+
+#: PelTag.php:1766
+msgid "IPTC/NAA"
+msgstr "IPTC/NAA"
+
+#: PelTag.php:1768
+msgid "Exif IFD Pointer"
+msgstr "Exif IFD Pointer"
+
+#: PelTag.php:1770
+msgid "Inter Color Profile"
+msgstr "Inter farveprofil"
+
+#: PelTag.php:1772
+msgid "Exposure Program"
+msgstr "Belysnings program"
+
+#: PelTag.php:1774
+msgid "Spectral Sensitivity"
+msgstr "Spektral sensitivitet"
+
+#: PelTag.php:1776
+msgid "GPS Info IFD Pointer"
+msgstr "GPS Info IFD Pointer"
+
+#: PelTag.php:1778
+msgid "ISO Speed Ratings"
+msgstr "ISO hastighed"
+
+#: PelTag.php:1780
+msgid "OECF"
+msgstr "OECF"
+
+#: PelTag.php:1782
+msgid "Exif Version"
+msgstr "Exif version"
+
+#: PelTag.php:1784
+msgid "Date and Time (original)"
+msgstr "Dato og tid (original)"
+
+#: PelTag.php:1786
+msgid "Date and Time (digitized)"
+msgstr "Dato og tid (digitaliseret)"
+
+#: PelTag.php:1788
+msgid "Components Configuration"
+msgstr "Komponent konfiguration"
+
+#: PelTag.php:1790
+msgid "Compressed Bits per Pixel"
+msgstr "Komprimeret antal bits pr. pixel"
+
+#: PelTag.php:1792
+msgid "Shutter speed"
+msgstr "Lukketid"
+
+#: PelTag.php:1794
+msgid "Aperture"
+msgstr "Blænde"
+
+#: PelTag.php:1796
+msgid "Brightness"
+msgstr "Lysstyrke"
+
+#: PelTag.php:1798
+msgid "Exposure Bias"
+msgstr "Belysningsbias"
+
+#: PelTag.php:1800
+msgid "Max Aperture Value"
+msgstr "Maksimal blændetal"
+
+#: PelTag.php:1802
+msgid "Subject Distance"
+msgstr "Motivafstand"
+
+#: PelTag.php:1804
+msgid "Metering Mode"
+msgstr "Målemetode"
+
+#: PelTag.php:1806
+msgid "Light Source"
+msgstr "Lyskilde"
+
+#: PelTag.php:1810
+msgid "Focal Length"
+msgstr "Fokuslængde"
+
+#: PelTag.php:1812
+msgid "Maker Note"
+msgstr "Fremstillernote"
+
+#: PelTag.php:1814
+msgid "User Comment"
+msgstr "Brugerkommentar"
+
+#: PelTag.php:1816
+msgid "SubSec Time"
+msgstr "Delsek tid"
+
+#: PelTag.php:1818
+msgid "SubSec Time Original"
+msgstr "SubSek tid (original)"
+
+#: PelTag.php:1820
+msgid "SubSec Time Digitized"
+msgstr "SubSek tid (digitaliseret)"
+
+#: PelTag.php:1832
+msgid "FlashPix Version"
+msgstr "FlashPix version"
+
+#: PelTag.php:1834
+msgid "Color Space"
+msgstr "Farverum"
+
+#: PelTag.php:1836
+msgid "Pixel x-Dimension"
+msgstr "Pixel x-dimension"
+
+#: PelTag.php:1838
+msgid "Pixel y-Dimension"
+msgstr "Pixel y-dimension"
+
+#: PelTag.php:1840
+msgid "Related Sound File"
+msgstr "Relateret lydfil"
+
+#: PelTag.php:1842
+msgid "Interoperability IFD Pointer"
+msgstr "Interoperability IFD Pointer"
+
+#: PelTag.php:1844
+msgid "Flash Energy"
+msgstr "Blitzenergi"
+
+#: PelTag.php:1846
+msgid "Spatial Frequency Response"
+msgstr ""
+
+#: PelTag.php:1848
+msgid "Focal Plane x-Resolution"
+msgstr "x-opløsning i fokusplan"
+
+#: PelTag.php:1850
+msgid "Focal Plane y-Resolution"
+msgstr "y-opløsning i fokusplan"
+
+#: PelTag.php:1852
+msgid "Focal Plane Resolution Unit"
+msgstr "Enhed for opløsning i fokusplan"
+
+#: PelTag.php:1854
+msgid "Subject Location"
+msgstr "Placering af motiv"
+
+#: PelTag.php:1856
+msgid "Exposure index"
+msgstr "Belysningsindeks"
+
+#: PelTag.php:1858
+msgid "Sensing Method"
+msgstr "Sansningsmetode"
+
+#: PelTag.php:1860
+msgid "File Source"
+msgstr "Fil kilde"
+
+#: PelTag.php:1862
+msgid "Scene Type"
+msgstr "Scenetype"
+
+#: PelTag.php:1864
+msgid "Subject Area"
+msgstr "Motivområde"
+
+#: PelTag.php:1866
+msgid "Custom Rendered"
+msgstr "Specialfremstillet"
+
+#: PelTag.php:1868
+msgid "Exposure Mode"
+msgstr "Belysnings indstilling"
+
+#: PelTag.php:1870
+msgid "White Balance"
+msgstr "Hvidbalance"
+
+#: PelTag.php:1872
+msgid "Digital Zoom Ratio"
+msgstr "Digital zoomforhold"
+
+#: PelTag.php:1874
+msgid "Focal Length In 35mm Film"
+msgstr "Fokuslængde på 35mm film"
+
+#: PelTag.php:1876
+msgid "Scene Capture Type"
+msgstr "Type af scene"
+
+#: PelTag.php:1878
+msgid "Gain Control"
+msgstr ""
+
+#: PelTag.php:1880
+msgid "Contrast"
+msgstr "Kontrast"
+
+#: PelTag.php:1882
+msgid "Saturation"
+msgstr "Farvemætning"
+
+#: PelTag.php:1884
+msgid "Sharpness"
+msgstr "Skarphed"
+
+#: PelTag.php:1886
+msgid "Device Setting Description"
+msgstr "Beskrivelse af apparatindstillinger"
+
+#: PelTag.php:1888
+msgid "Subject Distance Range"
+msgstr "Afstanden til motivet"
+
+#: PelTag.php:1890
+msgid "Image Unique ID"
+msgstr "Unikt ID for billed"
+
+#: PelTag.php:1892
+msgid "Gamma"
+msgstr "Gamma"
+
+#: PelTag.php:1894
+msgid "Print IM"
+msgstr ""
+
+#: PelTag.php:1964
+#, php-format
+msgid "Unknown Tag: 0x%04X"
+msgstr "Ukendt tag: 0x%04X"
+
+#: PelTiff.php:255
+#, php-format
+msgid "Dumping TIFF data...\n"
+msgstr "Dumper TIFF data...\n"
