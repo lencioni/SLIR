@@ -18,7 +18,8 @@
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @copyright Copyright © 2009, Joe Lencioni
- * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
+ * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
  */
@@ -141,9 +142,12 @@ class SLIRException extends Exception
 	{
 		$userAgent	= (isset($_SERVER['HTTP_USER_AGENT'])) ? " {$_SERVER['HTTP_USER_AGENT']}" : '';
 		$referrer	= (isset($_SERVER['HTTP_REFERER'])) ? "Referrer: {$_SERVER['HTTP_REFERER']}\n\n" : '';
+		$request	= (isset($_SERVER['REQUEST_URI'])) ? "Request: {$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}\n" : '';
 		
-		$message	= "\n[" . @gmdate('D M d H:i:s Y') . '] [' . $_SERVER['REMOTE_ADDR'] . $userAgent . '] ';
-		$message	.= $this->getMessage() . "\n\n" . $referrer . $this->getTraceAsString() . "\n";
+		$message	= "\n[" . @gmdate('D M d H:i:s Y') . '] ['
+			. $_SERVER['REMOTE_ADDR'] . $userAgent . '] ' . $this->getMessage()
+			. "\n\n" . $referrer . $request . $this->getTraceAsString() . "\n";
+		
 		return @error_log($message, 3, SLIR_ERROR_LOG_PATH);
 	} // log()
 	
