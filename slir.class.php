@@ -244,7 +244,7 @@ class SLIR
 	 * @param mixed $value
 	 * @todo Prevent SLIR from calling itself
 	 */
-	public function __set($name, $value)
+	private function __set($name, $value)
 	{
 		switch($name)
 		{
