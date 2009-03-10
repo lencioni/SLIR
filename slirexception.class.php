@@ -86,7 +86,10 @@ class SLIRException extends Exception
 					. 'server permissions to write to it.';
 		} // if
 		
-		$this->errorImage($explanationText);
+		if (!defined('SLIR_ERROR_IMAGES') || SLIR_ERROR_IMAGES === TRUE)
+			$this->errorImage($explanationText);
+		else
+			$this->errorText($explanationText);
 	} // __construct()
 	
 	/**
@@ -94,7 +97,7 @@ class SLIRException extends Exception
 	 * 
 	 * @since 2.0
 	 */
-	public function log()
+	private function log()
 	{
 		$userAgent	= (isset($_SERVER['HTTP_USER_AGENT'])) ? " {$_SERVER['HTTP_USER_AGENT']}" : '';
 		$referrer	= (isset($_SERVER['HTTP_REFERER'])) ? "Referrer: {$_SERVER['HTTP_REFERER']}\n\n" : '';
@@ -105,16 +108,29 @@ class SLIRException extends Exception
 	} // log()
 	
 	/**
+	 * @since 2.0
+	 * @param string $explanationText
+	 * @return string Error message
+	 */
+	private function errorMessage($explanationText = NULL)
+	{
+		$text	= $this->getMessage();
+		if ($explanationText)
+			$text	.= "\n\n$explanationText";
+		
+		return $text;
+	} // errorMessage()
+	
+	/**
 	 * Create and output an image with an error message
 	 * 
 	 * @since 2.0
 	 * @param string $explanationText
 	 */
-	public function errorImage($explanationText = NULL)
+	private function errorImage($explanationText = NULL)
 	{
-		$text	= $this->getMessage();
-		if ($explanationText)
-			$text	.= "\n\n$explanationText";
+		$text	= $this->errorMessage($explanationText);
+
 		$text	= wordwrap($text, SLIRException::WRAP_AT);
 		$text	= explode("\n", $text);
 		
@@ -159,6 +175,15 @@ class SLIRException extends Exception
 		// clean up for memory
 		imagedestroy($image);
 	} // errorImage()
+	
+	/**
+	 * @since 2.0
+	 * @param string $explanationText
+	 */
+	private function errorText($explanationText = NULL)
+	{
+		echo nl2br($this->errorMessage($explanationText) . "\n");
+	} // errorText()
 	
 	/**
 	 * Error handler

@@ -81,6 +81,22 @@ define('SLIR_DEFAULT_QUALITY',	80);
 define('SLIR_DEFAULT_PROGRESSIVE_JPEG',	TRUE);
 
 /**
+ * Whether SLIR should log errors
+ *
+ * @since 2.0
+ * @var boolean
+ */
+define('SLIR_LOG_ERRORS',		TRUE);
+
+/**
+ * Whether SLIR should generate and output images from error messages
+ * 
+ * @since 2.0
+ * @var boolean
+ */
+define('SLIR_ERROR_IMAGES',		TRUE);
+
+/**
  * Absolute path to the web root (location of files when visiting
  * http://domainname.com/) (no trailing slash)
  * 
@@ -113,13 +129,4 @@ define('SLIR_CACHE_DIR_NAME',	'/cache');
  * @var string
  */
 define('SLIR_CACHE_DIR',		SLIR_DOCUMENT_ROOT . SLIR_DIR . SLIR_CACHE_DIR_NAME);
-
-/**
- * Whether SLIR should log errors
- * file
- *
- * @since 2.0
- * @var boolean|string
- */
-define('SLIR_LOG_ERRORS',		TRUE);
 ?>
