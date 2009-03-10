@@ -35,9 +35,18 @@
  * @var integer
  */
 define('SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS',	7 * 24 * 60 * 60);
- 
+
 /**
- * Tells SLIR how much memory to allocate for its processes
+ * Whether we should use the faster, symlink-based request cache as a first
+ * line cache
+ * 
+ * @since 2.0
+ * @var boolean
+ */
+define('SLIR_USE_REQUEST_CACHE',	TRUE);
+
+/**
+ * How much memory to allocate for memory-intensive processes such as rendering
  *
  * @since 2.0
  * @var string

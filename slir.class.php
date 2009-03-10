@@ -88,7 +88,7 @@
  * @uses PEL
 
  * @todo add option to disable error log
- * @todo lock files when writing
+ * @todo lock files when writing?
  * @todo Prevent SLIR from calling itself
  * @todo Percentage resizing?
  * @todo Animated GIF resizing?
@@ -213,7 +213,7 @@ class SLIR
 		$this->getConfig();
 
 		// Check the cache based on the request URI
-		if ($this->isRequestCached())
+		if (SLIR_USE_REQUEST_CACHE && $this->isRequestCached())
 			$this->serveRequestCachedImage();
 
 		// Set all parameters for resizing
@@ -1166,7 +1166,10 @@ Example usage:
 	private function cache($imageData)
 	{
 		$imageData	= $this->cacheRendered($imageData);
-		return $this->cacheRequest($imageData, FALSE);
+		if (SLIR_USE_REQUEST_CACHE)
+			return $this->cacheRequest($imageData, FALSE);
+		else
+			return $imageData;
 	} // cache()
 
 	/**
@@ -1500,7 +1503,7 @@ Example usage:
 
 } // class SLIR
 
-require_once 'slirexception.class.php';
+require 'slirexception.class.php';
 set_error_handler(array('SLIRException', 'error'));
 
 // old pond
