@@ -214,7 +214,12 @@ class SLIR
 		// Check the cache based on the request URI
 		if (SLIR_USE_REQUEST_CACHE && $this->isRequestCached())
 			$this->serveRequestCachedImage();
-
+		
+		// Set up our error handler after the request cache to help keep
+		// everything humming along nicely
+		require 'slirexception.class.php';
+		set_error_handler(array('SLIRException', 'error'));
+		
 		// Set all parameters for resizing
 		$this->setParameters($this->getParameters());
 
@@ -262,13 +267,15 @@ class SLIR
 				if (!$this->isPathSecure($this->imagePath))
 				{
 					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Image path may not contain ":", "..", "<", or ">"');
+					throw new SLIRException('Image path may not contain ":", ".'
+						. '.", "<", or ">"');
 				}
 				// Make sure the path is a file
 				else if (!is_file(SLIR_DOCUMENT_ROOT . $this->imagePath))
 				{
 					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Image path is not a file: ' . SLIR_DOCUMENT_ROOT . $this->imagePath);
+					throw new SLIRException('Image path is not a file: '
+						. SLIR_DOCUMENT_ROOT . $this->imagePath);
 				}
 				// Make sure the image file exists
 				else if (!$this->imageExists())
@@ -286,7 +293,9 @@ class SLIR
 					if (!$this->isImage())
 					{
 						header('HTTP/1.1 400 Bad Request');
-						throw new SLIRException('Requested file is not an accepted image type: ' . SLIR_DOCUMENT_ROOT . $this->imagePath);
+						throw new SLIRException('Requested file is not an '
+							. 'accepted image type: ' . SLIR_DOCUMENT_ROOT
+							. $this->imagePath);
 					} // if
 				} // if
 			break;
@@ -334,9 +343,9 @@ class SLIR
 				else
 				{
 					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Crop ratio must be in width:height '
-						. 'format: ' . (string) $value);
-				}
+					throw new SLIRException('Crop ratio must be in width:height'
+						. ' format: ' . (string) $value);
+				} // if
 			break;
 
 			case 'b';
@@ -360,7 +369,7 @@ class SLIR
 					throw new SLIRException('Background fill color must be in '
 						.'hexadecimal format, longhand or shorthand: '
 						. $this->backgroundFillColor);
-				}
+				} // if
 			break;
 		} // switch
 	} // __set()
@@ -1145,8 +1154,7 @@ Example usage:
 	 */
 	private function requestCacheFilename()
 	{
-		$cacheParams	= $_SERVER['REQUEST_URI'];
-		return '/' . md5($cacheParams);
+		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
 	} // requestCacheFilename()
 
 	/**
@@ -1214,7 +1222,7 @@ Example usage:
 	private function cacheFile($cacheFilePath, $imageData, $copyEXIF = TRUE, $symlinkToPath = NULL)
 	{
 		$this->initializeCache();
-
+		
 		// Try to create just a symlink to minimize disk space
 		if ($symlinkToPath && @symlink($symlinkToPath, $cacheFilePath))
 			return $imageData;
@@ -1283,10 +1291,10 @@ Example usage:
 	 * @param boolean $verifyReadWriteability
 	 * @return boolean
 	 */
-	private function initializeDirectory($path, $verifyReadWriteability = TRUE)
+	private function initializeDirectory($path, $verifyReadWriteability = TRUE, $test = FALSE)
 	{
 		if (!file_exists($path))
-			mkdir($path, 0755);
+			mkdir($path, 0755, TRUE);
 
 		if (!$verifyReadWriteability)
 			return TRUE;
@@ -1355,13 +1363,20 @@ Example usage:
 		// file_exists() when checking the cache was cached and incorrect
 		if (!$data)
 			return FALSE;
-
-		$lastModified	= filemtime($cacheFilePath);
-		$this->serveFile($data, $lastModified, $this->rendered['mime'], "$cacheType cache");
-
+		
+		// Serve the file data
+		$this->serveFile(
+			$data,
+			filemtime($cacheFilePath),
+			$this->rendered['mime'],
+			"$cacheType cache"
+		);
+		
+		// If we are serving from the rendered cache, create a symlink in the
+		// request cache to the rendered file
 		if ($cacheType != 'request')
 			$this->cacheRequest($data, FALSE);
-
+		
 		exit();
 	} // serveCachedImage()
 
@@ -1415,7 +1430,7 @@ Example usage:
 			$SLIRHeader
 		);
 
-		//  Send the image to the browser in bite-sized chunks
+		// Send the image to the browser in bite-sized chunks
 		$chunkSize	= 1024 * 8;
 		$fp			= fopen('php://memory', 'r+b');
 		fwrite($fp, $data);
@@ -1505,9 +1520,6 @@ Example usage:
 	} // doConditionalGet()
 
 } // class SLIR
-
-require 'slirexception.class.php';
-set_error_handler(array('SLIRException', 'error'));
 
 // old pond
 // a frog jumps
