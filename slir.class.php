@@ -86,8 +86,7 @@
  * @package SLIR
  *
  * @uses PEL
-
- * @todo add option to disable error log
+ * 
  * @todo lock files when writing?
  * @todo Prevent SLIR from calling itself
  * @todo Percentage resizing?
@@ -255,6 +254,9 @@ class SLIR
 				// Images must be local files, so for convenience we strip the
 				// domain if it's there
 				$this->imagePath	= '/' . trim(preg_replace('/^(s?f|ht)tps?:\/\/[^\/]+/i', '', (string) urldecode($value)), '/');
+				
+				// Strip query string from the image path
+				$this->imagePath	= preg_replace('/\?.*/', '', $this->imagePath);
 
 				// Make sure the image path is secure
 				if (!$this->isPathSecure($this->imagePath))
