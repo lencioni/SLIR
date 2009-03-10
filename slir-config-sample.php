@@ -124,9 +124,19 @@ define('SLIR_CACHE_DIR_NAME',	'/cache');
 /**
  * Absolute path to cache directory. This directory must be world-readable,
  * writable by the web server, and must end with SLIR_CACHE_DIR_NAME (no
- * trailing slash)
+ * trailing slash). Ideally, this should be located outside of the web tree.
  * 
  * @var string
  */
 define('SLIR_CACHE_DIR',		SLIR_DOCUMENT_ROOT . SLIR_DIR . SLIR_CACHE_DIR_NAME);
+
+/**
+ * Path to the error log file. Needs to be writable by the web server. Ideally,
+ * this should be located outside of the web tree.
+ * 
+ * @since 2.0
+ * @var string
+ */
+define('SLIR_ERROR_LOG_PATH',	SLIR_DOCUMENT_ROOT . SLIR_DIR . '/slir-error-log');
+
 ?>

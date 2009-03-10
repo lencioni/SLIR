@@ -77,14 +77,42 @@ class SLIRException extends Exception
 	{
 		parent::__construct($exception);
 		
-		if (!defined('SLIR_LOG_ERRORS') || SLIR_LOG_ERRORS !== FALSE)
+		if (defined('SLIR_ERROR_LOG_PATH') && (!defined('SLIR_LOG_ERRORS') || SLIR_LOG_ERRORS !== FALSE))
 		{
 			$log	= $this->log();
 			if (!$log)
-				$explanationText .= "\n\nAlso could not log error to file. Please "
-					. 'create a file called \'slir-error-log\' and give the web '
-					. 'server permissions to write to it.';
+				$explanationText .= "\n\nAlso could not log error to file. "
+					. 'Please create a file at \'' . SLIR_ERROR_LOG_PATH . '\' '
+					. 'and give the web server permissions to write to it.';
 		} // if
+		
+		// Make sure we have an up to date configuration file with all of the
+		// settings
+		$constants	= array(
+			'SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS',
+			'SLIR_USE_REQUEST_CACHE',
+			'SLIR_COPY_EXIF',
+			'SLIR_MEMORY_TO_ALLOCATE',
+			'SLIR_DEFAULT_QUALITY',
+			'SLIR_DEFAULT_PROGRESSIVE_JPEG',
+			'SLIR_LOG_ERRORS',
+			'SLIR_ERROR_IMAGES',
+			'SLIR_DOCUMENT_ROOT',
+			'SLIR_DIR',
+			'SLIR_CACHE_DIR_NAME',
+			'SLIR_CACHE_DIR',
+			'SLIR_ERROR_LOG_PATH'
+		);
+		
+		$constants	= array_filter($constants, array($this, 'isNotDefined'));
+		
+		if (count($constants))
+		{
+			$explanationText	.= "\n\nThe following configuration settings "
+				. 'were not defined in the configuration file '
+				. '\'slir-config.php\'. Please see \'slir-config-sample.php\' '
+				. 'for example usage. ' . implode(', ', $constants);
+		}
 		
 		if (!defined('SLIR_ERROR_IMAGES') || SLIR_ERROR_IMAGES === TRUE)
 			$this->errorImage($explanationText);
@@ -92,6 +120,18 @@ class SLIRException extends Exception
 			$this->errorText($explanationText);
 	} // __construct()
 	
+	/**
+	 * Determines if a constant is not defined
+	 * 
+	 * @since 2.0
+	 * @param string $constantName
+	 * @return boolean
+	 */
+	public function isNotDefined($constantName)
+	{
+		return (!defined($constantName));
+	} // isNotDefined()
+		
 	/**
 	 * Logs the error to a file
 	 * 
@@ -104,7 +144,7 @@ class SLIRException extends Exception
 		
 		$message	= "\n[" . @gmdate('D M d H:i:s Y') . '] [' . $_SERVER['REMOTE_ADDR'] . $userAgent . '] ';
 		$message	.= $this->getMessage() . "\n\n" . $referrer . $this->getTraceAsString() . "\n";
-		return @error_log($message, 3, 'slir-error-log');
+		return @error_log($message, 3, SLIR_ERROR_LOG_PATH);
 	} // log()
 	
 	/**
