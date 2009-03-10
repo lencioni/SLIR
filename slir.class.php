@@ -1321,9 +1321,15 @@ Example usage:
 	 */
 	private function serveSourceImage()
 	{
-		$data			= file_get_contents(SLIR_DOCUMENT_ROOT . $this->imagePath);
-		$lastModified	= filemtime(SLIR_DOCUMENT_ROOT . $this->imagePath);
-		$this->serveFile($data, $lastModified, $this->source['mime'], 'source');
+		$this->serveFile(
+			SLIR_DOCUMENT_ROOT . $this->imagePath,
+			NULL,
+			NULL,
+			NULL,
+			$this->source['mime'],
+			'source'
+		);
+		
 		exit();
 	} // serveSourceImage()
 
@@ -1357,17 +1363,12 @@ Example usage:
 	 */
 	private function serveCachedImage($cacheFilePath, $cacheType)
 	{
-		$data			= @file_get_contents($cacheFilePath);
-
-		// This will prevent an error from being thrown if the result of our
-		// file_exists() when checking the cache was cached and incorrect
-		if (!$data)
-			return FALSE;
-		
-		// Serve the file data
-		$this->serveFile(
-			$data,
-			filemtime($cacheFilePath),
+		// Serve the image
+		$data = $this->serveFile(
+			$cacheFilePath,
+			NULL,
+			NULL,
+			NULL,
 			$this->rendered['mime'],
 			"$cacheType cache"
 		);
@@ -1401,7 +1402,14 @@ Example usage:
 		$imageData	= $this->cache($imageData);
 
 		// Serve the file
-		$this->serveFile($imageData, gmdate('U'), $this->rendered['mime'], 'rendered');
+		$this->serveFile(
+			NULL,
+			$imageData,
+			gmdate('U'),
+			strlen($imageData),
+			$this->rendered['mime'],
+			'rendered'
+		);
 
 		// Clean up memory
 		ImageDestroy($this->source['image']);
@@ -1414,21 +1422,38 @@ Example usage:
 	 * Serves a file
 	 *
 	 * @since 2.0
+	 * @param string $imagePath Path to file to serve
 	 * @param string $data Data of file to serve
 	 * @param integer $lastModified Timestamp of when the file was last modified
 	 * @param string $mimeType
 	 * @param string $SLIRheader
+	 * @return string Image data
 	 */
-	private function serveFile($data, $lastModified, $mimeType, $SLIRHeader)
+	private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $SLIRHeader)
 	{
-		$length	= strlen($data);
-
+		if ($imagePath != NULL)
+		{
+			if ($lastModified == NULL)
+				$lastModified	= filemtime($imagePath);
+			if ($length == NULL)
+				$length			= filesize($imagePath);
+		}
+		else if ($length == NULL)
+		{
+			$length		= strlen($data);
+		} // if
+		
+		// Serve the headers
 		$this->serveHeaders(
 			$this->lastModified($lastModified),
 			$mimeType,
 			$length,
 			$SLIRHeader
 		);
+		
+		// Read the image data into memory if we need to
+		if ($data == NULL)
+			$data	= file_get_contents($imagePath);
 
 		// Send the image to the browser in bite-sized chunks
 		$chunkSize	= 1024 * 8;
@@ -1441,6 +1466,8 @@ Example usage:
 			flush();
 		} // while
 		fclose($fp);
+		
+		return $data;
 	} // serveFile()
 
 	/**
