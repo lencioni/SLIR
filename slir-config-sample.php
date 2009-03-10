@@ -46,6 +46,14 @@ define('SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS',	7 * 24 * 60 * 60);
 define('SLIR_USE_REQUEST_CACHE',	TRUE);
 
 /**
+ * Whether EXIF information should be copied from the source image
+ * 
+ * @since 2.0
+ * @var boolean
+ */
+define('SLIR_COPY_EXIF',			TRUE);
+
+/**
  * How much memory to allocate for memory-intensive processes such as rendering
  *
  * @since 2.0

@@ -1166,6 +1166,7 @@ Example usage:
 	private function cache($imageData)
 	{
 		$imageData	= $this->cacheRendered($imageData);
+		
 		if (SLIR_USE_REQUEST_CACHE)
 			return $this->cacheRequest($imageData, FALSE);
 		else
@@ -1219,7 +1220,7 @@ Example usage:
 		// Create the file
 		file_put_contents($cacheFilePath, $imageData);
 
-		if ($copyEXIF && $this->isSourceJPEG())
+		if (SLIR_COPY_EXIF && $copyEXIF && $this->isSourceJPEG())
 		{
 			// Copy IPTC data
 			if (isset($this->source['iptc']))
