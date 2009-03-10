@@ -97,7 +97,7 @@ class SLIRException extends Exception
 	public function log()
 	{
 		$userAgent	= (isset($_SERVER['HTTP_USER_AGENT'])) ? " {$_SERVER['HTTP_USER_AGENT']}" : '';
-		$referrer	= (isset($_SERVER['HTTP_REFERER'])) ? "Referer: {$_SERVER['HTTP_REFERRER']}\n\n" : '';
+		$referrer	= (isset($_SERVER['HTTP_REFERER'])) ? "Referrer: {$_SERVER['HTTP_REFERER']}\n\n" : '';
 		
 		$message	= "\n[" . @gmdate('D M d H:i:s Y') . '] [' . $_SERVER['REMOTE_ADDR'] . $userAgent . '] ';
 		$message	.= $this->getMessage() . "\n\n" . $referrer . $this->getTraceAsString() . "\n";
