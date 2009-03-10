@@ -270,13 +270,6 @@ class SLIR
 					throw new SLIRException('Image path may not contain ":", ".'
 						. '.", "<", or ">"');
 				}
-				// Make sure the path is a file
-				else if (!is_file(SLIR_DOCUMENT_ROOT . $this->imagePath))
-				{
-					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Image path is not a file: '
-						. SLIR_DOCUMENT_ROOT . $this->imagePath);
-				}
 				// Make sure the image file exists
 				else if (!$this->imageExists())
 				{
@@ -732,7 +725,7 @@ Example usage:
 	 */
 	private function imageExists()
 	{
-		return file_exists(SLIR_DOCUMENT_ROOT . $this->imagePath);
+		return is_file(SLIR_DOCUMENT_ROOT . $this->imagePath);
 	} // imageExists()
 
 	/**
