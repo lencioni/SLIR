@@ -26,7 +26,7 @@
  */
  
 /* $Id$ */
- 
+
 /**
  * How long (in seconds) the web browser should use its cached copy of the image
  * before checking with the server for a new version
@@ -113,4 +113,13 @@ define('SLIR_CACHE_DIR_NAME',	'/cache');
  * @var string
  */
 define('SLIR_CACHE_DIR',		SLIR_DOCUMENT_ROOT . SLIR_DIR . SLIR_CACHE_DIR_NAME);
+
+/**
+ * Whether SLIR should log errors
+ * file
+ *
+ * @since 2.0
+ * @var boolean|string
+ */
+define('SLIR_LOG_ERRORS',		TRUE);
 ?>

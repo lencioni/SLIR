@@ -76,11 +76,16 @@ class SLIRException extends Exception
 	public function __construct($exception, $explanationText = NULL)
 	{
 		parent::__construct($exception);
-		$log	= $this->log();
-		if (!$log)
-			$explanationText .= "\n\nAlso could not log error to file. Please "
-				. 'create a file called \'slir-error-log\' and give the web '
-				. 'server permissions to write to it.';
+		
+		if (!defined('SLIR_LOG_ERRORS') || SLIR_LOG_ERRORS !== FALSE)
+		{
+			$log	= $this->log();
+			if (!$log)
+				$explanationText .= "\n\nAlso could not log error to file. Please "
+					. 'create a file called \'slir-error-log\' and give the web '
+					. 'server permissions to write to it.';
+		} // if
+		
 		$this->errorImage($explanationText);
 	} // __construct()
 	
