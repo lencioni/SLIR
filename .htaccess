@@ -3,8 +3,8 @@ RewriteEngine On
 RewriteRule . index.php [L]
 </IfModule>
 
-# prevent viewing of the log file
-<files slir-error-log>
-order allow,deny
-deny from all
-</files>
+# Prevent viewing of the error log file in its default location
+<Files slir-error-log>
+Order Deny,Allow
+Deny from All
+</Files>
