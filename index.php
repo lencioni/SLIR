@@ -1,7 +1,7 @@
 <?php
 /**
  * Main file for SLIR (Smart Lencioni Image Resizer)
-  * 
+ * 
  * This file is part of SLIR (Smart Lencioni Image Resizer).
  * 
  * SLIR is free software: you can redistribute it and/or modify
