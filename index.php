@@ -29,5 +29,5 @@
  /* $Id$ */
 
 require 'slir.class.php';
-$i = new SLIR();
+new SLIR();
 ?>
