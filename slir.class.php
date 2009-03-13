@@ -1124,7 +1124,7 @@ Example usage:
 			$compare['heightRatio']		= $ratios['cropHeight'];
 		} // if
 
-		if ($compare['widthRatio'] * $this->source['height'] < $this->maxHeight)
+		if (floor($compare['widthRatio'] * $this->source['height']) <= $this->maxHeight)
 		{
 			// Resize the image based on width
 			$this->rendered['height']	= ceil($compare['widthRatio'] * $this->source['height']);
@@ -1137,7 +1137,7 @@ Example usage:
 				$this->rendered['cropWidth']	= ceil($compare['widthRatio'] * $this->source['cropWidth']);
 			} // if
 		}
-		else if ($compare['heightRatio'] * $this->source['width'] < $this->maxWidth)
+		else if (floor($compare['heightRatio'] * $this->source['width']) <= $this->maxWidth)
 		{
 			// Resize the image based on height
 			$this->rendered['width']	= ceil($compare['heightRatio'] * $this->source['width']);
