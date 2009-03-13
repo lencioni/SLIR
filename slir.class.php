@@ -1152,19 +1152,14 @@ Example usage:
 		}
 		else if (isset($this->source['cropWidth'])) // No resizing is needed but we still need to crop
 		{
-			$this->rendered['width']		= ceil($ratios['width'] * $this->source['width']);
-			$this->rendered['height']		= ceil($ratios['width'] * $this->source['height']);
+			$ratio	= ($ratios['width'] > $ratios['height']) ? $ratios['width'] : $ratios['height'];
+			$this->rendered['width']		= ceil($ratio * $this->source['width']);
+			$this->rendered['height']		= ceil($ratio * $this->source['height']);
 			
-			$this->rendered['cropWidth']	= ceil($ratios['width'] * $this->source['cropWidth']);
-			$this->rendered['cropHeight']	= ceil($ratios['width'] * $this->source['cropHeight']);
+			$this->rendered['cropWidth']	= ceil($ratio * $this->source['cropWidth']);
+			$this->rendered['cropHeight']	= ceil($ratio * $this->source['cropHeight']);
 		} // if
-		
-		/*
-		echo '<pre>';
-		print_r($this->rendered);
-		exit();
-		*/
-		
+
 		// Determine the quality of the output image
 		$this->rendered['quality']		= ($this->quality !== NULL) ? $this->quality : SLIR_DEFAULT_QUALITY;
 
