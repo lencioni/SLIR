@@ -106,7 +106,7 @@ class SLIR
 	 * @since 2.0
 	 * @var string
 	 */
-	const VERSION	= '2.0b2';
+	const VERSION	= '2.0b3';
 
 	/**
 	 * Path to source image
