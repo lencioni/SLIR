@@ -91,7 +91,7 @@
  * @todo Prevent SLIR from calling itself
  * @todo Percentage resizing?
  * @todo Animated GIF resizing?
- * @todo Smart cropping with detail detection or seam carving?
+ * @todo Seam carving?
  * @todo Crop zoom?
  * @todo Crop offsets?
  * @todo Periodic cache clearing?
@@ -412,24 +412,44 @@ class SLIR
 
 		// Read in the original image
 		$this->source['image']		= $this->rendered['functions']['create'](SLIR_DOCUMENT_ROOT . $this->imagePath);
-
+		
 		// GIF/PNG transparency and background color
 		$this->background();
 
 		// Resample the original image into the resized canvas we set up earlier
-		ImageCopyResampled(
-			$this->rendered['image'],
-			$this->source['image'],
-			0,
-			0,
-			$this->rendered['offset']['left'],
-			$this->rendered['offset']['top'],
-			$this->rendered['width'],
-			$this->rendered['height'],
-			$this->source['width'],
-			$this->source['height']
-		);
-
+		if ($this->source['width'] != $this->rendered['width'] || $this->source['height'] != $this->rendered['height'])
+		{
+			ImageCopyResampled(
+				$this->rendered['image'],
+				$this->source['image'],
+				0,
+				0,
+				0,
+				0,
+				$this->rendered['width'],
+				$this->rendered['height'],
+				$this->source['width'],
+				$this->source['height']
+			);
+		}
+		else // No resizing is needed, so make a clean copy
+		{
+			ImageCopy(
+				$this->rendered['image'],
+				$this->source['image'],
+				0,
+				0,
+				0,
+				0,
+				$this->source['width'],
+				$this->source['height']
+			);
+		} // if
+		
+		// Cropping
+		if ($this->isCroppingNeeded())
+			$this->crop();
+		
 		// Sharpen
 		if ($this->rendered['sharpen'])
 			$this->sharpen();
@@ -439,6 +459,58 @@ class SLIR
 			imageinterlace($this->rendered['image'], 1);
 
 	} // render()
+	
+	/**
+	 * Crops the rendered image
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 * @todo add cropping method preference (smart or centered)
+	 */
+	private function crop()
+	{
+		// Determine crop offset
+		$offset		= array(
+			'top'	=> 0,
+			'left'	=> 0
+		);
+		
+		if ($this->cropRatio['ratio'] > $this->source['ratio'])
+		{
+			// Image is too tall so we will crop the top and bottom
+			$offset['top']	= $this->offset(FALSE);
+		}
+		else
+		{
+			// Image is too wide so we will crop the left and right
+			$offset['left']	= $this->offset(TRUE);
+		} // if
+		
+		// Set up a blank canvas for our cropped image (destination)
+		$cropped	= imagecreatetruecolor(
+						$this->rendered['cropWidth'],
+						$this->rendered['cropHeight']
+						);
+						
+		// Copy rendered image to cropped image
+		ImageCopy(
+			$cropped,
+			$this->rendered['image'],
+			0,
+			0,
+			$offset['left'],
+			$offset['top'],
+			$this->rendered['width'],
+			$this->rendered['height']
+		);
+		
+		// Replace pre-cropped image with cropped image
+		imagedestroy($this->rendered['image']);
+		$this->rendered['image']	= $cropped;
+		unset($cropped);
+		
+		return TRUE;
+	} // crop()
 
 	/**
 	 * Turns on transparency for rendered image if no background fill color is
@@ -977,16 +1049,12 @@ Example usage:
 	 */
 	private function getRenderProperties()
 	{
-		// Set default properties
+		// Set default properties of the rendered image
 		$this->rendered	= array(
 			'width'		=> $this->source['width'],
 			'height'	=> $this->source['height'],
 			'quality'	=> 0,
-			'offset'	=> array(
-				'left'		=> 0,
-				'top'		=> 0
-			),
-			'mime'				=> $this->source['mime'],
+			'mime'		=> $this->source['mime'],
 			'functions'	=> array(
 				'create'	=> 'ImageCreateFromJpeg',
 				'output'	=> 'ImageJpeg'
@@ -995,43 +1063,108 @@ Example usage:
 			'progressive'	=> $this->progressiveJPEGs,
 			'background'	=> $this->backgroundFillColor
 		);
-
+		
+		// Set the ratios needed for resizing. We will compare these below to
+		// determine how to resize the image (based on height or based on width)
+		$ratios		= array(
+			'width'		=> $this->maxWidth / $this->source['width'],
+			'height'	=> $this->maxHeight / $this->source['height']
+		);
+		
+		// Values used to make comparisons below
+		$compare	= array(
+			'heightRatio'	=> $ratios['height'],
+			'widthRatio'	=> $ratios['width']
+		);
+		
 		// Cropping
+		/*
+		To determine the width and height of the rendered image, the following
+		should occur.
+		
+		If cropping an image is required, we need to:
+		 1. Compute the dimensions of the source image after cropping before
+			resizing.
+		 2. Compute the dimensions of the resized image before cropping. One of 
+			these dimensions may be greater than maxWidth or maxHeight because
+			they are based on the dimensions of the final rendered image, which
+			will be cropped to fit within the specified maximum dimensions.
+		 3. Compute the dimensions of the resized image after cropping. These
+			must both be less than or equal to maxWidth and maxHeight.
+		 4. Then when rendering, the image needs to be resized, crop offsets
+			need to be computed based on the desired method (smart or centered),
+			and the image needs to be cropped to the specified dimensions.
+		
+		If cropping an image is not required, we need to compute the dimensions
+		of the image without cropping. These must both be less than or equal to
+		maxWidth and maxHeight.
+		*/
 		if ($this->isCroppingNeeded())
 		{
+			// Determine the dimensions of the source image after cropping and
+			// before resizing
+			
 			if ($this->cropRatio['ratio'] > $this->source['ratio'])
-			{ // Image is too tall so we will crop the top and bottom
-				$originalHeight						= $this->source['height'];
-				$this->source['height']				= $this->source['width'] / $this->cropRatio['ratio'];
-				$this->maxHeight					= min($this->maxHeight, $this->source['height']);
-				$this->rendered['offset']['top']	= ($originalHeight - $this->source['height']) / 2;
+			{
+				// Image is too tall so we will crop the top and bottom
+				$this->source['cropHeight']	= $this->source['width'] / $this->cropRatio['ratio'];
+				$this->source['cropWidth']	= $this->source['width'];
 			}
-			else if ($this->cropRatio['ratio'] < $this->source['ratio'])
-			{ // Image is too wide so we will crop off the left and right sides
-				$originalWidth						= $this->source['width'];
-				$this->source['width']				= $this->source['height'] * $this->cropRatio['ratio'];
-				$this->maxWidth						= min($this->maxWidth, $this->source['width']);
-				$this->rendered['offset']['left']	= ($originalWidth - $this->source['width']) / 2;
-			}
+			else
+			{
+				// Image is too wide so we will crop off the left and right sides
+				$this->source['cropWidth']	= $this->source['height'] * $this->cropRatio['ratio'];
+				$this->source['cropHeight']	= $this->source['height'];
+			} // if
+			
+			$ratios['cropWidth']		= $this->maxWidth / $this->source['cropWidth'];
+			$ratios['cropHeight']		= $this->maxHeight / $this->source['cropHeight'];
+			
+			$compare['widthRatio']		= $ratios['cropWidth'];
+			$compare['heightRatio']		= $ratios['cropHeight'];
 		} // if
 
-		// Setting up the ratios needed for resizing. We will compare these
-		// below to determine how to resize the image (based on height or based
-		// on width)
-		$widthRatio		= $this->maxWidth / $this->source['width'];
-		$heightRatio	= $this->maxHeight / $this->source['height'];
-
-		if ($widthRatio * $this->source['height'] < $this->maxHeight)
-		{ // Resize the image based on width
-			$this->rendered['height']	= ceil($widthRatio * $this->source['height']);
-			$this->rendered['width']	= $this->maxWidth;
-		}
-		else // Resize the image based on height
+		if ($compare['widthRatio'] * $this->source['height'] < $this->maxHeight)
 		{
-			$this->rendered['width']	= ceil($heightRatio * $this->source['width']);
-			$this->rendered['height']	= $this->maxHeight;
+			// Resize the image based on width
+			$this->rendered['height']	= ceil($compare['widthRatio'] * $this->source['height']);
+			$this->rendered['width']	= ceil($compare['widthRatio'] * $this->source['width']);
+			
+			// Determine dimensions after cropping
+			if (isset($this->source['cropWidth']))
+			{
+				$this->rendered['cropHeight']	= ceil($compare['widthRatio'] * $this->source['cropHeight']);
+				$this->rendered['cropWidth']	= ceil($compare['widthRatio'] * $this->source['cropWidth']);
+			} // if
+		}
+		else if ($compare['heightRatio'] * $this->source['width'] < $this->maxWidth)
+		{
+			// Resize the image based on height
+			$this->rendered['width']	= ceil($compare['heightRatio'] * $this->source['width']);
+			$this->rendered['height']	= ceil($compare['heightRatio'] * $this->source['height']);
+			
+			// Determine dimensions after cropping
+			if (isset($this->source['cropWidth']))
+			{
+				$this->rendered['cropHeight']	= ceil($compare['heightRatio'] * $this->source['cropHeight']);
+				$this->rendered['cropWidth']	= ceil($compare['heightRatio'] * $this->source['cropWidth']);
+			} // if
+		}
+		else if (isset($this->source['cropWidth'])) // No resizing is needed but we still need to crop
+		{
+			$this->rendered['width']		= ceil($ratios['width'] * $this->source['width']);
+			$this->rendered['height']		= ceil($ratios['width'] * $this->source['height']);
+			
+			$this->rendered['cropWidth']	= ceil($ratios['width'] * $this->source['cropWidth']);
+			$this->rendered['cropHeight']	= ceil($ratios['width'] * $this->source['cropHeight']);
 		} // if
-
+		
+		/*
+		echo '<pre>';
+		print_r($this->rendered);
+		exit();
+		*/
+		
 		// Determine the quality of the output image
 		$this->rendered['quality']		= ($this->quality !== NULL) ? $this->quality : SLIR_DEFAULT_QUALITY;
 
@@ -1077,7 +1210,108 @@ Example usage:
 		} // switch
 
 	} // getRenderProperties()
+	
+	/**
+	 * Determines the optimal number of rows in from the top or left to crop
+	 * the source image
+	 * 
+	 * @since 2.0
+	 * @param boolean $fromLeft If TRUE, will calculate from the left edge. If
+	 * FALSE, will calculate from the top edge
+	 * @return integer
+	 */
+	private function offset($fromLeft = TRUE)
+	{
+		$length				= ($fromLeft) ? $this->rendered['cropWidth'] : $this->rendered['cropHeight'];
+		$originalLength		= ($fromLeft) ? $this->rendered['width'] : $this->rendered['height'];
+		
+		$fudgeFactor		= 6000000 * $originalLength;
+		
+		$pixelRowsToCrop	= $originalLength - $length;
+		
+		$offset	= array(
+			'near'	=> 0,
+			'far'	=> $originalLength - 1
+		);
+		
+		$colors	= array(
+			'near'	=> NULL,
+			'far'	=> NULL
+		);
+		
+		for($rowsCropped = 0; $rowsCropped < $pixelRowsToCrop; ++$rowsCropped)
+		{
+			if ($colors['near'] === NULL)
+				$colors['near']	= $this->rowInterestingness($offset['near'], $fromLeft);
+				
+			if ($colors['far'] === NULL)
+				$colors['far']	= $this->rowInterestingness($offset['far'], $fromLeft);
 
+			// Compare near and far rows. Give the less interesting row the boot.
+			if ($colors['near'] > ($colors['far'] + $fudgeFactor))
+			{
+				--$offset['far'];
+				$colors['far']	= NULL;
+			}
+			else if ($colors['far'] > ($colors['near'] + $fudgeFactor))
+			{
+				++$offset['near'];
+				$colors['near']	= NULL;
+			}
+			else
+			{
+				if ($offset['near'] > $originalLength - $offset['far'])
+				{
+					--$offset['far'];
+					$colors['far']	= NULL;
+				}
+				else // Discard near
+				{
+					++$offset['near'];
+					$colors['near']	= NULL;
+				} // if
+			} // if
+		} // for
+		
+		return $offset['near'];
+	} // offset()
+	
+	/**
+	 * @since 2.0
+	 * @param integer $row
+	 * @param boolean $fromLeft
+	 */
+	private function rowInterestingness($row, $fromLeft = TRUE)
+	{
+		$greatestContrast	= 0;
+		$interestingness	= 0;
+		$previousColor		= 0;
+		if ($fromLeft)
+		{
+			for($y = 0; $y < $this->rendered['height']; ++$y)
+			{
+				$contrast			= abs($previousColor - imagecolorat($this->rendered['image'], $row, $y));
+				$greatestContrast	= max($contrast, $greatestContrast);
+				$interestingness	+= $contrast;
+			} // for
+			$totalRows	= $y;
+		}
+		else
+		{
+			for($x = 0; $x < $this->rendered['width']; ++$x)
+			{
+				$contrast			= abs($previousColor - imagecolorat($this->rendered['image'], $x, $row));
+				$greatestContrast	= max($contrast, $greatestContrast);
+				$interestingness	+= $contrast;
+			} // for
+			$totalRows	= $x;
+		} // if
+		
+		$interestingness	+= ($greatestContrast * $totalRows);
+		
+		return $interestingness;
+	} // rowInterestingness()
+	
 	/**
 	 * @since 2.0
 	 * @return boolean
