@@ -447,6 +447,7 @@ class SLIR
 				$this->source['height']
 			);
 		} // if
+
 		
 		// Cropping
 		if ($this->isCroppingNeeded())
@@ -487,6 +488,9 @@ class SLIR
 			// Image is too wide so we will crop the left and right
 			$offset['left']	= $this->offset(TRUE);
 		} // if
+		
+		if ($offset['top'] == 0 && $offset['left'] == 0)
+			return TRUE;
 		
 		// Set up a blank canvas for our cropped image (destination)
 		$cropped	= imagecreatetruecolor(
@@ -1235,6 +1239,9 @@ Example usage:
 		$threshold			= 0.3;
 		$rowsAtATime		= max(2, round(sqrt($length * $lengthB) / 15));
 		$pixelRowsToCrop	= $originalLength - $length;
+		
+		if ($pixelRowsToCrop == 0)
+			return 0;
 		
 		// $pixelStep will sacrifice accuracy for speed and memory
 		$pixelStep			= max(1, round(sqrt($pixelRowsToCrop * $lengthB) / 200));
