@@ -481,16 +481,21 @@ class SLIR
 		if ($this->cropRatio['ratio'] > $this->source['ratio'])
 		{
 			// Image is too tall so we will crop the top and bottom
-			$offset['top']	= $this->offset(FALSE);
+			$o					= $this->offset(FALSE);
+			if ($o === FALSE)
+				return TRUE;
+			else
+				$offset['top']		= $o;
 		}
 		else
 		{
 			// Image is too wide so we will crop the left and right
-			$offset['left']	= $this->offset(TRUE);
+			$o					= $this->offset(TRUE);
+			if ($o === FALSE)
+				return TRUE;
+			else
+				$offset['left']		= $o;
 		} // if
-		
-		if ($offset['top'] == 0 && $offset['left'] == 0)
-			return TRUE;
 		
 		// Set up a blank canvas for our cropped image (destination)
 		$cropped	= imagecreatetruecolor(
@@ -1219,7 +1224,7 @@ Example usage:
 	 * @since 2.0
 	 * @param boolean $fromLeft If TRUE, will calculate from the left edge. If
 	 * FALSE, will calculate from the top edge
-	 * @return integer
+	 * @return integer|boolean
 	 */
 	private function offset($fromLeft = TRUE)
 	{
@@ -1237,15 +1242,15 @@ Example usage:
 		} // if
 		
 		$threshold			= 0.3;
-		$rowsAtATime		= max(2, round(sqrt($length * $lengthB) / 15));
+		$rowsAtATime		= max(2, round(sqrt($length * $lengthB) / 25));
 		$pixelRowsToCrop	= $originalLength - $length;
 		
 		if ($pixelRowsToCrop == 0)
-			return 0;
+			return FALSE;
 		
 		// $pixelStep will sacrifice accuracy for speed and memory
 		$pixelStep			= max(1, round(sqrt($pixelRowsToCrop * $lengthB) / 200));
-		
+
 		$bloodlust			= $lengthB * $rowsAtATime;
 
 		$offset	= array(
@@ -1258,6 +1263,7 @@ Example usage:
 			'far'	=> NULL
 		);
 		
+		$colorRatio	= 1;
 		for($rowsCropped = 0; $rowsCropped < $pixelRowsToCrop; $rowsCropped += $rowsAtATime)
 		{
 			if ($colors['near'] === NULL)
@@ -1336,6 +1342,7 @@ Example usage:
 		$interestingness	= 0;
 		$previousColor		= array(0,0,0);
 		$offset				= $offset % $pixelStep;
+		$brightness			= 0;
 		
 		if ($fromLeft)
 		{
@@ -1346,6 +1353,7 @@ Example usage:
 				$greatestContrast	= max($contrast, $greatestContrast);
 				$interestingness	+= $contrast;
 				$previousColor		= $color;
+				$brightness			+= array_sum($color) * $pixelStep;
 			} // for
 			$totalRows	= $y;
 		}
@@ -1358,11 +1366,13 @@ Example usage:
 				$greatestContrast	= max($contrast, $greatestContrast);
 				$interestingness	+= $contrast;
 				$previousColor		= $color;
+				$brightness			+= array_sum($color) * $pixelStep;
 			} // for
 			$totalRows	= $x;
 		} // if
 		
-		$interestingness	+= $greatestContrast * $totalRows * 1.5;
+		$interestingness	+= $greatestContrast * $totalRows;
+		$interestingness	+= $brightness;
 		
 		return $interestingness;
 	} // rowInterestingness()
