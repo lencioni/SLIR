@@ -98,6 +98,8 @@
  * @todo Remote image fetching?
  * @todo Alternative support for ImageMagick?
  * @todo Prevent files in cache from being read directly?
+ * @todo split directory initialization and variable checking into a separate
+ * install/upgrade script with friendly error messages
  */
 
 class SLIR
@@ -585,7 +587,7 @@ class SLIR
 	 */
 	private function calculateSharpnessFactor($sourceArea, $destinationArea)
 	{
-		$final	= $destinationArea * (750.0 / $sourceArea);
+		$final	= sqrt($destinationArea) * (750.0 / sqrt($sourceArea));
 		$a		= 52;
 		$b		= -0.27810650887573124;
 		$c		= .00047337278106508946;
@@ -1217,13 +1219,28 @@ Example usage:
 	 */
 	private function offset($fromLeft = TRUE)
 	{
-		$length				= ($fromLeft) ? $this->rendered['cropWidth'] : $this->rendered['cropHeight'];
-		$originalLength		= ($fromLeft) ? $this->rendered['width'] : $this->rendered['height'];
+		if ($fromLeft)
+		{
+			$length				= $this->rendered['cropWidth'];
+			$lengthB			= $this->rendered['cropHeight'];
+			$originalLength		= $this->rendered['width'];
+		}
+		else
+		{
+			$length				= $this->rendered['cropHeight'];
+			$lengthB			= $this->rendered['cropWidth'];
+			$originalLength		= $this->rendered['height'];
+		} // if
 		
-		$fudgeFactor		= 6000000 * $originalLength;
-		
+		$threshold			= 0.3;
+		$rowsAtATime		= max(2, round(sqrt($length * $lengthB) / 15));
 		$pixelRowsToCrop	= $originalLength - $length;
 		
+		// $pixelStep will sacrifice accuracy for speed and memory
+		$pixelStep			= max(1, round(sqrt($pixelRowsToCrop * $lengthB) / 200));
+		
+		$bloodlust			= $lengthB * $rowsAtATime;
+
 		$offset	= array(
 			'near'	=> 0,
 			'far'	=> $originalLength - 1
@@ -1234,78 +1251,160 @@ Example usage:
 			'far'	=> NULL
 		);
 		
-		for($rowsCropped = 0; $rowsCropped < $pixelRowsToCrop; ++$rowsCropped)
+		for($rowsCropped = 0; $rowsCropped < $pixelRowsToCrop; $rowsCropped += $rowsAtATime)
 		{
 			if ($colors['near'] === NULL)
-				$colors['near']	= $this->rowInterestingness($offset['near'], $fromLeft);
+			{
+				$interestingness	= array();
+				for($i = 0; $i <= $rowsAtATime; ++$i)
+					$interestingness[]	= $this->rowInterestingness($offset['near'] + $i, $fromLeft, $pixelStep, $i);
+				
+				$colors['near']	= array_sum($interestingness)
+					+ ($this->getRowContrast($interestingness) * sqrt($rowsAtATime * $lengthB));
+			} // if
 				
 			if ($colors['far'] === NULL)
-				$colors['far']	= $this->rowInterestingness($offset['far'], $fromLeft);
+			{
+				$interestingness	= array();
+				for($i = 0; $i <= $rowsAtATime; ++$i)
+					$interestingness[]	= $this->rowInterestingness($offset['far'] - $i, $fromLeft, $pixelStep, $i);
+				
+				$colors['far']	= array_sum($interestingness)
+					+ ($this->getRowContrast($interestingness) * sqrt($rowsAtATime * $lengthB));
+			} // if
+			
+			$colorRatio	= $colors['near'] / $colors['far'];
 
 			// Compare near and far rows. Give the less interesting row the boot.
-			if ($colors['near'] > ($colors['far'] + $fudgeFactor))
+			if ($colorRatio > (1 + $threshold))
 			{
-				--$offset['far'];
+				$offset['far']	-=  $rowsAtATime;
 				$colors['far']	= NULL;
+				// Near won the battle and got stronger
+				$colors['near']	+= $bloodlust;
 			}
-			else if ($colors['far'] > ($colors['near'] + $fudgeFactor))
+			else if ($colorRatio < (1 - $threshold))
 			{
-				++$offset['near'];
+				$offset['near']	+= $rowsAtATime;
 				$colors['near']	= NULL;
+				$colors['far']	+= $bloodlust;
 			}
 			else
 			{
+				// There is no strong winner, so discard rows from the side that
+				// has lost the fewest so far
+				
 				if ($offset['near'] > $originalLength - $offset['far'])
 				{
-					--$offset['far'];
+					$offset['far']	-= $rowsAtATime;
 					$colors['far']	= NULL;
 				}
 				else // Discard near
 				{
-					++$offset['near'];
+					$offset['near']	+= $rowsAtATime;
 					$colors['near']	= NULL;
 				} // if
 			} // if
 		} // for
 		
-		return $offset['near'];
+		// bounceback for potentially important contrasty details on the edge
+		if ($colorRatio > (1 + ($threshold * 1.5)))
+			$offset['near'] -= $rowsAtATime;
+		else if ($colorRatio < (1 - ($threshold * 1.5)))
+			$offset['near']	+= $rowsAtATime;
+		
+		return min($pixelRowsToCrop, max(0, $offset['near']));
 	} // offset()
 	
 	/**
 	 * @since 2.0
 	 * @param integer $row
 	 * @param boolean $fromLeft
+	 * @param integer $pixelStep
+	 * @param integer $offset
 	 */
-	private function rowInterestingness($row, $fromLeft = TRUE)
+	private function rowInterestingness($row, $fromLeft = TRUE, $pixelStep = 1, $offset = 0)
 	{
 		$greatestContrast	= 0;
 		$interestingness	= 0;
-		$previousColor		= 0;
+		$previousColor		= array(0,0,0);
+		$offset				= $offset % $pixelStep;
+		
 		if ($fromLeft)
 		{
-			for($y = 0; $y < $this->rendered['height']; ++$y)
+			for($y = $offset; $y < $this->rendered['height']; $y += $pixelStep)
 			{
-				$contrast			= abs($previousColor - imagecolorat($this->rendered['image'], $row, $y));
+				$color				= $this->convertColorIndex(imagecolorat($this->rendered['image'], $row, $y));
+				$contrast			= $this->getContrast($previousColor, $color) * $pixelStep;
 				$greatestContrast	= max($contrast, $greatestContrast);
 				$interestingness	+= $contrast;
+				$previousColor		= $color;
 			} // for
 			$totalRows	= $y;
 		}
 		else
 		{
-			for($x = 0; $x < $this->rendered['width']; ++$x)
+			for($x = $offset; $x < $this->rendered['width']; $x += $pixelStep)
 			{
-				$contrast			= abs($previousColor - imagecolorat($this->rendered['image'], $x, $row));
+				$color				= $this->convertColorIndex(imagecolorat($this->rendered['image'], $x, $row));
+				$contrast			= $this->getContrast($previousColor, $color) * $pixelStep;
 				$greatestContrast	= max($contrast, $greatestContrast);
 				$interestingness	+= $contrast;
+				$previousColor		= $color;
 			} // for
 			$totalRows	= $x;
 		} // if
 		
-		$interestingness	+= ($greatestContrast * $totalRows);
+		$interestingness	+= $greatestContrast * $totalRows * 1.5;
 		
 		return $interestingness;
 	} // rowInterestingness()
+	
+	/**
+	 * @since 2.0
+	 * @param integer $int
+	 * @return array
+	 */
+	private function convertColorIndex($int)
+	{
+		$a	= (255 - (($int >> 24) & 0xFF)) / 255;
+		$r	= (($int >> 16) & 0xFF) * $a;
+		$g	= (($int >> 8) & 0xFF) * $a;
+		$b	= ($int & 0xFF) * $a;
+		return array($r, $g, $b);
+	} // convertColorIndex()
+	
+	/**
+	 * @since 2.0
+	 * @param array $colorArrayA
+	 * @param array $colorArrayB
+	 * @return float
+	 */
+	private function getContrast($colorArrayA, $colorArrayB)
+	{
+		return abs($colorArrayA[0] - $colorArrayB[0])
+			+ abs($colorArrayA[1] - $colorArrayB[1])
+			+ abs($colorArrayA[2] - $colorArrayB[2]);
+	} // getContrast()
+	
+	/**
+	 * @since 2.0
+	 * @param array $rows
+	 * @return integer
+	 */
+	private function getRowContrast($rows)
+	{
+		$contrast	= 0;
+		$prev		= NULL;
+		foreach($rows as $row)
+		{
+			if ($prev !== NULL)
+				$contrast	+= abs($prev - $row);
+			$prev = $row;
+		} // foreach
+		
+		return $contrast;
+	} // getRowContrast()
 	
 	/**
 	 * @since 2.0
