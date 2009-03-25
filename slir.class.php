@@ -101,6 +101,8 @@
  * @todo split directory initialization and variable checking into a separate
  * install/upgrade script with friendly error messages, an opportunity to give a
  * tip, and a button that tells me they are using it on their site if they like
+ * @todo document new code
+ * @todo clean up new code
  */
 
 class SLIR
@@ -1242,75 +1244,88 @@ Example usage:
 			$originalLength		= $this->rendered['height'];
 		} // if
 		
-		$threshold			= 0.15;
-		$upperThreshold		= 1 + $threshold;
-		$lowerThreshold		= 1 / (1 + $threshold);
+		// To smart crop an image, we need to calculate the difference between
+		// each pixel in each row and its adjacent pixels. Add these up to
+		// determine how interesting each row is. Based on how interesting each
+		// row is, we can determine whether or not to discard it. We start with
+		// the closest row and the farthest row and then move on from there.
 		
-		$rowsAtATime		= max(1, round(sqrt($length * $lengthB) / 50));
-		$pixelRowsToCrop	= $originalLength - $length;
+		// All colors in the image will be stored in the global colors array.
+		// This array will also include information about each pixel's
+		// interestingness.
+		// 
+		// For example (rough representation):
+		// 
+		// $colors = array(
+		//   x1	=> array(
+		//   	x1y1	=> array(
+		//			'lab'	=> array(l, a, b),
+		//			'dE'	=> array(TL, TC, TR, LC, LR, BL, BC, BR),
+		//			'i'		=> computedInterestingness
+		//   	),
+		//		x1y2	=> array( ... ),
+		//		...
+		//   ),
+		//   x2	=> array( ... ),
+		//   ...
+		// );
+		global $colors;
+		$colors	= array();
 		
-		if ($pixelRowsToCrop == 0)
-			return FALSE;
-		
-		// $pixelStep will sacrifice accuracy for speed and memory
-		$pixelStep			= max(1, round(sqrt($pixelRowsToCrop * $lengthB) / 200));
-
+		// Offset will remember how far in from each side we are in the
+		// cropping game
 		$offset	= array(
 			'near'	=> 0,
 			'far'	=> 0
 		);
 		
-		$colors	= array(
-			'near'	=> array(),
-			'far'	=> array()
-		);
+		$rowsToCrop	= $originalLength - $length;
 		
-		$colorRatio		= 1;
-		$returningChampion	= NULL;
+		// $pixelStep will sacrifice accuracy for memory and speed. Essentially
+		// it acts as a spot-checker and scales with the size of the cropped area
+		$pixelStep	= round( sqrt($rowsToCrop * $lengthB) / 10);
+		
+		// We won't save much speed if the pixelStep is between 4 and 1 because
+		// we still need to sample adjacent pixels
+		if ($pixelStep < 4)
+			$pixelStep = 1;
+		
+		$tolerance	= 0.5;
+		$upperTol	= 1 + $tolerance;
+		$lowerTol	= 1 / $upperTol;
 		
 		// Fight the near and far rows. The stronger will remain standing.
-		for($rowsCropped = 0; $rowsCropped < $pixelRowsToCrop; $rowsCropped += $rowsAtATime)
+		$returningChampion	= NULL;
+		$ratio				= 1;
+		for($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped)
 		{
-			if (!isset($colors['near'][$offset['near']]))
-			{
-				$rows			= array();
-				
-				for($i = 0; $i <= $rowsAtATime; ++$i)
-					$rows[]		= $this->rowInterestingness($offset['near'] + $i, $fromLeft, $pixelStep, $i);
-				
-				$colors['near'][$offset['near']]	= max(1, $this->rowsInterestingness($rows));
-			} // if
-				
-			if (!isset($colors['far'][$offset['far']]))
-			{
-				$rows		= array();
-				
-				for($i = 0; $i <= $rowsAtATime; ++$i)
-					$rows[]	= $this->rowInterestingness($originalLength - 1 - $offset['far'] - $i, $fromLeft, $pixelStep, $i);
-				
-				$colors['far'][$offset['far']]	= max(1, $this->rowsInterestingness($rows));
-			} // if
-				
-			$colorRatio	= $colors['near'][$offset['near']] / $colors['far'][$offset['far']];
+			$a	= $this->rowInterestingness($offset['near'], $fromLeft, $pixelStep);
+			$b	= $this->rowInterestingness($originalLength - $offset['far'] - 1, $fromLeft, $pixelStep);
 			
-			// Compare near and far rows. Give the less interesting row the boot.
-			if ($colorRatio > $upperThreshold)
+			if ($a == 0 && $b == 0)
+				$ratio = 1;
+			else if ($b == 0)
+				$ratio = 1 + $a;
+			else
+				$ratio	= $a / $b;
+			
+			if ($ratio > $upperTol)
 			{
-				$offset['far']	+=  $rowsAtATime;
+				++$offset['far'];
 				
 				// Fightback. Winning side gets to go backwards through fallen rows
 				// to see if they are stronger
 				if ($returningChampion == 'near')
-					$offset['near']	-= ($offset['near'] > 0) ? $rowsAtATime : 0;
+					$offset['near']	-= ($offset['near'] > 0) ? 1 : 0;
 				else
 					$returningChampion	= 'near';
 			}
-			else if ($colorRatio < $lowerThreshold)
+			else if ($ratio < $lowerTol)
 			{
-				$offset['near']					+= $rowsAtATime;
+				++$offset['near'];
 				
 				if ($returningChampion == 'far')
-					$offset['far']	-= ($offset['far'] > 0) ? $rowsAtATime : 0;
+					$offset['far']	-= ($offset['far'] > 0) ? 1 : 0;
 				else
 					$returningChampion	= 'far';
 			}
@@ -1319,188 +1334,447 @@ Example usage:
 				// There is no strong winner, so discard rows from the side that
 				// has lost the fewest so far. Essentially this is a draw.
 				if ($offset['near'] > $offset['far'])
-					$offset['far']	+= $rowsAtATime;
+					++$offset['far'];
 				else // Discard near
-					$offset['near']	+= $rowsAtATime;
+					++$offset['near'];
 					
 				// No fightback for draws
-				$previousWin	= NULL;
+				$returningChampion	= NULL;
 			} // if
+			
 		} // for
 		
 		// Bounceback for potentially important details on the edge.
 		// This may possibly be better if the winning side fights a hard final
-		// push battle where it stands the chance to gain ground.
-		if ($colorRatio > (1 + ($threshold * 1.5)))
-			$offset['near'] -= $rowsAtATime;
-		else if ($colorRatio < (1 / (1 + ($threshold * 1.5))))
-			$offset['near']	+= $rowsAtATime;
-		
-		return min($pixelRowsToCrop, max(0, $offset['near']));
+		// push multiple-rows-at-stake battle where it stands the chance to gain
+		// ground.
+		if ($ratio > (1 + ($tolerance * 1.25)))
+			$offset['near'] -= round($length * .03);
+		else if ($ratio < (1 / (1 + ($tolerance * 1.25))))
+			$offset['near']	+= round($length * .03);
+			
+		return min($rowsToCrop, max(0, $offset['near']));
 	} // offset()
 	
-	/**
-	 * @param array $rows
-	 * @return float
-	 */
-	private function rowsInterestingness($rows)
+	private function rowInterestingness($row, $fromLeft, $pixelStep)
 	{
-		$rowsInterestingness	= 0;
+		$interestingness	= 0;
+		$max				= 0;
 		
-		$previousRow			= $rows[0];
-		
-		foreach($rows as $row)
-		{
-			$variance		= abs($row['variance'] - $previousRow['variance']);
-			$saturation		= abs($row['saturation'] - $previousRow['saturation']);
-			$brightness		= abs($row['brightness'] - $previousRow['brightness']);
-			$contrast		= abs($row['contrast'] - $previousRow['contrast']);
-			
-			$rowsInterestingness	+=	$row['interestingness']
-				+ $variance + $saturation + $brightness + $contrast
-				+ $row['greatestVariance'] + $row['greatestSaturation']
-				+ $row['greatestBrightness'] + $row['greatestContrast'];
-			
-			$previousRow	= $row;
-		} // foreach
-		
-		return $rowsInterestingness;
-	} // rowsInterestingness()
-	
-	/**
-	 * Calculates how interesting a row in an image is
-	 * 
-	 * Interestingness of a row is based on these qualities: color variance,
-	 * saturation, brightness, and local contrast (variation in brightness)
-	 * 
-	 * @since 2.0
-	 * @param integer $row
-	 * @param boolean $fromLeft
-	 * @param integer $pixelStep
-	 * @param integer $offset
-	 * @return array
-	 */
-	private function rowInterestingness($row, $fromLeft = TRUE, $pixelStep = 1, $offset = 0)
-	{
-		$varianceImportance		= 10;
-		$saturationImportance	= .15;
-		$brightnessImportance	= .03;
-		$contrastImportance		= .3;
-		
-		$variance = $saturation = $brightness = $contrast = $greatestVariance =
-			$greatestSaturation = $greatestBrightness = $greatestContrast =
-			$previousBrightness = $totalVariance = $totalSaturation = 
-			$totalBrightness = $totalContrast = $interestingness = 0;
-		
-		// Offset will stagger the sampled pixels from row to row in order to
-		// produce a more representative sample.
-		// Example:
-		// . . . . . . . . .
-		//  . . . . . . . . .
-		// . . . . . . . . .
-		$offset				= $offset % $pixelStep;
-		
-		// Set up the first color to compare against
 		if ($fromLeft)
-			$previousColor		= $this->convertColorIndex(imagecolorat($this->rendered['image'], $row, $offset));
-		else
-			$previousColor		= $this->convertColorIndex(imagecolorat($this->rendered['image'], $offset, $row));
-		
-		// Grab all the colors in the row
-		$colors				= array();
-		if ($fromLeft)
-			for($totalPixels = $offset; $totalPixels < $this->rendered['height']; $totalPixels += $pixelStep)
-				$colors[]	= $this->convertColorIndex(imagecolorat($this->rendered['image'], $row, $totalPixels));
-		else
-			for($totalPixels = $offset; $totalPixels < $this->rendered['width']; $totalPixels += $pixelStep)
-				$colors[]	= $this->convertColorIndex(imagecolorat($this->rendered['image'], $totalPixels, $row));
-		
-		// Compare all of the grabbed colors
-		foreach ($colors as $color)
 		{
-			$variance			= $this->colorVariance($previousColor, $color) * $pixelStep;
-			$saturation			= $this->saturation($color) * $pixelStep;
-			$brightness			= array_sum($color) * $pixelStep;
-			$contrast			= abs($brightness - $previousBrightness);
-			
-			$greatestVariance	= max($variance, $greatestVariance);
-			$greatestSaturation	= max($saturation, $greatestSaturation);
-			$greatestBrightness	= max($brightness, $greatestBrightness);
-			$greatestContrast	= max($contrast, $greatestContrast);
-			
-			$totalVariance		+= $variance;
-			$totalSaturation	+= $saturation;
-			$totalBrightness	+= $brightness;
-			$totalContrast		+= $contrast;
-			
-			$previousBrightness	= $brightness;
-			$previousColor		= $color;
-		} // foreach
+			for($totalPixels = 0; $totalPixels < $this->rendered['height']; $totalPixels += $pixelStep)
+			{
+				$i					= $this->pixelInterestingness($row, $totalPixels);
+				$max				= max($i, $max);
+				$interestingness	+= $i;
+			}
+		}
+		else
+		{
+			for($totalPixels = 0; $totalPixels < $this->rendered['width']; $totalPixels += $pixelStep)
+			{
+				$i					= $this->pixelInterestingness($totalPixels, $row);
+				$max				= max($i, $max);
+				$interestingness	+= $i;
+			}
+		}
 		
-		// Weight attributes based on importance
-		$totalVariance		*= $varianceImportance;
-		$totalSaturation	*= $saturationImportance;
-		$totalBrightness	*= $brightnessImportance;
-		$totalContrast		*= $contrastImportance;
-		
-		$greatestVariance	*= $varianceImportance;
-		$greatestSaturation	*= $saturationImportance;
-		$greatestBrightness	*= $brightnessImportance;
-		$greatestContrast	*= $contrastImportance;
-		
-		// Calculate the interestingness
-		$interestingness	+= ($totalVariance + $totalSaturation + $totalBrightness + $totalContrast)
-			+ (($greatestVariance + $greatestSaturation + $greatestBrightness + $greatestContrast) * $totalPixels * 2);
-		
-		return array(
-			'interestingness'		=> $interestingness,
-			'variance'				=> $totalVariance,
-			'saturation'			=> $totalSaturation,
-			'brightness'			=> $totalBrightness,
-			'contrast'				=> $totalContrast,
-			'greatestVariance'		=> $greatestVariance,
-			'greatestSaturation'	=> $greatestSaturation,
-			'greatestBrightness'	=> $greatestBrightness,
-			'greatestContrast'		=> $greatestContrast
-		);
+		return $interestingness + (($max - ($interestingness / ($totalPixels / $pixelStep))) * ($totalPixels / $pixelStep));
 	} // rowInterestingness()
+	
+	private function pixelInterestingness($x, $y)
+	{
+		global $colors;
+		
+		if (!isset($colors[$x][$y]['i']))
+		{
+			// Ensure this pixel's color information has already been loaded
+			$this->loadPixelInfo($x, $y);
+			
+			// Calculate each neighboring pixel's Delta E in relation to this
+			// pixel
+			$this->calculateDeltas($x, $y);
+			
+			// Calculate the interestingness of this pixel based on neighboring
+			// pixels' Delta E in relation to this pixel
+			$this->calculateInterestingness($x, $y);
+		} // if
+		
+		return $colors[$x][$y]['i'];
+	} // pixelInterestingness()
+	
+	private function loadPixelInfo($x, $y)
+	{
+		if ($x < 0 || $x >= $this->rendered['width']
+			|| $y < 0 || $y >= $this->rendered['height'])
+				return FALSE;
+				
+		global $colors;
+		
+		if (!isset($colors[$x]))
+			$colors[$x]	= array();
+			
+		if (!isset($colors[$x][$y]))
+			$colors[$x][$y]	= array();
+		
+		if (!isset($colors[$x][$y]['i']) && !isset($colors[$x][$y]['lab']))
+			$colors[$x][$y]['lab']	= $this->evaluateColor(imagecolorat($this->rendered['image'], $x, $y));
+			
+		return TRUE;
+	} // loadPixelInfo()
+	
+	private function calculateDeltas($x, $y)
+	{
+		// Calculate each adjacent pixel's Delta E in relation to the current
+		// pixel (top left, top center, top right, center left, center right,
+		// bottom left, bottom center, and bottom right)
+		
+		global $colors;
+		
+		if (!isset($colors[$x][$y]['dE']['d-1-1']))
+			$this->calculateDelta($x, $y, -1, -1);
+		if (!isset($colors[$x][$y]['dE']['d0-1']))
+			$this->calculateDelta($x, $y, 0, -1);
+		if (!isset($colors[$x][$y]['dE']['d1-1']))
+			$this->calculateDelta($x, $y, 1, -1);
+		if (!isset($colors[$x][$y]['dE']['d-10']))
+			$this->calculateDelta($x, $y, -1, 0);
+		if (!isset($colors[$x][$y]['dE']['d10']))
+			$this->calculateDelta($x, $y, 1, 0);
+		if (!isset($colors[$x][$y]['dE']['d-11']))
+			$this->calculateDelta($x, $y, -1, 1);
+		if (!isset($colors[$x][$y]['dE']['d01']))
+			$this->calculateDelta($x, $y, 0, 1);
+		if (!isset($colors[$x][$y]['dE']['d11']))
+			$this->calculateDelta($x, $y, 1, 1);
+		
+		return TRUE;
+	} // calculateDeltas()
+	
+	private function calculateDelta($x1, $y1, $xMove, $yMove)
+	{
+		$x2	= $x1 + $xMove;
+		$y2 = $y1 + $yMove;
+		
+		// Pixel is outside of the image, so we cant't calculate the Delta E
+		if ($x2 < 0 || $x2 >= $this->rendered['width']
+			|| $y2 < 0 || $y2 >= $this->rendered['height'])
+				return NULL;
+		
+		global $colors;
+		
+		if (!isset($colors[$x1][$y1]['lab']))
+			$this->loadPixelInfo($x1, $y1);
+		if (!isset($colors[$x2][$y2]['lab']))
+			$this->loadPixelInfo($x2, $y2);
+		
+		$delta	= $this->deltaE($colors[$x1][$y1]['lab'], $colors[$x2][$y2]['lab']);
+		
+		$colors[$x1][$y1]['dE']["d$xMove$yMove"]	= $delta;
+		
+		$x2Move	= $xMove * -1;
+		$y2Move	= $yMove * -1;
+		$colors[$x2][$y2]['dE']["d$x2Move$y2Move"]	=& $colors[$x1][$y1]['dE']["d$xMove$yMove"];
+		
+		return TRUE;
+	} // calculateDelta()
+	
+	private function calculateInterestingness($x, $y)
+	{
+		global $colors;
+		
+		// The interestingness is the average of the pixel's Delta E values
+		$colors[$x][$y]['i']	= array_sum($colors[$x][$y]['dE'])
+			/ count(array_filter($colors[$x][$y]['dE'], 'is_numeric'));
+		
+		return TRUE;
+	} // calculateInterestingness()
 	
 	/**
 	 * @since 2.0
 	 * @param integer $int
 	 * @return array
 	 */
-	private function convertColorIndex($int)
+	private function evaluateColor($int)
+	{
+		$rgb	= $this->colorIndexToRGB($int);
+		$xyz	= $this->RGBtoXYZ($rgb);
+		$lab	= $this->XYZtoHunterLab($xyz);
+		
+		return $lab;
+	} // evaluateColor()
+	
+	/**
+	 * @since 2.0
+	 * @param integer $int
+	 * @return array
+	 */
+	private function colorIndexToRGB($int)
 	{
 		$a	= (255 - (($int >> 24) & 0xFF)) / 255;
 		$r	= (($int >> 16) & 0xFF) * $a;
 		$g	= (($int >> 8) & 0xFF) * $a;
 		$b	= ($int & 0xFF) * $a;
-		return array($r, $g, $b);
-	} // convertColorIndex()
+		return array('r' => $r, 'g' => $g, 'b' => $b);
+	} // colorIndexToRGB()
 	
 	/**
 	 * @since 2.0
-	 * @param array $colorA
-	 * @param array $colorB
+	 * @param array $rgb
+	 * @return array XYZ
+	 * @link http://easyrgb.com/index.php?X=MATH&H=02#text2
+	 */
+	private function RGBtoXYZ($rgb)
+	{
+		$r	= $rgb['r'] / 255;
+		$g	= $rgb['g'] / 255;
+		$b	= $rgb['b'] / 255;
+		
+		if ($r > 0.04045)
+			$r	= pow((($r + 0.055) / 1.055), 2.4);
+		else
+			$r	= $r / 12.92;
+		
+		if ($g > 0.04045)
+			$g	= pow((($g + 0.055) / 1.055), 2.4);
+		else
+			$g	= $g / 12.92;
+		
+		if ($b > 0.04045)
+			$b	= pow((($b + 0.055) / 1.055), 2.4);
+		else
+			$b	= $b / 12.92;
+			
+		$r	*= 100;
+		$g	*= 100;
+		$b	*= 100;
+
+		//Observer. = 2°, Illuminant = D65
+		$x = $r * 0.4124 + $g * 0.3576 + $b * 0.1805;
+		$y = $r * 0.2126 + $g * 0.7152 + $b * 0.0722;
+		$z = $r * 0.0193 + $g * 0.1192 + $b * 0.9505;
+		
+		return array('x' => $x, 'y' => $y, 'z' => $z);
+	} // RGBtoXYZ()
+	
+	/**
+	 * @link http://www.easyrgb.com/index.php?X=MATH&H=05#text5
+	 */ 
+	private function XYZtoHunterLab($xyz)
+	{
+		if ($xyz['y'] == 0)
+			return array('l' => 0, 'a' => 0, 'b' => 0);
+		
+		$l	= 10 * sqrt($xyz['y']);
+		$a	= 17.5 * ( ( ( 1.02 * $xyz['x'] ) - $xyz['y']) / sqrt( $xyz['y'] ) );
+		$b	= 7 * ( ( $xyz['y'] - ( 0.847 * $xyz['z'] ) ) / sqrt( $xyz['y'] ) );
+		
+		return array('l' => $l, 'a' => $a, 'b' => $b);
+	} // XYZtoHunterLab()
+	
+	/**
+	 * Converts a color from RGB colorspace to CIE-L*ab colorspace
+	 * @since 2.0
+	 * @param array $xyz
+	 * @return array LAB
+	 * @link http://www.easyrgb.com/index.php?X=MATH&H=05#text5
+	 */
+	private function XYZtoCIELAB($xyz)
+	{
+		$refX	= 100;
+		$refY	= 100;
+		$refZ	= 100;
+		
+		$X = $xyz['x'] / $refX;
+		$Y = $xyz['y'] / $refY;
+		$Z = $xyz['z'] / $refZ;
+		
+		if ( $X > 0.008856 )
+			$X = pow($X, 1/3);
+		else
+			$X = ( 7.787 * $X ) + ( 16 / 116 );
+			
+		if ( $Y > 0.008856 ) 
+			$Y = pow($Y, 1/3);
+		else
+			$Y = ( 7.787 * $Y ) + ( 16 / 116 );
+			
+		if ( $Z > 0.008856 )
+			$Z = pow($Z, 1/3);
+		else
+			$Z = ( 7.787 * $Z ) + ( 16 / 116 );
+
+		$l = ( 116 * $Y ) - 16;
+		$a = 500 * ( $X - $Y );
+		$b = 200 * ( $Y - $Z );
+		
+		return array('l' => $l, 'a' => $a, 'b' => $b);
+	} // XYZtoCIELAB()
+	
+	private function deltaE($lab1, $lab2)
+	{
+		return sqrt( ( pow( $lab1['l'] - $lab2['l'], 2 ) )
+               + ( pow( $lab1['a'] - $lab2['a'], 2 ) )
+               + ( pow( $lab1['b'] - $lab2['b'], 2 ) ) );
+	} // deltaE()
+	
+	/**
+	 * Compute the Delta E 2000 value of two colors in the LAB colorspace
+	 * 
+	 * @link http://en.wikipedia.org/wiki/Color_difference#CIEDE2000
+	 * @link http://easyrgb.com/index.php?X=DELT&H=05#text5
+	 * @since 2.0
+	 * @param array $lab1 LAB color array
+	 * @param array $lab2 LAB color array
 	 * @return float
 	 */
-	private function colorVariance($colorA, $colorB)
+	private function deltaE2000($lab1, $lab2)
 	{
-		return abs($colorA[0] - $colorB[0])
-			+ abs($colorA[1] - $colorB[1])
-			+ abs($colorA[2] - $colorB[2]);
-	} // colorVariance()
-	
-	
-	private function saturation($color)
-	{		
-		$min	= min($color[0], $color[1], $color[2]);
-		$max	= max($color[0], $color[1], $color[2]);
-		$delta	= $max - $min;
+		$weightL	= 1; // Lightness
+		$weightC	= 1; // Chroma
+		$weightH	= 1; // Hue
+		
+		$xC1 = sqrt( $lab1['a'] * $lab1['a'] + $lab1['b'] * $lab1['b'] );
+		$xC2 = sqrt( $lab2['a'] * $lab2['a'] + $lab2['b'] * $lab2['b'] );
+		$xCX = ( $xC1 + $xC2 ) / 2;
+		$xGX = 0.5 * ( 1 - sqrt( ( pow($xCX, 7) ) / ( ( pow($xCX, 7) ) + ( pow(25, 7) ) ) ) );
+		$xNN = ( 1 + $xGX ) * $lab1['a'];
+		$xC1 = sqrt( $xNN * $xNN + $lab1['b'] * $lab1['b'] );
+		$xH1 = $this->LABtoHue( $xNN, $lab1['b'] );
+		$xNN = ( 1 + $xGX ) * $lab2['a'];
+		$xC2 = sqrt( $xNN * $xNN + $lab2['b'] * $lab2['b'] );
+		$xH2 = $this->LABtoHue( $xNN, $lab2['b'] );
+		$xDL = $lab2['l'] - $lab1['l'];
+		$xDC = $xC2 - $xC1;
+		
+		if ( ( $xC1 * $xC2 ) == 0 )
+		{
+		   $xDH = 0;
+		}
+		else
+		{
+			$xNN = round( $xH2 - $xH1, 12 );
+			if ( abs( $xNN ) <= 180 )
+			{
+				$xDH = $xH2 - $xH1;
+			}
+			else
+			{
+				if ( $xNN > 180 )
+					$xDH = $xH2 - $xH1 - 360;
+				else
+					$xDH = $xH2 - $xH1 + 360;
+			} // if
+		} // if
 
-		return ($delta == 0 || $max == 0) ? 0 : ($delta / $max) * 255;
-	} // saturation()
+		$xDH = 2 * sqrt( $xC1 * $xC2 ) * sin( rad2deg( $xDH / 2 ) );
+		$xLX = ( $lab1['l'] + $lab2['l'] ) / 2;
+		$xCY = ( $xC1 + $xC2 ) / 2;
+
+		if ( ( $xC1 *  $xC2 ) == 0 )
+		{
+			$xHX = $xH1 + $xH2;
+		}
+		else
+		{
+			$xNN = abs( round( $xH1 - $xH2, 12 ) );
+			if ( $xNN >  180 )
+			{
+				if ( ( $xH2 + $xH1 ) <  360 )
+					$xHX = $xH1 + $xH2 + 360;
+				else
+					$xHX = $xH1 + $xH2 - 360;
+			}
+			else
+			{
+				$xHX = $xH1 + $xH2;
+			} // if
+			$xHX /= 2;
+		} // if
+
+		$xTX = 1 - 0.17 * cos( rad2deg( $xHX - 30 ) )
+			+ 0.24 * cos( rad2deg( 2 * $xHX ) )
+			+ 0.32 * cos( rad2deg( 3 * $xHX + 6 ) )
+			- 0.20 * cos( rad2deg( 4 * $xHX - 63 ) );
+					   
+		$xPH = 30 * exp( - ( ( $xHX  - 275 ) / 25 ) * ( ( $xHX  - 275 ) / 25 ) );
+		$xRC = 2 * sqrt( ( pow($xCY, 7) ) / ( ( pow($xCY, 7) ) + ( pow(25, 7) ) ) );
+		$xSL = 1 + ( ( 0.015 * ( ( $xLX - 50 ) * ( $xLX - 50 ) ) )
+			/ sqrt( 20 + ( ( $xLX - 50 ) * ( $xLX - 50 ) ) ) );
+		$xSC = 1 + 0.045 * $xCY;
+		$xSH = 1 + 0.015 * $xCY * $xTX;
+		$xRT = - sin( rad2deg( 2 * $xPH ) ) * $xRC;
+		$xDL = $xDL / $weightL * $xSL;
+		$xDC = $xDC / $weightC * $xSC;
+		$xDH = $xDH / $weightH * $xSH;
+
+		$delta	= sqrt( pow($xDL, 2) + pow($xDC, 2) + pow($xDH, 2) + $xRT * $xDC * $xDH );
+		return (is_nan($delta)) ? 1 : $delta / 100;
+	} // deltaE2000()
+	
+	/**
+	 * Compute the Delta CMC value of two colors in the LAB colorspace
+	 * 
+	 * @since 2.0
+	 * @param array $lab1 LAB color array
+	 * @param array $lab2 LAB color array
+	 * @return float
+	 * @link http://easyrgb.com/index.php?X=DELT&H=06#text6
+	 */
+	private function deltaCMC($lab1, $lab2)
+	{
+		// if $weightL is 2 and $weightC is 1, it means that the lightness
+		// will contribute half as much importance to the delta as the chroma
+		$weightL	= 2; // Lightness
+		$weightC	= 1; // Chroma
+		
+		$xC1	= sqrt( ( pow($lab1['a'], 2) ) + ( pow($lab1['b'], 2) ) );
+		$xC2	= sqrt( ( pow($lab2['a'], 2) ) + ( pow($lab2['b'], 2) ) );
+		$xff	= sqrt( ( pow($xC1, 4) ) / ( ( pow($xC1, 4) ) + 1900 ) );
+		$xH1	= $this->LABtoHue( $lab1['a'], $lab1['b'] );
+		
+		if ( $xH1 < 164 || $xH1 > 345 )
+			$xTT	= 0.36 + abs( 0.4 * cos( deg2rad(  35 + $xH1 ) ) );
+		else
+			$xTT	= 0.56 + abs( 0.2 * cos( deg2rad( 168 + $xH1 ) ) );
+		
+		if ( $lab1['l'] < 16 )
+			$xSL	= 0.511;
+		else
+			$xSL	= ( 0.040975 * $lab1['l'] ) / ( 1 + ( 0.01765 * $lab1['l'] ) );
+			
+		$xSC = ( ( 0.0638 * $xC1 ) / ( 1 + ( 0.0131 * $xC1 ) ) ) + 0.638;
+		$xSH = ( ( $xff * $xTT ) + 1 - $xff ) * $xSC;
+		$xDH = sqrt( pow( $lab2['a'] - $lab1['a'], 2 ) + pow( $lab2['b'] - $lab1['b'], 2 ) - pow( $xC2 - $xC1, 2 ) );
+		$xSL = ( $lab2['l'] - $lab1['l'] ) / $weightL * $xSL;
+		$xSC = ( $xC2 - $xC1 ) / $weightC * $xSC;
+		$xSH = $xDH / $xSH;
+		
+		$delta = sqrt( pow($xSL, 2) + pow($xSC, 2) + pow($xSH, 2) );
+		return (is_nan($delta)) ? 1 : $delta;
+	} // deltaCMC()
+	
+	/**
+	 * @since 2.0
+	 * @param integer $a
+	 * @param integer $b
+	 * @return CIE-H° value
+	 */
+	private function LABtoHue($a, $b)
+	{
+		$bias	= 0;
+		
+		if ($a >= 0 && $b == 0) return 0;
+		if ($a <  0 && $b == 0) return 180;
+		if ($a == 0 && $b >  0) return 90;
+		if ($a == 0 && $b <  0) return 270;
+		if ($a >  0 && $b >  0) $bias = 0;
+		if ($a <  0           ) $bias = 180;
+		if ($a >  0 && $b <  0) $bias = 360;
+		
+		return (rad2deg(atan($b / $a)) + $bias);
+	} // LABtoHue()
 	
 	/**
 	 * @since 2.0
