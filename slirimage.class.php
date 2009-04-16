@@ -108,13 +108,6 @@ class SLIRImage
 	private $quality;
 	
 	/**
-	 * Whether or not sharpening is turned on
-	 * @var boolean
-	 * @since 2.0
-	 */
-	private $sharpen;
-	
-	/**
 	 * Whether or not progressive JPEG output is turned on
 	 * @var boolean
 	 * @since 2.0
@@ -295,6 +288,18 @@ class SLIRImage
 		if ($this->cropWidth !== NULL && $this->cropHeight != NULL
 			&& ($this->cropWidth < $this->width || $this->cropHeight < $this->height)
 		)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	/**
+	 * @since 2.0
+	 * @return boolean
+	 */
+	final private function isSharpeningDesired()
+	{
+		if ($this->isJPEG())
 			return TRUE;
 		else
 			return FALSE;
@@ -1017,12 +1022,15 @@ class SLIRImage
 	 */
 	final public function sharpen($sharpness)
 	{
-		imageconvolution(
-			$this->image,
-			$this->sharpenMatrix($sharpness),
-			$sharpness,
-			0
-		);
+		if ($this->isSharpeningDesired())
+		{
+			imageconvolution(
+				$this->image,
+				$this->sharpenMatrix($sharpness),
+				$sharpness,
+				0
+			);
+		}
 	} // sharpen()
 	
 	/**
@@ -1053,7 +1061,6 @@ class SLIRImage
 			'cropHeight'	=> $this->cropHeight,
 			'iptc'			=> $this->iptc,
 			'quality'		=> $this->quality,
-			'sharpen'		=> $this->sharpen,
 			'progressive'	=> $this->progressive,
 			'background'	=> $this->background
 		);

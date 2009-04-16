@@ -561,7 +561,6 @@ class SLIR
 		{
 			// We need to convert GIFs to PNGs
 			$this->rendered->mime			= 'image/png';
-			$this->rendered->sharpen		= FALSE;
 			$this->rendered->progressive	= FALSE;
 
 			// We are converting the GIF to a PNG, and PNG needs a
@@ -570,8 +569,6 @@ class SLIR
 		}
 		else if ($this->source->isPNG())
 		{
-			
-			$this->rendered->sharpen		= FALSE;
 			$this->rendered->progressive	= FALSE;
 
 			// PNG needs a compression level of 0 (no compression) through 9
