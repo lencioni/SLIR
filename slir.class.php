@@ -26,11 +26,6 @@
  
 /* $Id$ */
 
-function __autoload($className)
-{
-	require_once strtolower($className) . '.class.php';
-}
-
 /**
  * SLIR (Smart Lencioni Image Resizer)
  * Resizes images, intelligently sharpens, crops based on width:height ratios,
