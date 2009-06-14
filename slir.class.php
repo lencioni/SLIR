@@ -538,7 +538,7 @@ class SLIR
 				$this->rendered->cropWidth	= ceil($this->resizeHeightFactor() * $this->source->cropWidth);
 			} // if
 		}
-		else if ($this->isCroppindNeeded()) // No resizing is needed but we still need to crop
+		else if ($this->isCroppingNeeded()) // No resizing is needed but we still need to crop
 		{
 			$ratio	= ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
 				? $this->resizeUncroppedWidthFactor() : $this->resizeUncroppedHeightFactor();
@@ -556,6 +556,7 @@ class SLIR
 
 		// Set up the appropriate image handling parameters based on the original
 		// image's mime type
+		// @todo some of this code should be moved to the SLIRImage class
 		$this->rendered->mime				= $this->source->mime;
 		if ($this->source->isGIF())
 		{
