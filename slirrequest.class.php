@@ -324,9 +324,27 @@ Example usage:
 	 */
 	final private function localizePath($path)
 	{
-		return '/' . trim(preg_replace('/^(?:s?f|ht)tps?:\/\/[^\/]+([^\?]*)(?:\?.*)?/i', '$1', $path), '/');
-		//                           \_________________/\____/\______/\_______/
-		//                            Protocol          Domain Path    Query string
+		return '/' . trim($this->stripQueryString($this->stripProtocolAndDomain($path)), '/');
+	}
+	
+	/**
+	 * Strips the protocol and domain from the path if it is there
+	 * @since 2.0
+	 * @return string
+	 */
+	final private function stripProtocolAndDomain($path)
+	{
+		return preg_replace('/^(?:s?f|ht)tps?:\/\/[^\/]+/i', '', $path);
+	}
+	
+	/**
+	 * Strips the query string from the path if it is there
+	 * @since 2.0
+	 * @return string
+	 */
+	final private function stripQueryString($path)
+	{
+		return preg_replace('/\?.*/', '', $path);
 	}
 	
 	/**
