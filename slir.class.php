@@ -675,7 +675,7 @@ class SLIR
 		if (!file_exists($cacheFilePath))
 			return FALSE;
 
-		$cacheModified	= filectime($cacheFilePath);
+		$cacheModified	= filemtime($cacheFilePath);
 
 		if (!$cacheModified)
 			return FALSE;
