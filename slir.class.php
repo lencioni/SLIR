@@ -675,12 +675,12 @@ class SLIR
 		if (!file_exists($cacheFilePath))
 			return FALSE;
 
-		$cacheModified	= filemtime($cacheFilePath);
+		$cacheModified	= filectime($cacheFilePath);
 
 		if (!$cacheModified)
 			return FALSE;
 
-		$imageModified	= filemtime($this->request->fullPath());
+		$imageModified	= filectime($this->request->fullPath());
 
 		if ($imageModified >= $cacheModified)
 			return FALSE;
