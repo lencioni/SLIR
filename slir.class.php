@@ -586,6 +586,9 @@ class SLIR
 		{
 			throw new SLIRException("Unable to determine type of source image");
 		} // if
+		
+		if ($this->isBackgroundFillOn())
+			$this->rendered->background	= $this->request->background;
 	}
 	
 	/**
