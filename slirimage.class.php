@@ -365,29 +365,33 @@ class SLIRImage
 	 * Turns on transparency for image if no background fill color is
 	 * specified, otherwise, fills background with specified color
 	 *
+	 * @param boolean $isBackgroundFillOn
 	 * @since 2.0
 	 */
-	final private function background()
+	final public function background($isBackgroundFillOn)
 	{
-		if (!$this->isBackgroundFillOn())
+		if ($this->isGIF() || $this->isPNG())
 		{
-			// If this is a GIF or a PNG, we need to set up transparency
-			imagealphablending($this->image, FALSE);
-			imagesavealpha($this->image, TRUE);
-		}
-		else
-		{
-			// Fill the background with the specified color for matting purposes
-			$background	= imagecolorallocate(
-				$this->image,
-				hexdec($this->background[0].$this->background[1]),
-				hexdec($this->background[2].$this->background[3]),
-				hexdec($this->background[4].$this->background[5])
-			);
-
-			imagefill($this->image, 0, 0, $background);
+			if (!$isBackgroundFillOn)
+			{
+				// If this is a GIF or a PNG, we need to set up transparency
+				imagealphablending($this->image, FALSE);
+				imagesavealpha($this->image, TRUE);
+			}
+			else
+			{
+				// Fill the background with the specified color for matting purposes
+				$background	= imagecolorallocate(
+					$this->image,
+					hexdec($this->background[0].$this->background[1]),
+					hexdec($this->background[2].$this->background[3]),
+					hexdec($this->background[4].$this->background[5])
+				);
+	
+				imagefill($this->image, 0, 0, $background);
+			} // if
 		} // if
-	} // background()
+	}
 	
 	final public function interlace()
 	{
@@ -456,7 +460,7 @@ class SLIRImage
 		unset($cropped);
 		
 		return TRUE;
-	} // crop()
+	}
 	
 	/**
 	 * Determines the optimal number of rows in from the top or left to crop
@@ -592,7 +596,7 @@ class SLIRImage
 			$offset['near']	+= round($length * .03);
 			
 		return min($rowsToCrop, max(0, $offset['near']));
-	} // offset()
+	}
 	
 	final private function rowInterestingness($row, $fromLeft, $pixelStep)
 	{
@@ -619,7 +623,7 @@ class SLIRImage
 		}
 		
 		return $interestingness + (($max - ($interestingness / ($totalPixels / $pixelStep))) * ($totalPixels / $pixelStep));
-	} // rowInterestingness()
+	}
 	
 	final private function pixelInterestingness($x, $y)
 	{
@@ -640,7 +644,7 @@ class SLIRImage
 		} // if
 		
 		return $colors[$x][$y]['i'];
-	} // pixelInterestingness()
+	}
 	
 	final private function loadPixelInfo($x, $y)
 	{
@@ -660,7 +664,7 @@ class SLIRImage
 			$colors[$x][$y]['lab']	= $this->evaluateColor(imagecolorat($this->image, $x, $y));
 			
 		return TRUE;
-	} // loadPixelInfo()
+	}
 	
 	final private function calculateDeltas($x, $y)
 	{
@@ -688,7 +692,7 @@ class SLIRImage
 			$this->calculateDelta($x, $y, 1, 1);
 		
 		return TRUE;
-	} // calculateDeltas()
+	}
 	
 	final private function calculateDelta($x1, $y1, $xMove, $yMove)
 	{
@@ -716,7 +720,7 @@ class SLIRImage
 		$colors[$x2][$y2]['dE']["d$x2Move$y2Move"]	=& $colors[$x1][$y1]['dE']["d$xMove$yMove"];
 		
 		return TRUE;
-	} // calculateDelta()
+	}
 	
 	final private function calculateInterestingness($x, $y)
 	{
@@ -727,7 +731,7 @@ class SLIRImage
 			/ count(array_filter($colors[$x][$y]['dE'], 'is_numeric'));
 		
 		return TRUE;
-	} // calculateInterestingness()
+	}
 	
 	/**
 	 * @since 2.0
@@ -741,7 +745,7 @@ class SLIRImage
 		$lab	= $this->XYZtoHunterLab($xyz);
 		
 		return $lab;
-	} // evaluateColor()
+	}
 	
 	/**
 	 * @since 2.0
@@ -755,7 +759,7 @@ class SLIRImage
 		$g	= (($int >> 8) & 0xFF) * $a;
 		$b	= ($int & 0xFF) * $a;
 		return array('r' => $r, 'g' => $g, 'b' => $b);
-	} // colorIndexToRGB()
+	}
 	
 	/**
 	 * @since 2.0
@@ -794,7 +798,7 @@ class SLIRImage
 		$z = $r * 0.0193 + $g * 0.1192 + $b * 0.9505;
 		
 		return array('x' => $x, 'y' => $y, 'z' => $z);
-	} // RGBtoXYZ()
+	}
 	
 	/**
 	 * @link http://www.easyrgb.com/index.php?X=MATH&H=05#text5
@@ -809,7 +813,7 @@ class SLIRImage
 		$b	= 7 * ( ( $xyz['y'] - ( 0.847 * $xyz['z'] ) ) / sqrt( $xyz['y'] ) );
 		
 		return array('l' => $l, 'a' => $a, 'b' => $b);
-	} // XYZtoHunterLab()
+	}
 	
 	/**
 	 * Converts a color from RGB colorspace to CIE-L*ab colorspace
@@ -848,14 +852,14 @@ class SLIRImage
 		$b = 200 * ( $Y - $Z );
 		
 		return array('l' => $l, 'a' => $a, 'b' => $b);
-	} // XYZtoCIELAB()
+	}
 	
 	final private function deltaE($lab1, $lab2)
 	{
 		return sqrt( ( pow( $lab1['l'] - $lab2['l'], 2 ) )
                + ( pow( $lab1['a'] - $lab2['a'], 2 ) )
                + ( pow( $lab1['b'] - $lab2['b'], 2 ) ) );
-	} // deltaE()
+	}
 	
 	/**
 	 * Compute the Delta E 2000 value of two colors in the LAB colorspace
@@ -949,7 +953,7 @@ class SLIRImage
 
 		$delta	= sqrt( pow($xDL, 2) + pow($xDC, 2) + pow($xDH, 2) + $xRT * $xDC * $xDH );
 		return (is_nan($delta)) ? 1 : $delta / 100;
-	} // deltaE2000()
+	}
 	
 	/**
 	 * Compute the Delta CMC value of two colors in the LAB colorspace
@@ -991,7 +995,7 @@ class SLIRImage
 		
 		$delta = sqrt( pow($xSL, 2) + pow($xSC, 2) + pow($xSH, 2) );
 		return (is_nan($delta)) ? 1 : $delta;
-	} // deltaCMC()
+	}
 	
 	/**
 	 * @since 2.0
@@ -1012,7 +1016,7 @@ class SLIRImage
 		if ($a >  0 && $b <  0) $bias = 360;
 		
 		return (rad2deg(atan($b / $a)) + $bias);
-	} // LABtoHue()
+	}
 	
 	/**
 	 * Sharpens the image
@@ -1031,7 +1035,7 @@ class SLIRImage
 				0
 			);
 		}
-	} // sharpen()
+	}
 	
 	/**
 	 * @param integer $sharpness

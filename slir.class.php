@@ -246,6 +246,7 @@ class SLIR
 
 		$this->source->createImageFromFile();
 		$this->rendered->createBlankImage();
+		$this->rendered->background($this->isBackgroundFillOn());
 
 		$this->copySourceToRendered();
 		
