@@ -947,7 +947,7 @@ class SLIR
 			NULL,
 			NULL,
 			NULL,
-			$this->rendered->mime,
+			NULL,
 			"$cacheType cache"
 		);
 		
@@ -957,6 +957,19 @@ class SLIR
 			$this->cacheRequest($data, FALSE);
 		
 		exit();
+	}
+	
+	/**
+	 * Determines the mime type of an image
+	 * 
+	 * @since 2.0
+	 * @param string $path
+	 * @return string
+	 */
+	final private function mimeType($path)
+	{
+		$info	= getimagesize($path);
+		return $info['mime'];
 	}
 
 	/**
@@ -1005,6 +1018,8 @@ class SLIR
 				$lastModified	= filemtime($imagePath);
 			if ($length == NULL)
 				$length			= filesize($imagePath);
+			if ($mimeType == NULL)
+				$mimeType		= $this->mimeType($imagePath);
 		}
 		else if ($length == NULL)
 		{
