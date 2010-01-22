@@ -289,6 +289,8 @@ Example usage:
 	 */
 	final private function isUsingQueryString()
 	{
+		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
+			return TRUE;
 		if (isset($_SERVER['QUERY_STRING'])
 			&& trim($_SERVER['QUERY_STRING']) != ''
 			&& count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET)))

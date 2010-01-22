@@ -139,4 +139,12 @@ define('SLIR_CACHE_DIR',		SLIR_DOCUMENT_ROOT . SLIR_DIR . SLIR_CACHE_DIR_NAME);
  */
 define('SLIR_ERROR_LOG_PATH',	SLIR_DOCUMENT_ROOT . SLIR_DIR . '/slir-error-log');
 
+/**
+ * If TRUE, forces SLIR to always use the query string for parameters instead
+ * of mod_rewrite.
+ *
+ * @since 2.0
+ * @var boolean
+ */
+define('SLIR_FORCE_QUERY_STRING',	TRUE);
 ?>
