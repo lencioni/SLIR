@@ -194,24 +194,37 @@ class SLIR
 	 */
 	final private function getConfig()
 	{
-		if (file_exists('slir-config.php'))
+		if (file_exists(self::configFilename()))
 		{
-			require 'slir-config.php';
+			require self::configFilename();
 		}
 		else if (file_exists('slir-config-sample.php'))
 		{
-			if (copy('slir-config-sample.php', 'slir-config.php'))
-				require 'slir-config.php';
+			if (copy('slir-config-sample.php', self::configFilename()))
+				require self::configFilename();
 			else
 				throw new SLIRException('Could not load configuration file. '
 					. 'Please copy "slir-config-sample.php" to '
-					. '"slir-config.php".');
+					. '"' . self::configFilename() . '".');
 		}
 		else
 		{
-			throw new SLIRException('Could not find "slir-config.php" or '
+			throw new SLIRException('Could not find "' . self::configFilename() . '" or '
 				. '"slir-config-sample.php"');
 		} // if
+	}
+	
+	/**
+	 * Returns the configuration filename. Allows the developer to specify an alternate configuration file.
+	 *
+	 * @since 2.0
+	 */
+	final private function configFilename()
+	{
+		if (defined('SLIR_CONFIG_FILENAME'))
+			return SLIR_CONFIG_FILENAME;
+		else
+			return 'slir-config.php';
 	}
 	
 	/**

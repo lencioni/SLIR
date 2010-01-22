@@ -28,6 +28,8 @@
  
  /* $Id$ */
 
+// define('SLIR_CONFIG_FILENAME', 'slir-config-alternate.php');
+
 function __autoload($className)
 {
 	require_once strtolower($className) . '.class.php';
