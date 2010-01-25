@@ -239,7 +239,7 @@ class SLIRException extends Exception
 	 * @param integer $errline Line number the error was raised at,
 	 * @param array $errcontext Points to the active symbol table at the point the error occurred
 	 */
-	public function error($errno, $errstr, $errfile = NULL, $errline = NULL, $errcontext = array())
+	public static function error($errno, $errstr, $errfile = NULL, $errline = NULL, $errcontext = array())
 	{
 		// if error has been supressed with an @
 		if (error_reporting() == 0)

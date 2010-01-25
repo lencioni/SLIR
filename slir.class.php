@@ -159,6 +159,10 @@ class SLIR
 	 */
 	final public function __construct()
 	{
+		// This helps prevents unnecessary warnings (which messes up images)
+		// on servers that are set to display E_STRICT errors.
+		error_reporting(~E_STRICT);
+		
 		$this->getConfig();
 		
 		$this->request	= new SLIRRequest();
