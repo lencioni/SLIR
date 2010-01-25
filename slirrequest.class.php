@@ -189,6 +189,12 @@ class SLIRRequest
 				$ratio				= explode(':', (string) $value);
 				if (count($ratio) >= 2)
 				{
+					if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
+					{
+						header('HTTP/1.1 400 Bad Request');
+						throw new SLIRException('Crop ratio must not contain a zero: ' . (string) $value);
+					}
+					
 					$this->cropRatio	= array(
 						'width'		=> (float) $ratio[0],
 						'height'	=> (float) $ratio[1],
