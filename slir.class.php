@@ -77,7 +77,7 @@
  * text" /></code>
  *
  * Without mod_rewrite (not recommended)
- * <code><img src="/slir/?w=100&amp;h=100&amp;c=1:1&amp;image=/path/to/image.jpg"
+ * <code><img src="/slir/?w=100&amp;h=100&amp;c=1:1&amp;i=/path/to/image.jpg"
  * alt="Don't forget your alt text" /></code>
  *
  * @author Joe Lencioni <joe@shiftingpixel.com>
