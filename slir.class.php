@@ -161,7 +161,7 @@ class SLIR
 	{
 		// This helps prevents unnecessary warnings (which messes up images)
 		// on servers that are set to display E_STRICT errors.
-		error_reporting(~E_STRICT);
+		error_reporting(error_reporting() & ~E_STRICT);
 		
 		$this->getConfig();
 		
