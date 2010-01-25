@@ -58,6 +58,11 @@
  *     - Background fill color = b
  *     - Progressive = p
  *
+ * Note: filenames that include special characters must be URL-encoded (e.g.
+ * plus sign, +, should be encoded as %2B) in order for SLIR to recognize them
+ * properly. This can be accomplished by passing your filenames through PHP's
+ * rawurlencode() or urlencode() function.
+ * 
  * EXAMPLES:
  *
  * Resizing a JPEG to a max width of 100 pixels and a max height of 100 pixels:
