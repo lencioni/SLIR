@@ -242,7 +242,7 @@ class SLIRRequest
 
 		// The parameters should be the first set of characters after the
 		// SLIR path
-		$request	= str_replace(SLIR_DIR, '', (string) $_SERVER['REQUEST_URI']);
+		$request	= preg_replace('`^' . preg_quote(SLIR_DIR) . '`', '', (string) $_SERVER['REQUEST_URI']);
 		$request	= explode('/', trim($request, '/'));
 
 		if (count($request) < 2)
