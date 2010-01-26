@@ -598,6 +598,15 @@ class SLIRImage
 		return min($rowsToCrop, max(0, $offset['near']));
 	}
 	
+	/**
+	 * Calculate the interestingness value of a row of pixels
+	 * 
+	 * @since 2.0
+	 * @param integer $row 
+	 * @param boolean $fromLeft
+	 * @param integer $pixelStep Number of pixels to jump after each step when comparing interestingness
+	 * @return float
+	 */
 	final private function rowInterestingness($row, $fromLeft, $pixelStep)
 	{
 		$interestingness	= 0;
@@ -625,6 +634,14 @@ class SLIRImage
 		return $interestingness + (($max - ($interestingness / ($totalPixels / $pixelStep))) * ($totalPixels / $pixelStep));
 	}
 	
+	/**
+	 * Get the interestingness value of a pixel
+	 * 
+	 * @since 2.0
+	 * @param integer $x x-axis position of pixel to calculate
+	 * @param integer $y y-axis position of pixel to calculate
+	 * @return float
+	 */
 	final private function pixelInterestingness($x, $y)
 	{
 		global $colors;
@@ -646,6 +663,14 @@ class SLIRImage
 		return $colors[$x][$y]['i'];
 	}
 	
+	/**
+	 * Load the color information of the requested pixel into the $colors array
+	 * 
+	 * @since 2.0
+	 * @param integer $x x-axis position of pixel to calculate
+	 * @param integer $y y-axis position of pixel to calculate
+	 * @return boolean
+	 */
 	final private function loadPixelInfo($x, $y)
 	{
 		if ($x < 0 || $x >= $this->width
@@ -666,6 +691,14 @@ class SLIRImage
 		return TRUE;
 	}
 	
+	/**
+	 * Calculates each adjacent pixel's Delta E in relation to the pixel requested
+	 * 
+	 * @since 2.0
+	 * @param integer $x x-axis position of pixel to calculate
+	 * @param integer $y y-axis position of pixel to calculate
+	 * @return boolean
+	 */
 	final private function calculateDeltas($x, $y)
 	{
 		// Calculate each adjacent pixel's Delta E in relation to the current
@@ -694,6 +727,16 @@ class SLIRImage
 		return TRUE;
 	}
 	
+	/**
+	 * Calculates and stores requested pixel's Delta E in relation to comparison pixel
+	 * 
+	 * @since 2.0
+	 * @param integer $x1 x-axis position of pixel to calculate
+	 * @param integer $y1 y-axis position of pixel to calculate
+	 * @param integer $xMove number of pixels to move on the x-axis to find comparison pixel
+	 * @param integer $yMove number of pixels to move on the y-axis to find comparison pixel
+	 * @return boolean
+	 */
 	final private function calculateDelta($x1, $y1, $xMove, $yMove)
 	{
 		$x2	= $x1 + $xMove;
@@ -722,6 +765,14 @@ class SLIRImage
 		return TRUE;
 	}
 	
+	/**
+	 * Calculates and stores a pixel's overall interestingness value
+	 * 
+	 * @since 2.0
+	 * @param integer $x x-axis position of pixel to calculate
+	 * @param integer $y y-axis position of pixel to calculate
+	 * @return boolean
+	 */
 	final private function calculateInterestingness($x, $y)
 	{
 		global $colors;
