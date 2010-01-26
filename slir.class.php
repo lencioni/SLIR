@@ -367,7 +367,8 @@ class SLIR
 		}
 
 		// Embed the IPTC data
-		return iptcembed($data, $cacheFilePath);
+		iptcembed($data, $cacheFilePath);
+		$this->rendered->data	= file_get_contents($cacheFilePath);
 	}
 
 	/**
@@ -847,7 +848,7 @@ class SLIR
 			} // if
 
 			// Copy EXIF data
-			$this->copyEXIF($cacheFilePath);
+			$imageData	= $this->copyEXIF($cacheFilePath);
 		} // if
 
 		return $imageData;
@@ -865,18 +866,20 @@ class SLIR
 		// Make sure to suppress strict warning thrown by PEL
 		@require_once dirname(__FILE__) . '/pel-0.9.1/PelJpeg.php';
 		
-		$jpeg	= new PelJpeg($this->source->fullPath());
-		$exif	= $jpeg->getExif();
+		$jpeg		= new PelJpeg($this->source->fullPath());
+		$exif		= $jpeg->getExif();
+		$imageData	= NULL;
 		
 		if ($exif)
 		{
 			$jpeg	= new PelJpeg($cacheFilePath);
 			$jpeg->setExif($exif);
-			if (!file_put_contents($cacheFilePath, $jpeg->getBytes()))
+			$imageData	= $jpeg->getBytes();
+			if (!file_put_contents($cacheFilePath, $imageData))
 				return FALSE;
 		} // if
 		
-		return TRUE;
+		return $imageData;
 	}
 
 	/**
@@ -1022,7 +1025,7 @@ class SLIR
 	{
 		// Cache the image
 		$this->cache();
-
+		
 		// Serve the file
 		$this->serveFile(
 			NULL,
