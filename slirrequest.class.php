@@ -186,7 +186,7 @@ class SLIRRequest
 			
 			case 'c':
 			case 'cropRatio':
-				$ratio				= explode(':', (string) $value);
+				$ratio				= explode(':', (string) urldecode($value));
 				if (count($ratio) >= 2)
 				{
 					if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
