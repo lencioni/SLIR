@@ -346,7 +346,7 @@ class SLIR
 	/**
 	 * @since 2.0
 	 * @param string $cacheFilePath
-	 * @return string Contents of the image
+	 * @return boolean
 	 */
 	final private function copyIPTC($cacheFilePath)
 	{
@@ -367,8 +367,7 @@ class SLIR
 		}
 
 		// Embed the IPTC data
-		iptcembed($data, $cacheFilePath);
-		$this->rendered->data	= file_get_contents($cacheFilePath);
+		return iptcembed($data, $cacheFilePath);
 	}
 
 	/**
@@ -840,12 +839,8 @@ class SLIR
 		if (SLIR_COPY_EXIF && $copyEXIF && $this->source->isJPEG())
 		{
 			// Copy IPTC data
-			if (isset($this->source->iptc))
-			{
-				$imageData	= $this->copyIPTC($cacheFilePath);
-				if (!file_put_contents($cacheFilePath, $imageData))
-					return FALSE;
-			} // if
+			if (isset($this->source->iptc) && !$this->copyIPTC($cacheFilePath))
+				return FALSE;
 
 			// Copy EXIF data
 			$imageData	= $this->copyEXIF($cacheFilePath);
@@ -860,6 +855,7 @@ class SLIR
 	 * @since 2.0
 	 * @uses PEL
 	 * @param string $cacheFilePath
+	 * @return mixed string contents of image on success, FALSE on failure
 	 */
 	final private function copyEXIF($cacheFilePath)
 	{
@@ -868,18 +864,19 @@ class SLIR
 		
 		$jpeg		= new PelJpeg($this->source->fullPath());
 		$exif		= $jpeg->getExif();
-		$imageData	= NULL;
 		
 		if ($exif)
 		{
-			$jpeg	= new PelJpeg($cacheFilePath);
+			$jpeg		= new PelJpeg($cacheFilePath);
 			$jpeg->setExif($exif);
 			$imageData	= $jpeg->getBytes();
 			if (!file_put_contents($cacheFilePath, $imageData))
 				return FALSE;
+			
+			return $imageData;
 		} // if
 		
-		return $imageData;
+		return $jpeg->getBytes();
 	}
 
 	/**
