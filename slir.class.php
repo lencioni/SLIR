@@ -170,7 +170,7 @@ class SLIR
 		// Check the cache based on the request URI
 		if (SLIR_USE_REQUEST_CACHE && $this->isRequestCached())
 			$this->serveRequestCachedImage();
-		
+			
 		// Set up our error handler after the request cache to help keep
 		// everything humming along nicely
 		require 'slirexception.class.php';
@@ -738,7 +738,19 @@ class SLIR
 	 */
 	final private function requestCacheFilename()
 	{
-		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $_SERVER['REQUEST_URI']);
+		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI());
+	}
+	
+	/**
+	 * @since 2.0
+	 * @return string
+	 */
+	final private function requestURI()
+	{
+		if (SLIR_FORCE_QUERY_STRING)
+			return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($_GET);
+		else
+			return $_SERVER['REQUEST_URI'];
 	}
 
 	/**
