@@ -621,7 +621,7 @@ class SLIRImage
 				
 				// Content at the very edge of an image tends to be less interesting than
 				// content toward the center, so we give it a little extra push away from the edge
-				$i					+= min($row, $originalLength - $row, $originalLength * .04);
+				//$i					+= min($row, $originalLength - $row, $originalLength * .04);
 				
 				$max				= max($i, $max);
 				$interestingness	+= $i;
@@ -635,7 +635,7 @@ class SLIRImage
 				
 				// Content at the very edge of an image tends to be less interesting than
 				// content toward the center, so we give it a little extra push away from the edge
-				$i					+= min($row, $originalLength - $row, $originalLength * .04);
+				//$i					+= min($row, $originalLength - $row, $originalLength * .04);
 				
 				$max				= max($i, $max);
 				$interestingness	+= $i;
