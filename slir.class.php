@@ -876,7 +876,7 @@ class SLIR
 			return $imageData;
 		} // if
 		
-		return $jpeg->getBytes();
+		return file_get_contents($cacheFilePath);
 	}
 
 	/**
