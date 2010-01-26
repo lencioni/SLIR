@@ -541,8 +541,8 @@ class SLIRImage
 		$ratio				= 1;
 		for($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped)
 		{
-			$a	= $this->rowInterestingness($offset['near'], $fromLeft, $pixelStep);
-			$b	= $this->rowInterestingness($originalLength - $offset['far'] - 1, $fromLeft, $pixelStep);
+			$a	= $this->rowInterestingness($offset['near'], $fromLeft, $pixelStep, $originalLength);
+			$b	= $this->rowInterestingness($originalLength - $offset['far'] - 1, $fromLeft, $pixelStep, $originalLength);
 			
 			if ($a == 0 && $b == 0)
 				$ratio = 1;
@@ -605,9 +605,10 @@ class SLIRImage
 	 * @param integer $row 
 	 * @param boolean $fromLeft
 	 * @param integer $pixelStep Number of pixels to jump after each step when comparing interestingness
+	 * @param integer $originalLength Number of rows in the original image
 	 * @return float
 	 */
-	final private function rowInterestingness($row, $fromLeft, $pixelStep)
+	final private function rowInterestingness($row, $fromLeft, $pixelStep, $originalLength)
 	{
 		$interestingness	= 0;
 		$max				= 0;
@@ -617,6 +618,11 @@ class SLIRImage
 			for($totalPixels = 0; $totalPixels < $this->height; $totalPixels += $pixelStep)
 			{
 				$i					= $this->pixelInterestingness($row, $totalPixels);
+				
+				// Content at the very edge of an image tends to be less interesting than
+				// content toward the center, so we give it a little extra push away from the edge
+				$i					+= min($row, $originalLength - $row, $originalLength * .04);
+				
 				$max				= max($i, $max);
 				$interestingness	+= $i;
 			}
@@ -626,6 +632,11 @@ class SLIRImage
 			for($totalPixels = 0; $totalPixels < $this->width; $totalPixels += $pixelStep)
 			{
 				$i					= $this->pixelInterestingness($totalPixels, $row);
+				
+				// Content at the very edge of an image tends to be less interesting than
+				// content toward the center, so we give it a little extra push away from the edge
+				$i					+= min($row, $originalLength - $row, $originalLength * .04);
+				
 				$max				= max($i, $max);
 				$interestingness	+= $i;
 			}
