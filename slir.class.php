@@ -747,7 +747,7 @@ class SLIR
 	 */
 	final private function requestURI()
 	{
-		if (SLIR_FORCE_QUERY_STRING)
+		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
 			return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($_GET);
 		else
 			return $_SERVER['REQUEST_URI'];
