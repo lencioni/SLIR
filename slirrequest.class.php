@@ -291,7 +291,7 @@ Example usage:
 	 * string version
 	 *
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final private function isUsingQueryString()
 	{
@@ -362,7 +362,7 @@ Example usage:
 	 * '..', '<', or '>'.
 	 *
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final private function isPathSecure()
 	{
@@ -376,7 +376,7 @@ Example usage:
 	 * Determines if the path exists
 	 *
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final private function pathExists()
 	{

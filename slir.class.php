@@ -402,7 +402,7 @@ class SLIR
 	 * image
 	 *
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 * @todo Add check for JPEGs and progressiveness
 	 */
 	final private function isSourceImageDesired()
@@ -421,7 +421,7 @@ class SLIR
 
 	/**
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final private function isWidthDifferent()
 	{
@@ -435,7 +435,7 @@ class SLIR
 
 	/**
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final private function isHeightDifferent()
 	{
@@ -449,7 +449,7 @@ class SLIR
 
 	/**
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final private function isBackgroundFillOn()
 	{

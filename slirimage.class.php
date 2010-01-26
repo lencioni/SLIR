@@ -221,7 +221,7 @@ class SLIRImage
 	 * Checks the mime type to see if it is an image
 	 *
 	 * @since 2.0
-	 * @return bool
+	 * @return boolean
 	 */
 	final public function isImage()
 	{
