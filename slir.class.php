@@ -850,7 +850,8 @@ class SLIR
 	 */
 	final private function copyEXIF($cacheFilePath)
 	{
-		require_once dirname(__FILE__) . '/pel-0.9.1/PelJpeg.php';
+		// Make sure to suppress strict warning thrown by PEL
+		@require_once dirname(__FILE__) . '/pel-0.9.1/PelJpeg.php';
 		
 		$jpeg	= new PelJpeg($this->source->fullPath());
 		$exif	= $jpeg->getExif();
