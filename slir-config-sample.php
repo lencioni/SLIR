@@ -146,5 +146,5 @@ define('SLIR_ERROR_LOG_PATH',	SLIR_DOCUMENT_ROOT . SLIR_DIR . '/slir-error-log')
  * @since 2.0
  * @var boolean
  */
-define('SLIR_FORCE_QUERY_STRING',	TRUE);
+define('SLIR_FORCE_QUERY_STRING',	FALSE);
 ?>
