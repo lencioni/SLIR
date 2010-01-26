@@ -894,7 +894,13 @@ class SLIR
 	final private function initializeDirectory($path, $verifyReadWriteability = TRUE, $test = FALSE)
 	{
 		if (!file_exists($path))
-			mkdir($path, 0755, TRUE);
+		{
+			if (!@mkdir($path, 0755, TRUE))
+			{
+				header('HTTP/1.1 500 Internal Server Error');
+				throw new SLIRException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
+			}
+		}
 
 		if (!$verifyReadWriteability)
 			return TRUE;
