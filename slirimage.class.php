@@ -283,6 +283,18 @@ class SLIRImage
 	 * @since 2.0
 	 * @return boolean
 	 */
+	final public function isAbleToHaveTransparency()
+	{
+		if ($this->isPNG() || $this->isGIF())
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	/**
+	 * @since 2.0
+	 * @return boolean
+	 */
 	final private function isCroppingNeeded()
 	{	
 		if ($this->cropWidth !== NULL && $this->cropHeight != NULL
@@ -370,18 +382,18 @@ class SLIRImage
 	 */
 	final public function background($isBackgroundFillOn)
 	{
-		if ($this->isGIF() || $this->isPNG())
+		if (!$this->isAbleToHaveTransparency())
+			return;
+			
+		if (!$isBackgroundFillOn)
 		{
-			if (!$isBackgroundFillOn)
-			{
-				// If this is a GIF or a PNG, we need to set up transparency
-				$this->transparency($this->image);
-			}
-			else
-			{
-				// Fill the background with the specified color for matting purposes
-				$this->fillBackground($this->image);
-			} // if
+			// If this is a GIF or a PNG, we need to set up transparency
+			$this->transparency($this->image);
+		}
+		else
+		{
+			// Fill the background with the specified color for matting purposes
+			$this->fillBackground($this->image);
 		} // if
 	}
 	
