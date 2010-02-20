@@ -375,22 +375,32 @@ class SLIRImage
 			if (!$isBackgroundFillOn)
 			{
 				// If this is a GIF or a PNG, we need to set up transparency
-				imagealphablending($this->image, FALSE);
-				imagesavealpha($this->image, TRUE);
+				$this->transparency($this->image);
 			}
 			else
 			{
 				// Fill the background with the specified color for matting purposes
-				$background	= imagecolorallocate(
-					$this->image,
-					hexdec($this->background[0].$this->background[1]),
-					hexdec($this->background[2].$this->background[3]),
-					hexdec($this->background[4].$this->background[5])
-				);
-	
-				imagefill($this->image, 0, 0, $background);
+				$this->fillBackground($this->image);
 			} // if
 		} // if
+	}
+	
+	final private function transparency($image)
+	{
+		imagealphablending($image, FALSE);
+		imagesavealpha($image, TRUE);
+	}
+	
+	final private function fillBackground($image)
+	{
+		$background	= imagecolorallocate(
+			$image,
+			hexdec($this->background[0].$this->background[1]),
+			hexdec($this->background[2].$this->background[3]),
+			hexdec($this->background[4].$this->background[5])
+		);
+		
+		imagefill($image, 0, 0, $background);
 	}
 	
 	final public function interlace()
