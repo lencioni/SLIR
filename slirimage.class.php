@@ -356,7 +356,7 @@ class SLIRImage
 			$info['iptc']	= iptcparse($extraInfo['APP13']);
 
 		return $info;
-	} // getImageInfo()
+	}
 	
 	final public function createBlankImage()
 	{

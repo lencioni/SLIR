@@ -271,6 +271,7 @@ class SLIR
 		$this->rendered->background($this->isBackgroundFillOn());
 
 		$this->copySourceToRendered();
+		$this->source->destroyImage();
 		
 		$this->rendered->crop($this->isBackgroundFillOn());
 		$this->rendered->sharpen($this->calculateSharpnessFactor());
@@ -1034,7 +1035,6 @@ class SLIR
 		);
 
 		// Clean up memory
-		$this->source->destroyImage();
 		$this->rendered->destroyImage();
 
 		exit();
