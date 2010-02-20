@@ -121,6 +121,9 @@ class SLIRImage
 	 */
 	public $background;
 	
+	/**
+	 * @since 2.0
+	 */
 	final public function __construct()
 	{
 	}
@@ -145,6 +148,9 @@ class SLIRImage
 		} // switch
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final public function __get($name)
 	{
 		switch($name)
@@ -162,6 +168,9 @@ class SLIRImage
 		}
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final private function setPath($path)
 	{
 		$this->path	= $path;
@@ -358,11 +367,17 @@ class SLIRImage
 		return $info;
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final public function createBlankImage()
 	{
 		$this->image	= imagecreatetruecolor($this->width, $this->height);
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final public function createImageFromFile()
 	{
 		if ($this->isJPEG())

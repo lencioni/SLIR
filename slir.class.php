@@ -278,6 +278,9 @@ class SLIR
 		$this->rendered->interlace();
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final private function copySourceToRendered()
 	{
 		// Resample the original image into the resized canvas we set up earlier
