@@ -397,12 +397,18 @@ class SLIRImage
 		} // if
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final private function transparency($image)
 	{
 		imagealphablending($image, FALSE);
 		imagesavealpha($image, TRUE);
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final private function fillBackground($image)
 	{
 		$background	= imagecolorallocate(
@@ -415,6 +421,9 @@ class SLIRImage
 		imagefill($image, 0, 0, $background);
 	}
 	
+	/**
+	 * @since 2.0
+	 */
 	final public function interlace()
 	{
 		if ($this->progressive)
