@@ -453,7 +453,7 @@ class SLIR
 	 */
 	final private function isBackgroundFillOn()
 	{
-		if ($this->request->isBackground() && ($this->source->isGIF() || $this->source->isPNG()))
+		if ($this->request->isBackground() && $this->source->isAbleToHaveTransparency())
 			return TRUE;
 		else
 			return FALSE;
