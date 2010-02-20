@@ -51,7 +51,7 @@ define('SLIR_USE_REQUEST_CACHE',	TRUE);
  * @since 2.0
  * @var boolean
  */
-define('SLIR_COPY_EXIF',			TRUE);
+define('SLIR_COPY_EXIF',			FALSE);
 
 /**
  * How much memory to allocate for memory-intensive processes such as rendering
