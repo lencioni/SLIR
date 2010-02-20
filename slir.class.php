@@ -272,7 +272,7 @@ class SLIR
 
 		$this->copySourceToRendered();
 		
-		$this->rendered->crop();
+		$this->rendered->crop($this->isBackgroundFillOn());
 		$this->rendered->sharpen($this->calculateSharpnessFactor());
 		$this->rendered->interlace();
 	}

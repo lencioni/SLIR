@@ -380,20 +380,23 @@ class SLIRImage
 	 * @param boolean $isBackgroundFillOn
 	 * @since 2.0
 	 */
-	final public function background($isBackgroundFillOn)
+	final public function background($isBackgroundFillOn, $image = NULL)
 	{
 		if (!$this->isAbleToHaveTransparency())
 			return;
-			
+		
+		if ($image === NULL)
+			$image	= $this->image;
+		
 		if (!$isBackgroundFillOn)
 		{
 			// If this is a GIF or a PNG, we need to set up transparency
-			$this->transparency($this->image);
+			$this->transparency($image);
 		}
 		else
 		{
 			// Fill the background with the specified color for matting purposes
-			$this->fillBackground($this->image);
+			$this->fillBackground($image);
 		} // if
 	}
 	
@@ -437,7 +440,7 @@ class SLIRImage
 	 * @return boolean
 	 * @todo add cropping method preference (smart or centered)
 	 */
-	final public function crop()
+	final public function crop($isBackgroundFillOn)
 	{
 		if (!$this->isCroppingNeeded())
 			return TRUE;
@@ -472,6 +475,8 @@ class SLIRImage
 						$this->cropWidth,
 						$this->cropHeight
 						);
+		
+		$this->background($isBackgroundFillOn, $cropped);
 						
 		// Copy rendered image to cropped image
 		ImageCopy(
