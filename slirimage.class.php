@@ -452,14 +452,42 @@ class SLIRImage
 	 * Crops the image
 	 * 
 	 * @since 2.0
+	 * @param boolean $isBackgroundFillOn
 	 * @return boolean
-	 * @todo add cropping method preference (smart or centered)
+	 * @todo improve cropping method preference (smart or centered)
 	 */
 	final public function crop($isBackgroundFillOn)
 	{
 		if (!$this->isCroppingNeeded())
 			return TRUE;
-			
+		
+		if ($this->isSmartCroppingWanted())
+			return $this->cropSmart($isBackgroundFillOn);
+		else
+			return $this->cropCentered($isBackgroundFillOn);
+	}
+	
+	/**
+	 * @since 2.0
+	 * @return boolean
+	 */
+	final private function isSmartCroppingWanted()
+	{
+		if (SLIR_DEFAULT_CROP_MODE === SLIR::CROP_MODE_SMART)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	/**
+	 * Crops the image in the center
+	 * 
+	 * @since 2.0
+	 * @param boolean $isBackgroundFillOn
+	 * @return boolean
+	 */
+	final private function cropCentered($isBackgroundFillOn)
+	{
 		// Determine crop offset
 		$offset		= array(
 			'top'	=> 0,
@@ -469,22 +497,66 @@ class SLIRImage
 		if ($this->cropRatio() > $this->ratio())
 		{
 			// Image is too tall so we will crop the top and bottom
-			$o					= $this->offset(FALSE);
+			$offset['top']	= round(($this->height - $this->cropHeight) / 2);
+		}
+		else
+		{
+			// Image is too wide so we will crop off the left and right sides
+			$offset['left']	= round(($this->width - $this->cropWidth) / 2);
+		}
+		
+		return $this->cropImage($offset['left'], $offset['top'], $isBackgroundFillOn);
+	}
+	
+	/**
+	 * Crops the image using an algorithm that tries to determine
+	 * the most interesting portion to keep.
+	 * 
+	 * @since 2.0
+	 * @param boolean $isBackgroundFillOn
+	 * @return boolean
+	 */
+	final private function cropSmart($isBackgroundFillOn)
+	{
+		// Determine crop offset
+		$offset		= array(
+			'top'	=> 0,
+			'left'	=> 0
+		);
+		
+		if ($this->cropRatio() > $this->ratio())
+		{
+			// Image is too tall so we will crop the top and bottom
+			$o	= $this->offset(FALSE);
 			if ($o === FALSE)
 				return TRUE;
 			else
-				$offset['top']		= $o;
+				$offset['top']	= $o;
 		}
 		else
 		{
 			// Image is too wide so we will crop the left and right
-			$o					= $this->offset(TRUE);
+			$o	= $this->offset(TRUE);
 			if ($o === FALSE)
 				return TRUE;
 			else
-				$offset['left']		= $o;
+				$offset['left']	= $o;
 		} // if
 		
+		return $this->cropImage($offset['left'], $offset['top'], $isBackgroundFillOn);
+	}
+	
+	/**
+	 * Performs the actual cropping of the image
+	 * 
+	 * @since 2.0
+	 * @param integer $leftOffset Number of pixels from the left side of the image to crop in
+	 * @param integer $topOffset Number of pixels from the top side of the image to crop in
+	 * @param boolean $isBackgroundFillOn
+	 * @return boolean
+	 */
+	final private function cropImage($leftOffset, $topOffset, $isBackgroundFillOn)
+	{
 		// Set up a blank canvas for our cropped image (destination)
 		$cropped	= imagecreatetruecolor(
 						$this->cropWidth,
@@ -499,8 +571,8 @@ class SLIRImage
 			$this->image,
 			0,
 			0,
-			$offset['left'],
-			$offset['top'],
+			$leftOffset,
+			$topOffset,
 			$this->width,
 			$this->height
 		);
