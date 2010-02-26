@@ -551,9 +551,8 @@ class SLIR
 			} // if
 		} // if
 
-		if (floor($this->resizeWidthFactor() * $this->source->height) <= $this->request->height)
+		if ($this->shouldResizeBasedOnWidth())
 		{
-			// Resize the image based on width
 			$this->rendered->height	= ceil($this->resizeWidthFactor() * $this->source->height);
 			$this->rendered->width	= ceil($this->resizeWidthFactor() * $this->source->width);
 			
@@ -564,9 +563,8 @@ class SLIR
 				$this->rendered->cropWidth	= ceil($this->resizeWidthFactor() * $this->source->cropWidth);
 			} // if
 		}
-		else if (floor($this->resizeHeightFactor() * $this->source->width) <= $this->request->width)
+		else if ($this->shouldResizeBasedOnHeight())
 		{
-			// Resize the image based on height
 			$this->rendered->width	= ceil($this->resizeHeightFactor() * $this->source->width);
 			$this->rendered->height	= ceil($this->resizeHeightFactor() * $this->source->height);
 			
@@ -627,6 +625,30 @@ class SLIR
 		
 		if ($this->isBackgroundFillOn())
 			$this->rendered->background	= $this->request->background;
+	}
+	
+	/**
+	 * @since 2.0
+	 * @return boolean
+	 */
+	final private function shouldResizeBasedOnWidth()
+	{
+		if (floor($this->resizeWidthFactor() * $this->source->height) <= $this->request->height)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	/**
+	 * @since 2.0
+	 * @return boolean
+	 */
+	final private function shouldResizeBasedOnHeight()
+	{
+		if (floor($this->resizeHeightFactor() * $this->source->width) <= $this->request->width)
+			return TRUE;
+		else
+			return FALSE;
 	}
 	
 	/**
