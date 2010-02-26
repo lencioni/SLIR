@@ -116,6 +116,18 @@ class SLIR
 	 * @var string
 	 */
 	const VERSION	= '2.0b3';
+	
+	/**
+	 * @since 2.0
+	 * @var integer
+	 */
+	const CROP_MODE_CENTERED	= 1;
+	
+	/**
+	 * @since 2.0
+	 * @var integer
+	 */
+	const CROP_MODE_SMART		= 2;
 
 	/**
 	 * Request object
