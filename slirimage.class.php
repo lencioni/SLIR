@@ -461,87 +461,9 @@ class SLIRImage
 		if (!$this->isCroppingNeeded())
 			return TRUE;
 		
-		if ($this->isSmartCroppingWanted())
-			return $this->cropSmart($isBackgroundFillOn);
-		else
-			return $this->cropCentered($isBackgroundFillOn);
-	}
-	
-	/**
-	 * @since 2.0
-	 * @return boolean
-	 */
-	final private function isSmartCroppingWanted()
-	{
-		if (SLIR_DEFAULT_CROP_MODE === SLIR::CROP_MODE_SMART)
-			return TRUE;
-		else
-			return FALSE;
-	}
-	
-	/**
-	 * Crops the image in the center
-	 * 
-	 * @since 2.0
-	 * @param boolean $isBackgroundFillOn
-	 * @return boolean
-	 */
-	final private function cropCentered($isBackgroundFillOn)
-	{
-		// Determine crop offset
-		$offset		= array(
-			'top'	=> 0,
-			'left'	=> 0
-		);
-		
-		if ($this->cropRatio() > $this->ratio())
-		{
-			// Image is too tall so we will crop the top and bottom
-			$offset['top']	= round(($this->height - $this->cropHeight) / 2);
-		}
-		else
-		{
-			// Image is too wide so we will crop off the left and right sides
-			$offset['left']	= round(($this->width - $this->cropWidth) / 2);
-		}
-		
-		return $this->cropImage($offset['left'], $offset['top'], $isBackgroundFillOn);
-	}
-	
-	/**
-	 * Crops the image using an algorithm that tries to determine
-	 * the most interesting portion to keep.
-	 * 
-	 * @since 2.0
-	 * @param boolean $isBackgroundFillOn
-	 * @return boolean
-	 */
-	final private function cropSmart($isBackgroundFillOn)
-	{
-		// Determine crop offset
-		$offset		= array(
-			'top'	=> 0,
-			'left'	=> 0
-		);
-		
-		if ($this->cropRatio() > $this->ratio())
-		{
-			// Image is too tall so we will crop the top and bottom
-			$o	= $this->offset(FALSE);
-			if ($o === FALSE)
-				return TRUE;
-			else
-				$offset['top']	= $o;
-		}
-		else
-		{
-			// Image is too wide so we will crop the left and right
-			$o	= $this->offset(TRUE);
-			if ($o === FALSE)
-				return TRUE;
-			else
-				$offset['left']	= $o;
-		} // if
+		$offset	= ($this->isSmartCroppingWanted())
+			? $this->cropSmartOffset()
+			: $this->cropCenteredOffset();
 		
 		return $this->cropImage($offset['left'], $offset['top'], $isBackgroundFillOn);
 	}
@@ -586,6 +508,83 @@ class SLIRImage
 	}
 	
 	/**
+	 * @since 2.0
+	 * @return boolean
+	 */
+	final private function isSmartCroppingWanted()
+	{
+		if (SLIR_DEFAULT_CROP_MODE === SLIR::CROP_MODE_SMART)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	
+	/**
+	 * Calculates the crop offset anchored in the center of the image
+	 * 
+	 * @since 2.0
+	 * @return array Offset associative array
+	 */
+	final private function cropCenteredOffset()
+	{
+		// Determine crop offset
+		$offset		= array(
+			'top'	=> 0,
+			'left'	=> 0
+		);
+		
+		if ($this->cropRatio() > $this->ratio())
+		{
+			// Image is too tall so we will crop the top and bottom
+			$offset['top']	= round(($this->height - $this->cropHeight) / 2);
+		}
+		else
+		{
+			// Image is too wide so we will crop off the left and right sides
+			$offset['left']	= round(($this->width - $this->cropWidth) / 2);
+		}
+		
+		return $offset;
+	}
+	
+	/**
+	 * Calculates the crop offset using an algorithm that tries to determine
+	 * the most interesting portion of the image to keep.
+	 * 
+	 * @since 2.0
+	 * @return array Offset associative array
+	 */
+	final private function cropSmartOffset()
+	{
+		// Determine crop offset
+		$offset		= array(
+			'top'	=> 0,
+			'left'	=> 0
+		);
+		
+		if ($this->cropRatio() > $this->ratio())
+		{
+			// Image is too tall so we will crop the top and bottom
+			$o	= $this->cropSmartOffsetRows(FALSE);
+			if ($o === FALSE)
+				return TRUE;
+			else
+				$offset['top']	= $o;
+		}
+		else
+		{
+			// Image is too wide so we will crop the left and right
+			$o	= $this->cropSmartOffsetRows(TRUE);
+			if ($o === FALSE)
+				return TRUE;
+			else
+				$offset['left']	= $o;
+		} // if
+		
+		return $offset;
+	}
+	
+	/**
 	 * Determines the optimal number of rows in from the top or left to crop
 	 * the source image
 	 * 
@@ -594,7 +593,7 @@ class SLIRImage
 	 * FALSE, will calculate from the top edge
 	 * @return integer|boolean
 	 */
-	final private function offset($fromLeft = TRUE)
+	final private function cropSmartOffsetRows($fromLeft = TRUE)
 	{
 		if ($fromLeft)
 		{
