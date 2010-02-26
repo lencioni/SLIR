@@ -72,6 +72,15 @@ define('SLIR_MEMORY_TO_ALLOCATE',	'100M');
 define('SLIR_DEFAULT_QUALITY',	80);
 
 /**
+ * Default crop mode setting to use if crop mode is not specified in the request.
+ * Possible values are 'centered' or 'smart'.
+ * 
+ * @since 2.0
+ * @var integer
+ */
+define('SLIR_DEFAULT_CROP_MODE',	'centered');
+
+/**
  * Default setting for whether JPEGs should be progressive JPEGs (interlaced)
  * or not.
  * 

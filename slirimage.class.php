@@ -56,7 +56,7 @@ class SLIRImage
 	 * @var resource
 	 * @since 2.0
 	 */
-	private $image;
+	public $image;
 	
 	/**
 	 * MIME type of this image
