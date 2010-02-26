@@ -553,8 +553,8 @@ class SLIR
 
 		if ($this->shouldResizeBasedOnWidth())
 		{
-			$this->rendered->height	= ceil($this->resizeWidthFactor() * $this->source->height);
-			$this->rendered->width	= ceil($this->resizeWidthFactor() * $this->source->width);
+			$this->rendered->height	= min($this->request->height, ceil($this->resizeWidthFactor() * $this->source->height));
+			$this->rendered->width	= min($this->request->width, ceil($this->resizeWidthFactor() * $this->source->width));
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
@@ -565,8 +565,8 @@ class SLIR
 		}
 		else if ($this->shouldResizeBasedOnHeight())
 		{
-			$this->rendered->width	= ceil($this->resizeHeightFactor() * $this->source->width);
-			$this->rendered->height	= ceil($this->resizeHeightFactor() * $this->source->height);
+			$this->rendered->width	= min($this->request->width, ceil($this->resizeHeightFactor() * $this->source->width));
+			$this->rendered->height	= min($this->request->height, ceil($this->resizeHeightFactor() * $this->source->height));
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
@@ -586,7 +586,7 @@ class SLIR
 			$this->rendered->cropWidth	= ceil($ratio * $this->source->cropWidth);
 			$this->rendered->cropHeight	= ceil($ratio * $this->source->cropHeight);
 		} // if
-
+		
 		// Determine the quality of the output image
 		$this->rendered->quality		= ($this->request->quality !== NULL)
 			? $this->request->quality : SLIR_DEFAULT_QUALITY;
