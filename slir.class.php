@@ -553,26 +553,26 @@ class SLIR
 
 		if ($this->shouldResizeBasedOnWidth())
 		{
-			$this->rendered->height	= min($this->request->height, ceil($this->resizeWidthFactor() * $this->source->height));
-			$this->rendered->width	= min($this->request->width, ceil($this->resizeWidthFactor() * $this->source->width));
+			$this->rendered->height	= round($this->resizeWidthFactor() * $this->source->height);
+			$this->rendered->width	= round($this->resizeWidthFactor() * $this->source->width);
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
-				$this->rendered->cropHeight	= ceil($this->resizeWidthFactor() * $this->source->cropHeight);
-				$this->rendered->cropWidth	= ceil($this->resizeWidthFactor() * $this->source->cropWidth);
+				$this->rendered->cropHeight	= round($this->resizeWidthFactor() * $this->source->cropHeight);
+				$this->rendered->cropWidth	= round($this->resizeWidthFactor() * $this->source->cropWidth);
 			} // if
 		}
 		else if ($this->shouldResizeBasedOnHeight())
 		{
-			$this->rendered->width	= min($this->request->width, ceil($this->resizeHeightFactor() * $this->source->width));
-			$this->rendered->height	= min($this->request->height, ceil($this->resizeHeightFactor() * $this->source->height));
+			$this->rendered->width	= round($this->resizeHeightFactor() * $this->source->width);
+			$this->rendered->height	= round($this->resizeHeightFactor() * $this->source->height);
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
-				$this->rendered->cropHeight	= ceil($this->resizeHeightFactor() * $this->source->cropHeight);
-				$this->rendered->cropWidth	= ceil($this->resizeHeightFactor() * $this->source->cropWidth);
+				$this->rendered->cropHeight	= round($this->resizeHeightFactor() * $this->source->cropHeight);
+				$this->rendered->cropWidth	= round($this->resizeHeightFactor() * $this->source->cropWidth);
 			} // if
 		}
 		else if ($this->isCroppingNeeded()) // No resizing is needed but we still need to crop
@@ -580,11 +580,11 @@ class SLIR
 			$ratio	= ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
 				? $this->resizeUncroppedWidthFactor() : $this->resizeUncroppedHeightFactor();
 				
-			$this->rendered->width		= ceil($ratio * $this->source->width);
-			$this->rendered->height		= ceil($ratio * $this->source->height);
+			$this->rendered->width		= round($ratio * $this->source->width);
+			$this->rendered->height		= round($ratio * $this->source->height);
 			
-			$this->rendered->cropWidth	= ceil($ratio * $this->source->cropWidth);
-			$this->rendered->cropHeight	= ceil($ratio * $this->source->cropHeight);
+			$this->rendered->cropWidth	= round($ratio * $this->source->cropWidth);
+			$this->rendered->cropHeight	= round($ratio * $this->source->cropHeight);
 		} // if
 		
 		// Determine the quality of the output image
