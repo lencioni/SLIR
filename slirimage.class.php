@@ -436,7 +436,7 @@ class SLIRImage
 			hexdec($this->background[4].$this->background[5])
 		);
 		
-		imagefill($image, 0, 0, $background);
+		imagefilledrectangle($image, 0, 0, $this->width, $this->height, $background);
 	}
 	
 	/**
