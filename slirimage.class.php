@@ -447,6 +447,37 @@ class SLIRImage
 		if ($this->progressive)
 			imageinterlace($this->image, 1);
 	}
+
+
+	/**
+	 * @since 2.0
+	 */
+	final public function reduceFilesize($isBackgroundFillOn)
+	{
+		if ($this->isAbleToHaveTransparency() && $isBackgroundFillOn)
+			$this->convertToPalletteImage();
+	}
+	
+	/**
+	 * @param resource $image
+	 * @param boolean $dither
+	 * @param integer $ncolors
+	 * @link http://php.net/manual/en/function.imagetruecolortopalette.php#44803
+	 * @since 2.0
+	 */
+	final private function convertToPalletteImage($image = NULL, $dither = TRUE, $ncolors = 256)
+	{
+		if ($image === NULL)
+			$image = $this->image;
+	
+		$width			= imagesx($image);
+		$height			= imagesy($image);
+		$colorsHandle	= imagecreatetruecolor($width, $height);
+		imagecopymerge($colorsHandle, $image, 0, 0, 0, 0, $width, $height, 100);
+		imagetruecolortopalette($image, $dither, $ncolors);
+		imagecolormatch($colorsHandle, $image);
+		imagedestroy($colorsHandle);
+	}
 	
 	/**
 	 * Crops the image
