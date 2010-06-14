@@ -175,6 +175,10 @@ class SLIR
 		// on servers that are set to display E_STRICT errors.
 		error_reporting(error_reporting() & ~E_STRICT);
 		
+		// Prevents ob_start('ob_gzhandler') in auto_prepend files from messing
+		// up SLIR's output
+		$this->escapeOutputBuffering();
+		
 		$this->getConfig();
 		
 		$this->request	= new SLIRRequest();
@@ -206,6 +210,15 @@ class SLIR
 			$this->render();
 			$this->serveRenderedImage();
 		} // if
+	}
+	
+	/**
+	 * @return void
+	 */
+	final private function escapeOutputBuffering()
+	{
+		while (ob_get_level())
+			ob_end_clean();
 	}
 
 	/**

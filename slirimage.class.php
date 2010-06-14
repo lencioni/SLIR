@@ -438,7 +438,7 @@ class SLIRImage
 		
 		imagefilledrectangle($image, 0, 0, $this->width, $this->height, $background);
 	}
-	
+
 	/**
 	 * @since 2.0
 	 */
@@ -498,7 +498,7 @@ class SLIRImage
 			$this->width,
 			$this->height
 		);
-		
+
 		// Replace pre-cropped image with cropped image
 		imagedestroy($this->image);
 		$this->image	= $cropped;
@@ -1260,7 +1260,7 @@ class SLIRImage
 	 */
 	final private function getData()
 	{
-		ob_start();
+		ob_start(NULL);
 			if (!$this->output())
 				return FALSE;
 			$data	= ob_get_contents();
