@@ -1179,7 +1179,7 @@ class SLIR
 		// the browser finish processing the script so we can do extra work
 		// without making the user wait. This header must come last or the file
 		// size will not properly work for images in the browser's cache
-		header('Connection: close');
+		//header('Connection: close');
 	}
 
 	/**
