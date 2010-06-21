@@ -217,8 +217,13 @@ class SLIR
 	 */
 	final private function escapeOutputBuffering()
 	{
-		while (ob_get_level())
+		while ($level = ob_get_level())
+		{
 			ob_end_clean();
+			
+			if ($level == 1)
+				return;
+		}
 	}
 
 	/**
