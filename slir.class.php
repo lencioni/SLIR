@@ -221,8 +221,10 @@ class SLIR
 		{
 			ob_end_clean();
 			
-			if ($level == 1)
+			if ($level == ob_get_level())
+			{
 				return;
+			}
 		}
 	}
 
