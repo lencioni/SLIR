@@ -580,6 +580,21 @@ class SLIRImage
 			return FALSE;
 		}
 	}
+
+	/**
+	 * Determines if the top and bottom need to be cropped
+	 */
+	private function shouldCropTopAndBottom()
+	{
+		if ($this->cropRatio() > $this->ratio())
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
 	
 	/**
 	 * Calculates the crop offset anchored in the center of the image
@@ -595,7 +610,7 @@ class SLIRImage
 			'left'	=> 0
 		);
 		
-		if ($this->cropRatio() > $this->ratio())
+		if ($this->shouldCropTopAndBottom())
 		{
 			// Image is too tall so we will crop the top and bottom
 			$offset['top']	= round(($this->height - $this->cropHeight) / 2);
@@ -624,7 +639,7 @@ class SLIRImage
 			'left'	=> 0
 		);
 		
-		if ($this->cropRatio() > $this->ratio())
+		if ($this->shouldCropTopAndBottom())
 		{
 			// Image is too tall so we will crop the top and bottom
 			$o	= $this->cropSmartOffsetRows(FALSE);
