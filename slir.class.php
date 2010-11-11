@@ -219,7 +219,7 @@ class SLIR
 	/**
 	 * @return void
 	 */
-	final private function escapeOutputBuffering()
+	private function escapeOutputBuffering()
 	{
 		while ($level = ob_get_level())
 		{
@@ -237,7 +237,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function getConfig()
+	private function getConfig()
 	{
 		if (file_exists(self::configFilename()))
 		{
@@ -268,7 +268,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function configFilename()
+	private function configFilename()
 	{
 		if (defined('SLIR_CONFIG_FILENAME'))
 		{
@@ -285,7 +285,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function setParameters()
+	private function setParameters()
 	{
 		$this->source		= new SLIRImage();
 		$this->source->path	= $this->request->path;
@@ -309,7 +309,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function render()
+	private function render()
 	{
 		// We don't want to run out of memory
 		ini_set('memory_limit', SLIR_MEMORY_TO_ALLOCATE);
@@ -329,7 +329,7 @@ class SLIR
 	/**
 	 * @since 2.0
 	 */
-	final private function copySourceToRendered()
+	private function copySourceToRendered()
 	{
 		// Resample the original image into the resized canvas we set up earlier
 		if ($this->source->width != $this->rendered->width || $this->source->height != $this->rendered->height)
@@ -366,7 +366,7 @@ class SLIR
 	 * @return integer
 	 * @since 2.0
 	 */
-	final private function calculateSharpnessFactor()
+	private function calculateSharpnessFactor()
 	{
 		return $this->calculateASharpnessFactor($this->source->area(), $this->rendered->area());
 	}
@@ -383,7 +383,7 @@ class SLIR
 	 * @param integer $destinationArea Area of destination image
 	 * @return integer Sharpness factor
 	 */
-	final private function calculateASharpnessFactor($sourceArea, $destinationArea)
+	private function calculateASharpnessFactor($sourceArea, $destinationArea)
 	{
 		$final	= sqrt($destinationArea) * (750.0 / sqrt($sourceArea));
 		$a		= 52;
@@ -400,7 +400,7 @@ class SLIR
 	 * @param string $cacheFilePath
 	 * @return boolean
 	 */
-	final private function copyIPTC($cacheFilePath)
+	private function copyIPTC($cacheFilePath)
 	{
 		$data	= '';
 
@@ -457,7 +457,7 @@ class SLIR
 	 * @return boolean
 	 * @todo Add check for JPEGs and progressiveness
 	 */
-	final private function isSourceImageDesired()
+	private function isSourceImageDesired()
 	{
 		if ($this->isWidthDifferent()
 			|| $this->isHeightDifferent()
@@ -478,7 +478,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isWidthDifferent()
+	private function isWidthDifferent()
 	{
 		if ($this->request->width !== NULL
 			&& $this->request->width < $this->source->width
@@ -496,7 +496,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isHeightDifferent()
+	private function isHeightDifferent()
 	{
 		if ($this->request->height !== NULL
 			&& $this->request->height < $this->source->height
@@ -514,7 +514,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isBackgroundFillOn()
+	private function isBackgroundFillOn()
 	{
 		if ($this->request->isBackground() && $this->source->isAbleToHaveTransparency())
 		{
@@ -530,7 +530,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isQualityOn()
+	private function isQualityOn()
 	{
 		return $this->request->isQuality();
 	}
@@ -539,7 +539,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isCroppingNeeded()
+	private function isCroppingNeeded()
 	{
 		if ($this->request->isCropping() && $this->request->cropRatio['ratio'] != $this->source->ratio())
 		{
@@ -557,7 +557,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function setRenderedProperties()
+	private function setRenderedProperties()
 	{
 		$this->rendered	= new SLIRImage();
 		
@@ -688,7 +688,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function shouldResizeBasedOnWidth()
+	private function shouldResizeBasedOnWidth()
 	{
 		if (floor($this->resizeWidthFactor() * $this->source->height) <= $this->request->height)
 		{
@@ -704,7 +704,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function shouldResizeBasedOnHeight()
+	private function shouldResizeBasedOnHeight()
 	{
 		if (floor($this->resizeHeightFactor() * $this->source->width) <= $this->request->width)
 		{
@@ -720,7 +720,7 @@ class SLIR
 	 * @since 2.0
 	 * @return float
 	 */
-	final private function resizeWidthFactor()
+	private function resizeWidthFactor()
 	{
 		if ($this->source->cropWidth !== NULL)
 		{
@@ -736,7 +736,7 @@ class SLIR
 	 * @since 2.0
 	 * @return float
 	 */
-	final private function resizeUncroppedWidthFactor()
+	private function resizeUncroppedWidthFactor()
 	{
 		return $this->request->width / $this->source->width;
 	}
@@ -745,7 +745,7 @@ class SLIR
 	 * @since 2.0
 	 * @return float
 	 */
-	final private function resizeCroppedWidthFactor()
+	private function resizeCroppedWidthFactor()
 	{
 		return $this->request->width / $this->source->cropWidth;
 	}
@@ -754,7 +754,7 @@ class SLIR
 	 * @since 2.0
 	 * @return float
 	 */
-	final private function resizeHeightFactor()
+	private function resizeHeightFactor()
 	{
 		if ($this->source->cropHeight !== NULL)
 		{
@@ -770,7 +770,7 @@ class SLIR
 	 * @since 2.0
 	 * @return float
 	 */
-	final private function resizeUncroppedHeightFactor()
+	private function resizeUncroppedHeightFactor()
 	{
 		return $this->request->height / $this->source->height;
 	}
@@ -779,7 +779,7 @@ class SLIR
 	 * @since 2.0
 	 * @return float
 	 */
-	final private function resizeCroppedHeightFactor()
+	private function resizeCroppedHeightFactor()
 	{
 		return $this->request->height / $this->source->cropHeight;
 	}
@@ -788,7 +788,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isRenderedCached()
+	private function isRenderedCached()
 	{
 		return $this->isCached($this->renderedCacheFilePath());
 	}
@@ -797,7 +797,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isRequestCached()
+	private function isRequestCached()
 	{
 		return $this->isCached($this->requestCacheFilePath());
 	}
@@ -807,7 +807,7 @@ class SLIR
 	 * @param string $cacheFilePath
 	 * @return boolean
 	 */
-	final private function isCached($cacheFilePath)
+	private function isCached($cacheFilePath)
 	{
 		if (!file_exists($cacheFilePath))
 		{
@@ -837,7 +837,7 @@ class SLIR
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function renderedCacheFilePath()
+	private function renderedCacheFilePath()
 	{
 		return SLIR_CACHE_DIR . '/rendered' . $this->renderedCacheFilename();
 	}
@@ -855,7 +855,7 @@ class SLIR
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function requestCacheFilename()
+	private function requestCacheFilename()
 	{
 		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI());
 	}
@@ -864,7 +864,7 @@ class SLIR
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function requestURI()
+	private function requestURI()
 	{
 		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
 		{
@@ -880,7 +880,7 @@ class SLIR
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function requestCacheFilePath()
+	private function requestCacheFilePath()
 	{
 		return SLIR_CACHE_DIR . '/request' . $this->requestCacheFilename();
 	}
@@ -892,7 +892,7 @@ class SLIR
 	 * @param string $imageData
 	 * @return boolean
 	 */
-	final private function cache()
+	private function cache()
 	{
 		$this->cacheRendered();
 		
@@ -912,7 +912,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function cacheRendered()
+	private function cacheRendered()
 	{
 		$this->rendered->data	= $this->cacheFile(
 			$this->renderedCacheFilePath(),
@@ -931,7 +931,7 @@ class SLIR
 	 * @param boolean $copyEXIF
 	 * @return string
 	 */
-	final private function cacheRequest($imageData, $copyEXIF = TRUE)
+	private function cacheRequest($imageData, $copyEXIF = TRUE)
 	{
 		return $this->cacheFile(
 			$this->requestCacheFilePath(),
@@ -951,7 +951,7 @@ class SLIR
 	 * @param string $symlinkToPath
 	 * @return string|boolean
 	 */
-	final private function cacheFile($cacheFilePath, $imageData, $copyEXIF = TRUE, $symlinkToPath = NULL)
+	private function cacheFile($cacheFilePath, $imageData, $copyEXIF = TRUE, $symlinkToPath = NULL)
 	{
 		$this->initializeCache();
 		
@@ -990,7 +990,7 @@ class SLIR
 	 * @param string $cacheFilePath
 	 * @return mixed string contents of image on success, FALSE on failure
 	 */
-	final private function copyEXIF($cacheFilePath)
+	private function copyEXIF($cacheFilePath)
 	{
 		// Make sure to suppress strict warning thrown by PEL
 		@require_once dirname(__FILE__) . '/pel-0.9.1/PelJpeg.php';
@@ -1020,7 +1020,7 @@ class SLIR
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function initializeCache()
+	private function initializeCache()
 	{
 		if ($this->isCacheInitialized)
 		{
@@ -1041,7 +1041,7 @@ class SLIR
 	 * @param boolean $verifyReadWriteability
 	 * @return boolean
 	 */
-	final private function initializeDirectory($path, $verifyReadWriteability = TRUE, $test = FALSE)
+	private function initializeDirectory($path, $verifyReadWriteability = TRUE, $test = FALSE)
 	{
 		if (!file_exists($path))
 		{
@@ -1075,7 +1075,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function serveSourceImage()
+	private function serveSourceImage()
 	{
 		$this->serveFile(
 			$this->source->fullPath(),
@@ -1095,7 +1095,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function serveRenderedCachedImage()
+	private function serveRenderedCachedImage()
 	{
 		return $this->serveCachedImage($this->renderedCacheFilePath(), 'rendered');
 	}
@@ -1105,7 +1105,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function serveRequestCachedImage()
+	private function serveRequestCachedImage()
 	{
 		return $this->serveCachedImage($this->requestCacheFilePath(), 'request');
 	}
@@ -1117,7 +1117,7 @@ class SLIR
 	 * @param string $cacheFilePath
 	 * @param string $cacheType Can be 'request' or 'image'
 	 */
-	final private function serveCachedImage($cacheFilePath, $cacheType)
+	private function serveCachedImage($cacheFilePath, $cacheType)
 	{
 		// Serve the image
 		$data = $this->serveFile(
@@ -1146,7 +1146,7 @@ class SLIR
 	 * @param string $path
 	 * @return string
 	 */
-	final private function mimeType($path)
+	private function mimeType($path)
 	{
 		$info	= getimagesize($path);
 		return $info['mime'];
@@ -1157,7 +1157,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 */
-	final private function serveRenderedImage()
+	private function serveRenderedImage()
 	{
 		// Cache the image
 		$this->cache();
@@ -1189,7 +1189,7 @@ class SLIR
 	 * @param string $SLIRheader
 	 * @return string Image data
 	 */
-	final private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $SLIRHeader)
+	private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $SLIRHeader)
 	{
 		if ($imagePath != NULL)
 		{
@@ -1249,7 +1249,7 @@ class SLIR
 	 * @param integer $fileSize
 	 * @param string $SLIRHeader
 	 */
-	final private function serveHeaders($lastModified, $mimeType, $fileSize, $SLIRHeader)
+	private function serveHeaders($lastModified, $mimeType, $fileSize, $SLIRHeader)
 	{
 		header("Last-Modified: $lastModified");
 		header("Content-Type: $mimeType");
@@ -1285,7 +1285,7 @@ class SLIR
 	 * @param integer $timestamp
 	 * @return string
 	 */
-	final private function lastModified($timestamp)
+	private function lastModified($timestamp)
 	{
 		return gmdate('D, d M Y H:i:s', $timestamp) . ' GMT';
 	}
@@ -1296,7 +1296,7 @@ class SLIR
 	 * @since 2.0
 	 * @param string $lastModified
 	 */
-	final private function doConditionalGet($lastModified)
+	private function doConditionalGet($lastModified)
 	{
 		$ifModifiedSince = (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) ?
 			stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :

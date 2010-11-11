@@ -222,7 +222,7 @@ class SLIRRequest
 	 * @since 2.0
 	 * @return array
 	 */
-	final private function getParameters()
+	private function getParameters()
 	{
 		if (!$this->isUsingQueryString()) // Using the mod_rewrite version
 		{
@@ -240,7 +240,7 @@ class SLIRRequest
 	 * @since 2.0
 	 * @return array
 	 */
-	final private function getParametersFromPath()
+	private function getParametersFromPath()
 	{
 		$params	= array();
 
@@ -297,7 +297,7 @@ Example usage:
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isUsingQueryString()
+	private function isUsingQueryString()
 	{
 		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
 		{
@@ -316,7 +316,7 @@ Example usage:
 		}
 	}
 	
-	final private function setPath($path)
+	private function setPath($path)
 	{
 		$this->path	= $this->localizePath((string) urldecode($path));
 		
@@ -340,7 +340,7 @@ Example usage:
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function localizePath($path)
+	private function localizePath($path)
 	{
 		return '/' . trim($this->stripQueryString($this->stripProtocolAndDomain($path)), '/');
 	}
@@ -350,7 +350,7 @@ Example usage:
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function stripProtocolAndDomain($path)
+	private function stripProtocolAndDomain($path)
 	{
 		return preg_replace('/^(?:s?f|ht)tps?:\/\/[^\/]+/i', '', $path);
 	}
@@ -360,7 +360,7 @@ Example usage:
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function stripQueryString($path)
+	private function stripQueryString($path)
 	{
 		return preg_replace('/\?.*/', '', $path);
 	}
@@ -374,7 +374,7 @@ Example usage:
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isPathSecure()
+	private function isPathSecure()
 	{
 		if (strpos(dirname($this->path), ':') || preg_match('/(\.\.|<|>)/', $this->path))
 		{
@@ -392,7 +392,7 @@ Example usage:
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function pathExists()
+	private function pathExists()
 	{
 		return is_file($this->fullPath());
 	}

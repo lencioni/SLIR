@@ -177,7 +177,7 @@ class SLIRImage
 	/**
 	 * @since 2.0
 	 */
-	final private function setPath($path)
+	private function setPath($path)
 	{
 		$this->path	= $path;
 
@@ -336,7 +336,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isCroppingNeeded()
+	private function isCroppingNeeded()
 	{	
 		if ($this->cropWidth !== NULL && $this->cropHeight != NULL
 			&& ($this->cropWidth < $this->width || $this->cropHeight < $this->height)
@@ -354,7 +354,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isSharpeningDesired()
+	private function isSharpeningDesired()
 	{
 		if ($this->isJPEG())
 		{
@@ -369,7 +369,7 @@ class SLIRImage
 	/**
 	 * @since 2.0
 	 */
-	final private function setImageInfoFromFile()
+	private function setImageInfoFromFile()
 	{
 		$info = $this->getImageInfoFromFile();
 		
@@ -388,7 +388,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return array
 	 */
-	final private function getImageInfoFromFile()
+	private function getImageInfoFromFile()
 	{
 		$info	= getimagesize($this->fullPath(), $extraInfo);
 
@@ -472,7 +472,7 @@ class SLIRImage
 	/**
 	 * @since 2.0
 	 */
-	final private function transparency($image)
+	private function transparency($image)
 	{
 		imagealphablending($image, FALSE);
 		imagesavealpha($image, TRUE);
@@ -481,7 +481,7 @@ class SLIRImage
 	/**
 	 * @since 2.0
 	 */
-	final private function fillBackground($image)
+	private function fillBackground($image)
 	{
 		$background	= imagecolorallocate(
 			$image,
@@ -535,7 +535,7 @@ class SLIRImage
 	 * @param boolean $isBackgroundFillOn
 	 * @return boolean
 	 */
-	final private function cropImage($leftOffset, $topOffset, $isBackgroundFillOn)
+	private function cropImage($leftOffset, $topOffset, $isBackgroundFillOn)
 	{
 		// Set up a blank canvas for our cropped image (destination)
 		$cropped	= imagecreatetruecolor(
@@ -569,7 +569,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function isSmartCroppingWanted()
+	private function isSmartCroppingWanted()
 	{
 		if (SLIR_DEFAULT_CROP_MODE === SLIR::CROP_MODE_SMART)
 		{
@@ -587,7 +587,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return array Offset associative array
 	 */
-	final private function cropCenteredOffset()
+	private function cropCenteredOffset()
 	{
 		// Determine crop offset
 		$offset		= array(
@@ -616,7 +616,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return array Offset associative array
 	 */
-	final private function cropSmartOffset()
+	private function cropSmartOffset()
 	{
 		// Determine crop offset
 		$offset		= array(
@@ -663,7 +663,7 @@ class SLIRImage
 	 * FALSE, will calculate from the top edge
 	 * @return integer|boolean
 	 */
-	final private function cropSmartOffsetRows($fromLeft = TRUE)
+	private function cropSmartOffsetRows($fromLeft = TRUE)
 	{
 		if ($fromLeft)
 		{
@@ -824,7 +824,7 @@ class SLIRImage
 	 * @param integer $originalLength Number of rows in the original image
 	 * @return float
 	 */
-	final private function rowInterestingness($row, $fromLeft, $pixelStep, $originalLength)
+	private function rowInterestingness($row, $fromLeft, $pixelStep, $originalLength)
 	{
 		$interestingness	= 0;
 		$max				= 0;
@@ -869,7 +869,7 @@ class SLIRImage
 	 * @param integer $y y-axis position of pixel to calculate
 	 * @return float
 	 */
-	final private function pixelInterestingness($x, $y)
+	private function pixelInterestingness($x, $y)
 	{
 		global $colors;
 		
@@ -898,7 +898,7 @@ class SLIRImage
 	 * @param integer $y y-axis position of pixel to calculate
 	 * @return boolean
 	 */
-	final private function loadPixelInfo($x, $y)
+	private function loadPixelInfo($x, $y)
 	{
 		if ($x < 0 || $x >= $this->width
 			|| $y < 0 || $y >= $this->height)
@@ -934,7 +934,7 @@ class SLIRImage
 	 * @param integer $y y-axis position of pixel to calculate
 	 * @return boolean
 	 */
-	final private function calculateDeltas($x, $y)
+	private function calculateDeltas($x, $y)
 	{
 		// Calculate each adjacent pixel's Delta E in relation to the current
 		// pixel (top left, top center, top right, center left, center right,
@@ -988,7 +988,7 @@ class SLIRImage
 	 * @param integer $yMove number of pixels to move on the y-axis to find comparison pixel
 	 * @return boolean
 	 */
-	final private function calculateDelta($x1, $y1, $xMove, $yMove)
+	private function calculateDelta($x1, $y1, $xMove, $yMove)
 	{
 		$x2	= $x1 + $xMove;
 		$y2 = $y1 + $yMove;
@@ -1030,7 +1030,7 @@ class SLIRImage
 	 * @param integer $y y-axis position of pixel to calculate
 	 * @return boolean
 	 */
-	final private function calculateInterestingness($x, $y)
+	private function calculateInterestingness($x, $y)
 	{
 		global $colors;
 		
@@ -1046,7 +1046,7 @@ class SLIRImage
 	 * @param integer $int
 	 * @return array
 	 */
-	final private function evaluateColor($int)
+	private function evaluateColor($int)
 	{
 		$rgb	= $this->colorIndexToRGB($int);
 		$xyz	= $this->RGBtoXYZ($rgb);
@@ -1060,7 +1060,7 @@ class SLIRImage
 	 * @param integer $int
 	 * @return array
 	 */
-	final private function colorIndexToRGB($int)
+	private function colorIndexToRGB($int)
 	{
 		$a	= (255 - (($int >> 24) & 0xFF)) / 255;
 		$r	= (($int >> 16) & 0xFF) * $a;
@@ -1075,7 +1075,7 @@ class SLIRImage
 	 * @return array XYZ
 	 * @link http://easyrgb.com/index.php?X=MATH&H=02#text2
 	 */
-	final private function RGBtoXYZ($rgb)
+	private function RGBtoXYZ($rgb)
 	{
 		$r	= $rgb['r'] / 255;
 		$g	= $rgb['g'] / 255;
@@ -1123,7 +1123,7 @@ class SLIRImage
 	/**
 	 * @link http://www.easyrgb.com/index.php?X=MATH&H=05#text5
 	 */ 
-	final private function XYZtoHunterLab($xyz)
+	private function XYZtoHunterLab($xyz)
 	{
 		if ($xyz['y'] == 0)
 		{
@@ -1144,7 +1144,7 @@ class SLIRImage
 	 * @return array LAB
 	 * @link http://www.easyrgb.com/index.php?X=MATH&H=05#text5
 	 */
-	final private function XYZtoCIELAB($xyz)
+	private function XYZtoCIELAB($xyz)
 	{
 		$refX	= 100;
 		$refY	= 100;
@@ -1188,7 +1188,7 @@ class SLIRImage
 		return array('l' => $l, 'a' => $a, 'b' => $b);
 	}
 	
-	final private function deltaE($lab1, $lab2)
+	private function deltaE($lab1, $lab2)
 	{
 		return sqrt( ( pow( $lab1['l'] - $lab2['l'], 2 ) )
                + ( pow( $lab1['a'] - $lab2['a'], 2 ) )
@@ -1205,7 +1205,7 @@ class SLIRImage
 	 * @param array $lab2 LAB color array
 	 * @return float
 	 */
-	final private function deltaE2000($lab1, $lab2)
+	private function deltaE2000($lab1, $lab2)
 	{
 		$weightL	= 1; // Lightness
 		$weightC	= 1; // Chroma
@@ -1306,7 +1306,7 @@ class SLIRImage
 	 * @return float
 	 * @link http://easyrgb.com/index.php?X=DELT&H=06#text6
 	 */
-	final private function deltaCMC($lab1, $lab2)
+	private function deltaCMC($lab1, $lab2)
 	{
 		// if $weightL is 2 and $weightC is 1, it means that the lightness
 		// will contribute half as much importance to the delta as the chroma
@@ -1353,7 +1353,7 @@ class SLIRImage
 	 * @param integer $b
 	 * @return CIE-H° value
 	 */
-	final private function LABtoHue($a, $b)
+	private function LABtoHue($a, $b)
 	{
 		$bias	= 0;
 		
@@ -1392,7 +1392,7 @@ class SLIRImage
 	 * @return array
 	 * @since 2.0
 	 */
-	final private function sharpenMatrix($sharpness)
+	private function sharpenMatrix($sharpness)
 	{
 		return array(
 			array(-1, -2, -1),
@@ -1424,7 +1424,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return string
 	 */
-	final private function getData()
+	private function getData()
 	{
 		ob_start(NULL);
 			if (!$this->output())
@@ -1441,7 +1441,7 @@ class SLIRImage
 	 * @since 2.0
 	 * @return boolean
 	 */
-	final private function output($filename = NULL)
+	private function output($filename = NULL)
 	{
 		if ($this->isJPEG())
 		{
