@@ -82,9 +82,11 @@ class SLIRException extends Exception
 		{
 			$log	= $this->log();
 			if (!$log)
+			{
 				$explanationText .= "\n\nAlso could not log error to file. "
 					. 'Please create a file at \'' . SLIR_ERROR_LOG_PATH . '\' '
 					. 'and give the web server permissions to write to it.';
+			}
 		} // if
 		
 		// Make sure we have an up to date configuration file with all of the
@@ -116,10 +118,14 @@ class SLIRException extends Exception
 		}
 		
 		if (!defined('SLIR_ERROR_IMAGES') || SLIR_ERROR_IMAGES === TRUE)
+		{
 			$this->errorImage($explanationText);
+		}
 		else
+		{
 			$this->errorText($explanationText);
-	} // __construct()
+		}
+	}
 	
 	/**
 	 * Determines if a constant is not defined
@@ -131,7 +137,7 @@ class SLIRException extends Exception
 	public function isNotDefined($constantName)
 	{
 		return (!defined($constantName));
-	} // isNotDefined()
+	}
 		
 	/**
 	 * Logs the error to a file
@@ -149,7 +155,7 @@ class SLIRException extends Exception
 			. "\n\n" . $referrer . $request . $this->getTraceAsString() . "\n";
 		
 		return @error_log($message, 3, SLIR_ERROR_LOG_PATH);
-	} // log()
+	}
 	
 	/**
 	 * @since 2.0
@@ -160,10 +166,12 @@ class SLIRException extends Exception
 	{
 		$text	= $this->getMessage();
 		if ($explanationText)
+		{
 			$text	.= "\n\n$explanationText";
+		}
 		
 		return $text;
-	} // errorMessage()
+	}
 	
 	/**
 	 * Create and output an image with an error message
@@ -183,7 +191,9 @@ class SLIRException extends Exception
 		foreach($text as $line)
 		{
 			if (($temp = strlen($line)) > $characters)
+			{
 				$characters = $temp;
+			}
 		} // foreach
 		
 		// set up the image
@@ -218,7 +228,7 @@ class SLIRException extends Exception
 		
 		// clean up for memory
 		imagedestroy($image);
-	} // errorImage()
+	}
 	
 	/**
 	 * @since 2.0
@@ -227,7 +237,7 @@ class SLIRException extends Exception
 	private function errorText($explanationText = NULL)
 	{
 		echo nl2br($this->errorMessage($explanationText) . "\n");
-	} // errorText()
+	}
 	
 	/**
 	 * Error handler
@@ -243,18 +253,20 @@ class SLIRException extends Exception
 	{
 		// if error has been supressed with an @
 		if (error_reporting() == 0)
+		{
 			return;
+		}
 			
 		$message	= $errno . ' ' .$errstr;
 		if ($errfile !== NULL)
 		{
 			$message	.= "\n\nFile: $errfile";
 			if ($errline !== NULL)
+			{
 				$message	.= "\nLine $errline";
+			}
 		}
 			
 		throw new SLIRException($message);
 	}
 } // SLIRException
-
-?>

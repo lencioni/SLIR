@@ -225,9 +225,13 @@ class SLIRRequest
 	final private function getParameters()
 	{
 		if (!$this->isUsingQueryString()) // Using the mod_rewrite version
+		{
 			return $this->getParametersFromPath();
+		}
 		else // Using the query string version
+		{
 			return $_GET;
+		}
 	}
 
 	/**
@@ -296,14 +300,20 @@ Example usage:
 	final private function isUsingQueryString()
 	{
 		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
+		{
 			return TRUE;
-		if (isset($_SERVER['QUERY_STRING'])
+		}
+		else if (isset($_SERVER['QUERY_STRING'])
 			&& trim($_SERVER['QUERY_STRING']) != ''
 			&& count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET)))
 			)
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	final private function setPath($path)
@@ -367,9 +377,13 @@ Example usage:
 	final private function isPathSecure()
 	{
 		if (strpos(dirname($this->path), ':') || preg_match('/(\.\.|<|>)/', $this->path))
+		{
 			return FALSE;
+		}
 		else
+		{
 			return TRUE;
+		}
 	}
 	
 	/**
@@ -399,9 +413,13 @@ Example usage:
 	final public function isBackground()
 	{
 		if ($this->background !== NULL)
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -411,9 +429,13 @@ Example usage:
 	final public function isQuality()
 	{
 		if ($this->quality !== NULL)
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -423,9 +445,13 @@ Example usage:
 	final public function isCropping()
 	{
 		if ($this->cropRatio['width'] !== NULL && $this->cropRatio['height'] !== NULL)
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
-} // class SLIRRequest
+}

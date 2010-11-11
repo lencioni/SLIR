@@ -35,4 +35,3 @@ function __autoload($className)
 }
 
 new SLIR();
-?>

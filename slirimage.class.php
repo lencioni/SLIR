@@ -143,7 +143,9 @@ class SLIRImage
 			
 			default:
 				if (property_exists($this, $name))
+				{
 					$this->$name	= $value;
+				}
 			break;
 		} // switch
 	}
@@ -157,13 +159,17 @@ class SLIRImage
 		{
 			case 'data':
 				if ($this->data === NULL)
+				{
 					$this->data	= $this->getData();
+				}
 				return $this->data;
 			break;
 			
 			default:
 				if (property_exists($this, $name))
+				{
 					return $this->$name;
+				}
 			break;
 		}
 	}
@@ -203,9 +209,13 @@ class SLIRImage
 	final public function cropRatio()
 	{
 		if ($this->cropHeight != 0)
+		{
 			return $this->cropWidth / $this->cropHeight;
+		}
 		else
+		{
 			return 0;
+		}
 	}
 	
 	/**
@@ -235,10 +245,14 @@ class SLIRImage
 	final public function isImage()
 	{
 		if (substr($this->mime, 0, 6) == 'image/')
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
-	} // isImage()
+		}
+	}
 	
 	/**
 	 * @since 2.0
@@ -249,7 +263,9 @@ class SLIRImage
 	{
 		$method	= "is$type";
 		if (method_exists($this, $method) && isset($imageArray['mime']))
+		{
 			return $this->$method();
+		}
 	}
 	
 	/**
@@ -259,9 +275,13 @@ class SLIRImage
 	final public function isJPEG()
 	{
 		if ($this->mime == 'image/jpeg')
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 
 	/**
@@ -271,9 +291,13 @@ class SLIRImage
 	final public function isGIF()
 	{
 		if ($this->mime == 'image/gif')
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 
 	/**
@@ -283,9 +307,13 @@ class SLIRImage
 	final public function isPNG()
 	{
 		if (in_array($this->mime, array('image/png', 'image/x-png')))
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -295,9 +323,13 @@ class SLIRImage
 	final public function isAbleToHaveTransparency()
 	{
 		if ($this->isPNG() || $this->isGIF())
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -309,9 +341,13 @@ class SLIRImage
 		if ($this->cropWidth !== NULL && $this->cropHeight != NULL
 			&& ($this->cropWidth < $this->width || $this->cropHeight < $this->height)
 		)
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -321,9 +357,13 @@ class SLIRImage
 	final private function isSharpeningDesired()
 	{
 		if ($this->isJPEG())
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -337,7 +377,9 @@ class SLIRImage
 		$this->width	= $info['width'];
 		$this->height	= $info['height'];
 		if (isset($info['iptc']))
+		{
 			$this->iptc		= $info['iptc'];
+		}
 	}
 	
 	/**
@@ -362,7 +404,9 @@ class SLIRImage
 		
 		// IPTC
 		if(is_array($extraInfo) && isset($extraInfo['APP13']))
+		{
 			$info['iptc']	= iptcparse($extraInfo['APP13']);
+		}
 
 		return $info;
 	}
@@ -381,11 +425,17 @@ class SLIRImage
 	final public function createImageFromFile()
 	{
 		if ($this->isJPEG())
+		{
 			$this->image	= ImageCreateFromJpeg($this->fullPath());
+		}
 		else if ($this->isGIF())
+		{
 			$this->image	= ImageCreateFromGif($this->fullPath());
+		}
 		else if ($this->isPNG())
+		{
 			$this->image	= ImageCreateFromPng($this->fullPath());
+		}
 	}
 	
 	/**
@@ -398,10 +448,14 @@ class SLIRImage
 	final public function background($isBackgroundFillOn, $image = NULL)
 	{
 		if (!$this->isAbleToHaveTransparency())
+		{
 			return;
+		}
 		
 		if ($image === NULL)
+		{
 			$image	= $this->image;
+		}
 		
 		if (!$isBackgroundFillOn)
 		{
@@ -445,7 +499,9 @@ class SLIRImage
 	final public function interlace()
 	{
 		if ($this->progressive)
+		{
 			imageinterlace($this->image, 1);
+		}
 	}
 	
 	/**
@@ -459,7 +515,9 @@ class SLIRImage
 	final public function crop($isBackgroundFillOn)
 	{
 		if (!$this->isCroppingNeeded())
+		{
 			return TRUE;
+		}
 		
 		$offset	= ($this->isSmartCroppingWanted())
 			? $this->cropSmartOffset()
@@ -514,9 +572,13 @@ class SLIRImage
 	final private function isSmartCroppingWanted()
 	{
 		if (SLIR_DEFAULT_CROP_MODE === SLIR::CROP_MODE_SMART)
+		{
 			return TRUE;
+		}
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -567,18 +629,26 @@ class SLIRImage
 			// Image is too tall so we will crop the top and bottom
 			$o	= $this->cropSmartOffsetRows(FALSE);
 			if ($o === FALSE)
+			{
 				return TRUE;
+			}
 			else
+			{
 				$offset['top']	= $o;
+			}
 		}
 		else
 		{
 			// Image is too wide so we will crop the left and right
 			$o	= $this->cropSmartOffsetRows(TRUE);
 			if ($o === FALSE)
+			{
 				return TRUE;
+			}
 			else
+			{
 				$offset['left']	= $o;
+			}
 		} // if
 		
 		return $offset;
@@ -652,7 +722,9 @@ class SLIRImage
 		// We won't save much speed if the pixelStep is between 4 and 1 because
 		// we still need to sample adjacent pixels
 		if ($pixelStep < 4)
+		{
 			$pixelStep = 1;
+		}
 		
 		$tolerance	= 0.5;
 		$upperTol	= 1 + $tolerance;
@@ -661,17 +733,23 @@ class SLIRImage
 		// Fight the near and far rows. The stronger will remain standing.
 		$returningChampion	= NULL;
 		$ratio				= 1;
-		for($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped)
+		for ($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped)
 		{
 			$a	= $this->rowInterestingness($offset['near'], $fromLeft, $pixelStep, $originalLength);
 			$b	= $this->rowInterestingness($originalLength - $offset['far'] - 1, $fromLeft, $pixelStep, $originalLength);
 			
 			if ($a == 0 && $b == 0)
+			{
 				$ratio = 1;
+			}
 			else if ($b == 0)
+			{
 				$ratio = 1 + $a;
+			}
 			else
+			{
 				$ratio	= $a / $b;
+			}
 			
 			if ($ratio > $upperTol)
 			{
@@ -680,27 +758,39 @@ class SLIRImage
 				// Fightback. Winning side gets to go backwards through fallen rows
 				// to see if they are stronger
 				if ($returningChampion == 'near')
+				{
 					$offset['near']	-= ($offset['near'] > 0) ? 1 : 0;
+				}
 				else
+				{
 					$returningChampion	= 'near';
+				}
 			}
 			else if ($ratio < $lowerTol)
 			{
 				++$offset['near'];
 				
 				if ($returningChampion == 'far')
+				{
 					$offset['far']	-= ($offset['far'] > 0) ? 1 : 0;
+				}
 				else
+				{
 					$returningChampion	= 'far';
+				}
 			}
 			else
 			{
 				// There is no strong winner, so discard rows from the side that
 				// has lost the fewest so far. Essentially this is a draw.
 				if ($offset['near'] > $offset['far'])
+				{
 					++$offset['far'];
+				}
 				else // Discard near
+				{
 					++$offset['near'];
+				}
 					
 				// No fightback for draws
 				$returningChampion	= NULL;
@@ -713,9 +803,13 @@ class SLIRImage
 		// push multiple-rows-at-stake battle where it stands the chance to gain
 		// ground.
 		if ($ratio > (1 + ($tolerance * 1.25)))
+		{
 			$offset['near'] -= round($length * .03);
+		}
 		else if ($ratio < (1 / (1 + ($tolerance * 1.25))))
+		{
 			$offset['near']	+= round($length * .03);
+		}
 			
 		return min($rowsToCrop, max(0, $offset['near']));
 	}
@@ -808,18 +902,26 @@ class SLIRImage
 	{
 		if ($x < 0 || $x >= $this->width
 			|| $y < 0 || $y >= $this->height)
+			{
 				return FALSE;
+			}
 				
 		global $colors;
 		
 		if (!isset($colors[$x]))
+		{
 			$colors[$x]	= array();
+		}
 			
 		if (!isset($colors[$x][$y]))
+		{
 			$colors[$x][$y]	= array();
+		}
 		
 		if (!isset($colors[$x][$y]['i']) && !isset($colors[$x][$y]['lab']))
+		{
 			$colors[$x][$y]['lab']	= $this->evaluateColor(imagecolorat($this->image, $x, $y));
+		}
 			
 		return TRUE;
 	}
@@ -841,21 +943,37 @@ class SLIRImage
 		global $colors;
 		
 		if (!isset($colors[$x][$y]['dE']['d-1-1']))
+		{
 			$this->calculateDelta($x, $y, -1, -1);
+		}
 		if (!isset($colors[$x][$y]['dE']['d0-1']))
+		{
 			$this->calculateDelta($x, $y, 0, -1);
+		}
 		if (!isset($colors[$x][$y]['dE']['d1-1']))
+		{
 			$this->calculateDelta($x, $y, 1, -1);
+		}
 		if (!isset($colors[$x][$y]['dE']['d-10']))
+		{
 			$this->calculateDelta($x, $y, -1, 0);
+		}
 		if (!isset($colors[$x][$y]['dE']['d10']))
+		{
 			$this->calculateDelta($x, $y, 1, 0);
+		}
 		if (!isset($colors[$x][$y]['dE']['d-11']))
+		{
 			$this->calculateDelta($x, $y, -1, 1);
+		}
 		if (!isset($colors[$x][$y]['dE']['d01']))
+		{
 			$this->calculateDelta($x, $y, 0, 1);
+		}
 		if (!isset($colors[$x][$y]['dE']['d11']))
+		{
 			$this->calculateDelta($x, $y, 1, 1);
+		}
 		
 		return TRUE;
 	}
@@ -878,14 +996,20 @@ class SLIRImage
 		// Pixel is outside of the image, so we cant't calculate the Delta E
 		if ($x2 < 0 || $x2 >= $this->width
 			|| $y2 < 0 || $y2 >= $this->height)
+			{
 				return NULL;
+			}
 		
 		global $colors;
 		
 		if (!isset($colors[$x1][$y1]['lab']))
+		{
 			$this->loadPixelInfo($x1, $y1);
+		}
 		if (!isset($colors[$x2][$y2]['lab']))
+		{
 			$this->loadPixelInfo($x2, $y2);
+		}
 		
 		$delta	= $this->deltaE($colors[$x1][$y1]['lab'], $colors[$x2][$y2]['lab']);
 		
@@ -958,19 +1082,31 @@ class SLIRImage
 		$b	= $rgb['b'] / 255;
 		
 		if ($r > 0.04045)
+		{
 			$r	= pow((($r + 0.055) / 1.055), 2.4);
+		}
 		else
+		{
 			$r	= $r / 12.92;
+		}
 		
 		if ($g > 0.04045)
+		{
 			$g	= pow((($g + 0.055) / 1.055), 2.4);
+		}
 		else
+		{
 			$g	= $g / 12.92;
+		}
 		
 		if ($b > 0.04045)
+		{
 			$b	= pow((($b + 0.055) / 1.055), 2.4);
+		}
 		else
+		{
 			$b	= $b / 12.92;
+		}
 			
 		$r	*= 100;
 		$g	*= 100;
@@ -990,7 +1126,9 @@ class SLIRImage
 	final private function XYZtoHunterLab($xyz)
 	{
 		if ($xyz['y'] == 0)
+		{
 			return array('l' => 0, 'a' => 0, 'b' => 0);
+		}
 		
 		$l	= 10 * sqrt($xyz['y']);
 		$a	= 17.5 * ( ( ( 1.02 * $xyz['x'] ) - $xyz['y']) / sqrt( $xyz['y'] ) );
@@ -1017,19 +1155,31 @@ class SLIRImage
 		$Z = $xyz['z'] / $refZ;
 		
 		if ( $X > 0.008856 )
+		{
 			$X = pow($X, 1/3);
+		}
 		else
+		{
 			$X = ( 7.787 * $X ) + ( 16 / 116 );
+		}
 			
 		if ( $Y > 0.008856 ) 
+		{
 			$Y = pow($Y, 1/3);
+		}
 		else
+		{
 			$Y = ( 7.787 * $Y ) + ( 16 / 116 );
+		}
 			
 		if ( $Z > 0.008856 )
+		{
 			$Z = pow($Z, 1/3);
+		}
 		else
+		{
 			$Z = ( 7.787 * $Z ) + ( 16 / 116 );
+		}
 
 		$l = ( 116 * $Y ) - 16;
 		$a = 500 * ( $X - $Y );
@@ -1088,9 +1238,13 @@ class SLIRImage
 			else
 			{
 				if ( $xNN > 180 )
+				{
 					$xDH = $xH2 - $xH1 - 360;
+				}
 				else
+				{
 					$xDH = $xH2 - $xH1 + 360;
+				}
 			} // if
 		} // if
 
@@ -1108,9 +1262,13 @@ class SLIRImage
 			if ( $xNN >  180 )
 			{
 				if ( ( $xH2 + $xH1 ) <  360 )
+				{
 					$xHX = $xH1 + $xH2 + 360;
+				}
 				else
+				{
 					$xHX = $xH1 + $xH2 - 360;
+				}
 			}
 			else
 			{
@@ -1161,14 +1319,22 @@ class SLIRImage
 		$xH1	= $this->LABtoHue( $lab1['a'], $lab1['b'] );
 		
 		if ( $xH1 < 164 || $xH1 > 345 )
+		{
 			$xTT	= 0.36 + abs( 0.4 * cos( deg2rad(  35 + $xH1 ) ) );
+		}
 		else
+		{
 			$xTT	= 0.56 + abs( 0.2 * cos( deg2rad( 168 + $xH1 ) ) );
+		}
 		
 		if ( $lab1['l'] < 16 )
+		{
 			$xSL	= 0.511;
+		}
 		else
+		{
 			$xSL	= ( 0.040975 * $lab1['l'] ) / ( 1 + ( 0.01765 * $lab1['l'] ) );
+		}
 			
 		$xSC = ( ( 0.0638 * $xC1 ) / ( 1 + ( 0.0131 * $xC1 ) ) ) + 0.638;
 		$xSH = ( ( $xff * $xTT ) + 1 - $xff ) * $xSC;
@@ -1262,7 +1428,9 @@ class SLIRImage
 	{
 		ob_start(NULL);
 			if (!$this->output())
+			{
 				return FALSE;
+			}
 			$data	= ob_get_contents();
 		ob_end_clean();
 		
@@ -1276,16 +1444,21 @@ class SLIRImage
 	final private function output($filename = NULL)
 	{
 		if ($this->isJPEG())
+		{
 			return imagejpeg($this->image, $filename, $this->quality);
-		
+		}		
 		else if ($this->isPNG())
+		{
 			return imagepng($this->image, $filename, $this->quality);
-			
+		}			
 		else if ($this->isGIF())
+		{
 			return imagegif($this->image, $filename, $this->quality);
-			
+		}			
 		else
+		{
 			return FALSE;
+		}
 	}
 	
 	/**
@@ -1306,5 +1479,4 @@ class SLIRImage
 		return imagedestroy($this->image);
 	}
 	
-} // class SLIRImage
-?>
+}
