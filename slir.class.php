@@ -86,7 +86,7 @@
  * alt="Don't forget your alt text" /></code>
  *
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * @date $Date$
+ * $Date$
  * @version $Revision$
  * @package SLIR
  *
@@ -319,6 +319,7 @@ class SLIR
 		$this->rendered->background($this->isBackgroundFillOn());
 
 		$this->copySourceToRendered();
+		$this->rendered->setPath($this->source->path, FALSE);
 		$this->source->destroyImage();
 		
 		$this->rendered->crop($this->isBackgroundFillOn());
@@ -956,7 +957,7 @@ class SLIR
 		$this->initializeCache();
 		
 		// Try to create just a symlink to minimize disk space
-		if ($symlinkToPath && @symlink($symlinkToPath, $cacheFilePath))
+		if ($symlinkToPath && function_exists('symlink') && (file_exists($cacheFilePath) || symlink($symlinkToPath, $cacheFilePath)))
 		{
 			return TRUE;
 		}

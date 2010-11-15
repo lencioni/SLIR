@@ -31,7 +31,7 @@
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * @date $Date$
+ * $Date$
  * @version $Revision$
  * @package SLIR
  */
@@ -175,22 +175,27 @@ class SLIRImage
 	}
 	
 	/**
+	 * @param string $path
+	 * @param boolean $loadImage
 	 * @since 2.0
 	 */
-	private function setPath($path)
+	public function setPath($path, $loadImage = TRUE)
 	{
 		$this->path	= $path;
 
-		// Set the image info (width, height, mime type, etc.)
-		$this->setImageInfoFromFile();
-
-		// Make sure the file is actually an image
-		if (!$this->isImage())
+		if ($loadImage === TRUE)
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Requested file is not an '
-				. 'accepted image type: ' . $this->fullPath());
-		} // if
+			// Set the image info (width, height, mime type, etc.)
+			$this->setImageInfoFromFile();
+
+			// Make sure the file is actually an image
+			if (!$this->isImage())
+			{
+				header('HTTP/1.1 400 Bad Request');
+				throw new SLIRException('Requested file is not an '
+					. 'accepted image type: ' . $this->fullPath());
+			} // if
+		}
 	}
 	
 	/**
@@ -633,40 +638,185 @@ class SLIRImage
 	 */
 	private function cropSmartOffset()
 	{
-		// Determine crop offset
+
+		// Try face detection
+		$o	= $this->cropFaceOffsetRows();
+
+		// Try contrast detection
+		if ($o === NULL)
+		{
+			$o	= $this->cropSmartOffsetRows();
+		}
+
 		$offset		= array(
 			'top'	=> 0,
-			'left'	=> 0
+			'left'	=> 0,
 		);
-		
-		if ($this->shouldCropTopAndBottom())
+
+		if ($o === FALSE)
 		{
-			// Image is too tall so we will crop the top and bottom
-			$o	= $this->cropSmartOffsetRows(FALSE);
-			if ($o === FALSE)
+			return TRUE;
+		}
+		else if ($this->shouldCropTopAndBottom())
+		{
+			$offset['top']	= $o;
+		}
+		else
+		{
+			$offset['left']	= $o;
+		}
+		
+		return $offset;
+	}
+
+	/**
+	 * @return integer
+	 */
+	private function cropFaceOffsetRows()
+	{
+		if (!function_exists('apc_fetch')) // way to slow to not have apc caching face detection data for us
+		{
+			return NULL;
+		}
+
+		$key		= 'slirface_' . md5($this->path);
+		$cached		= (function_exists('apc_fetch')) ? apc_fetch($key) : FALSE;
+
+		if ($cached === FALSE)
+		{
+			require_once './facedetector/facedetector.class.php';
+			$detector	= new SLIRFaceDetector();
+			
+			// Make the image smaller for face detection so it will work faster
+			// @todo this should be done before resizing
+			$a			= $this->width * $this->height;
+			$smallerA	= pow(80, 2);
+			$ratio		= sqrt($smallerA) / sqrt($a);
+
+			if ($ratio < 1)
 			{
-				return TRUE;
+				$smallerW	= $this->width * $ratio;
+				$smallerH	= $this->height * $ratio;
+				$smaller	= imagecreatetruecolor($smallerW, $smallerH);
+				imagecopyresampled($smaller, $this->image, 0, 0, 0, 0, $smallerW, $smallerH, $this->width, $this->height);
 			}
 			else
 			{
-				$offset['top']	= $o;
+				$smaller	= $this->image;
+				$smallerW	= $this->width;
+			}
+
+			// convert to grayscale
+			imagefilter($smaller, IMG_FILTER_GRAYSCALE);
+
+			// load up our detection data
+			$cascade	= json_decode(file_get_contents(SLIR_DOCUMENT_ROOT . SLIR_DIR . '/facedetector/face.json'), TRUE);
+
+			// detect faces
+			$faces			= $detector->detect_objects($smaller, $cascade, 5, 1);
+			if (function_exists('apc_store'))
+			{
+				apc_store($key, array('width' => $smallerW, 'faces' => $faces));
+			}
+		}
+		else // Face detection data was cached
+		{
+			$faces	= $cached['faces'];
+			$ratio	= $cached['width'] / $this->width;
+		}
+
+		if (count($faces) > 0)
+		{
+			$confidenceThreshold	= 10;
+
+			if ($this->shouldCropTopAndBottom())
+			{
+
+				/* // this outlines the faces in red
+				$color = imagecolorallocate($this->image, 255, 0, 0); //red
+				foreach($faces as $face)
+				{
+					if ($face['confidence'] > $confidenceThreshold)
+					{
+						$face['x']		/= $ratio;
+						$face['y']		/= $ratio;
+						$face['height']	/= $ratio;
+						$face['width']	/= $ratio;
+						imagerectangle($this->image, $face['x'], $face['y'], $face['x']+$face['width'], $face['y']+ $face['height'], $color);
+					}
+				}
+
+				header('Content-type: image/jpeg');
+				imagejpeg($this->image);
+				exit();
+				*/
+				
+				// @todo extract this into its own function (and generalize it for top/bottom cropping as well as left/right cropping)
+				$highest	= NULL;
+				$lowest		= NULL;
+				foreach($faces as $face)
+				{
+					if ($face['confidence'] > $confidenceThreshold)
+					{
+						$face['x']		/= $ratio;
+						$face['y']		/= $ratio;
+						$face['height']	/= $ratio;
+						$face['width']	/= $ratio;
+
+						if ($highest === NULL || $face['y'] < $highest)
+						{
+							$highest	= $face['y'];
+						}
+						if ($lowest	=== NULL || $face['y'] + $face['height'] > $lowest)
+						{
+							$lowest		= $face['y'] + $face['height'];
+						}
+					}
+
+					if ($highest !== NULL && $lowest !== NULL)
+					{
+						$midpoint		= $highest + (($lowest - $highest) / 2);
+						return max(0, $midpoint - ($this->cropHeight / 2));
+					}
+				}
+				
+			}
+			else
+			{
+				$leftest	= NULL;
+				$rightest	= NULL;
+				foreach($faces as $face)
+				{
+					if ($face['confidence'] > $confidenceThreshold)
+					{
+						$face['x']		/= $ratio;
+						$face['y']		/= $ratio;
+						$face['height']	/= $ratio;
+						$face['width']	/= $ratio;
+
+						if ($leftest === NULL || $face['x'] < $leftest)
+						{
+							$leftest	= $face['x'];
+						}
+						if ($rightest	=== NULL || $face['x'] + $face['width'] > $rightest)
+						{
+							$rightest	= $face['x'] + $face['width'];
+						}
+					}
+
+
+					if ($leftest !== NULL && $rightest !== NULL)
+					{
+						$midpoint		= $leftest + (($rightest - $leftest) / 2);
+						return max(0, $midpoint - ($this->cropWidth / 2));
+					}
+				}
 			}
 		}
 		else
 		{
-			// Image is too wide so we will crop the left and right
-			$o	= $this->cropSmartOffsetRows(TRUE);
-			if ($o === FALSE)
-			{
-				return TRUE;
-			}
-			else
-			{
-				$offset['left']	= $o;
-			}
-		} // if
-		
-		return $offset;
+			return NULL;
+		}
 	}
 	
 	/**
@@ -674,24 +824,23 @@ class SLIRImage
 	 * the source image
 	 * 
 	 * @since 2.0
-	 * @param boolean $fromLeft If TRUE, will calculate from the left edge. If
-	 * FALSE, will calculate from the top edge
 	 * @return integer|boolean
 	 */
-	private function cropSmartOffsetRows($fromLeft = TRUE)
+	private function cropSmartOffsetRows()
 	{
-		if ($fromLeft)
+		// @todo Change this method to resize image, determine offset, and then extrapolate the actual offset based on the image size difference. Then we can cache the offset in APC (all just like we are doing for face detection)
+		if ($this->shouldCropTopAndBottom())
+		{
+			$length				= $this->cropHeight;
+			$lengthB			= $this->cropWidth;
+			$originalLength		= $this->height;
+		}
+		else
 		{
 			$length				= $this->cropWidth;
 			$lengthB			= $this->cropHeight;
 			$originalLength		= $this->width;
 		}
-		else
-		{
-			$length				= $this->cropHeight;
-			$lengthB			= $this->cropWidth;
-			$originalLength		= $this->height;
-		} // if
 		
 		// To smart crop an image, we need to calculate the difference between
 		// each pixel in each row and its adjacent pixels. Add these up to
@@ -750,8 +899,8 @@ class SLIRImage
 		$ratio				= 1;
 		for ($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped)
 		{
-			$a	= $this->rowInterestingness($offset['near'], $fromLeft, $pixelStep, $originalLength);
-			$b	= $this->rowInterestingness($originalLength - $offset['far'] - 1, $fromLeft, $pixelStep, $originalLength);
+			$a	= $this->rowInterestingness($offset['near'], $pixelStep, $originalLength);
+			$b	= $this->rowInterestingness($originalLength - $offset['far'] - 1, $pixelStep, $originalLength);
 			
 			if ($a == 0 && $b == 0)
 			{
@@ -834,21 +983,20 @@ class SLIRImage
 	 * 
 	 * @since 2.0
 	 * @param integer $row 
-	 * @param boolean $fromLeft
 	 * @param integer $pixelStep Number of pixels to jump after each step when comparing interestingness
 	 * @param integer $originalLength Number of rows in the original image
 	 * @return float
 	 */
-	private function rowInterestingness($row, $fromLeft, $pixelStep, $originalLength)
+	private function rowInterestingness($row, $pixelStep, $originalLength)
 	{
 		$interestingness	= 0;
 		$max				= 0;
 		
-		if ($fromLeft)
+		if ($this->shouldCropTopAndBottom())
 		{
-			for($totalPixels = 0; $totalPixels < $this->height; $totalPixels += $pixelStep)
+			for($totalPixels = 0; $totalPixels < $this->width; $totalPixels += $pixelStep)
 			{
-				$i					= $this->pixelInterestingness($row, $totalPixels);
+				$i					= $this->pixelInterestingness($totalPixels, $row);
 				
 				// Content at the very edge of an image tends to be less interesting than
 				// content toward the center, so we give it a little extra push away from the edge
@@ -860,9 +1008,9 @@ class SLIRImage
 		}
 		else
 		{
-			for($totalPixels = 0; $totalPixels < $this->width; $totalPixels += $pixelStep)
+			for($totalPixels = 0; $totalPixels < $this->height; $totalPixels += $pixelStep)
 			{
-				$i					= $this->pixelInterestingness($totalPixels, $row);
+				$i					= $this->pixelInterestingness($row, $totalPixels);
 				
 				// Content at the very edge of an image tends to be less interesting than
 				// content toward the center, so we give it a little extra push away from the edge
