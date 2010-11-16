@@ -776,7 +776,7 @@ class SLIRImage
 					if ($highest !== NULL && $lowest !== NULL)
 					{
 						$midpoint		= $highest + (($lowest - $highest) / 2);
-						return max(0, $midpoint - ($this->cropHeight / 2));
+						return min($this->height - $this->cropHeight, max(0, $midpoint - ($this->cropHeight / 2)));
 					}
 				}
 				
@@ -808,7 +808,7 @@ class SLIRImage
 					if ($leftest !== NULL && $rightest !== NULL)
 					{
 						$midpoint		= $leftest + (($rightest - $leftest) / 2);
-						return max(0, $midpoint - ($this->cropWidth / 2));
+						return min($this->width - $this->cropWidth, max(0, $midpoint - ($this->cropWidth / 2)));
 					}
 				}
 			}

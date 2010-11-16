@@ -53,7 +53,6 @@ class SLIRFaceDetector
 
 	/**
 	 * @param array $seq
-	 * @param string $gfunc function name
 	 * @return array
 	 */
 	protected function array_group($seq)
