@@ -638,9 +638,10 @@ class SLIRImage
 	 */
 	private function cropSmartOffset()
 	{
+		$o		= NULL;
 
 		// Try face detection
-		$o	= $this->cropFaceOffsetRows();
+		//$o	= $this->cropFaceOffsetRows();
 
 		// Try contrast detection
 		if ($o === NULL)
@@ -674,7 +675,8 @@ class SLIRImage
 	 */
 	private function cropFaceOffsetRows()
 	{
-		if (!function_exists('apc_fetch')) // way to slow to not have apc caching face detection data for us
+		// This is way too slow to not have apc caching face detection data for us
+		if (!function_exists('apc_fetch'))
 		{
 			return NULL;
 		}
@@ -707,7 +709,10 @@ class SLIRImage
 			}
 
 			// convert to grayscale
-			imagefilter($smaller, IMG_FILTER_GRAYSCALE);
+			//imagefilter($smaller, IMG_FILTER_GRAYSCALE);
+
+			// for some reason, this grayscale conversion causes the final image to be in
+			// grayscale if the size is small. but why?
 
 			// load up our detection data
 			$cascade	= json_decode(file_get_contents(SLIR_DOCUMENT_ROOT . SLIR_DIR . '/facedetector/face.json'), TRUE);

@@ -540,8 +540,8 @@ class SLIRFaceDetector
 				{
 					$result_seq[]	= $r1;
 				}
-			}
+			} // for
 			return $result_seq;
-		}
-	}
+		} // else
+	} // detect_objects()
 }
