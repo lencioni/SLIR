@@ -124,6 +124,7 @@ class SLIRRequest
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	final public function __set($name, $value)
 	{
@@ -138,82 +139,139 @@ class SLIRRequest
 			
 			case 'w':
 			case 'width':
-				$this->width	= (int) $value;
+				$this->setWidth($value);
 			break;
 
 			case 'h':
 			case 'height':
-				$this->height	= (int) $value;
+				$this->setHeight($value);
 			break;
 			
 			case 'q':
 			case 'quality':
-				$this->quality	= $value;
-				if ($this->quality < 0 || $this->quality > 100)
-				{
-					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Quality must be between 0 and 100: '
-						. $this->quality);
-				}
+				$this->setQuality($value);
 			break;
 			
 			case 'p':
 			case 'progressive':
-				$this->progressive	= (bool) $value;
+				$this->setProgressive($value);
 			break;
 			
 			case 'b';
 			case 'backgroundFillColor':
-				$this->background	= preg_replace('/[^0-9a-fA-F]/', '', $value);
-
-				if(strlen($this->background) == 3)
-				{
-					$this->background = $this->background[0]
-						.$this->background[0]
-						.$this->background[1]
-						.$this->background[1]
-						.$this->background[2]
-						.$this->background[2];
-				}
-				else if (strlen($this->background) != 6)
-				{
-					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Background fill color must be in '
-						.'hexadecimal format, longhand or shorthand: '
-						. $this->background);
-				} // if
+				$this->setBackgroundFillColor($value);
 			break;
 			
 			case 'c':
 			case 'cropRatio':
-				$ratio				= explode(':', (string) urldecode($value));
-				if (count($ratio) >= 2)
-				{
-					if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
-					{
-						header('HTTP/1.1 400 Bad Request');
-						throw new SLIRException('Crop ratio must not contain a zero: ' . (string) $value);
-					}
-					
-					$this->cropRatio	= array(
-						'width'		=> (float) $ratio[0],
-						'height'	=> (float) $ratio[1],
-						'ratio'		=> (float) $ratio[0] / (float) $ratio[1]
-					);
-				}
-				else
-				{
-					header('HTTP/1.1 400 Bad Request');
-					throw new SLIRException('Crop ratio must be in width:height'
-						. ' format: ' . (string) $value);
-				} // if
+				$this->setCropRatio($value);
 			break;
 		} // switch
 	}
-	
+
+	/**
+	 * @since 2.0
+	 * @return mixed
+	 */
 	final public function __get($name)
 	{
 		return $this->$name;
+	}
+
+	/**
+	 * @since 2.0
+	 * @return void
+	 */
+	private function setWidth($value)
+	{
+		$this->width	= (int) $value;
+	}
+
+	/**
+	 * @since 2.0
+	 * @return void
+	 */
+	private function setHeight($value)
+	{
+		$this->height	= (int) $value;
+	}
+
+	/**
+	 * @since 2.0
+	 * @return void
+	 */
+	private function setQuality($value)
+	{
+		$this->quality	= $value;
+		if ($this->quality < 0 || $this->quality > 100)
+		{
+			header('HTTP/1.1 400 Bad Request');
+			throw new SLIRException('Quality must be between 0 and 100: ' . $this->quality);
+		}
+	}
+
+	/**
+	 * @param string $value
+	 * @return void
+	 */
+	private function setProgressive($value)
+	{
+		$this->progressive	= (bool) $value;
+	}
+
+	/**
+	 * @param string $value
+	 * @return void
+	 */
+	private function setBackgroundFillColor($value)
+	{
+		$this->background	= preg_replace('/[^0-9a-fA-F]/', '', $value);
+
+		if(strlen($this->background) == 3)
+		{
+			$this->background = $this->background[0]
+				.$this->background[0]
+				.$this->background[1]
+				.$this->background[1]
+				.$this->background[2]
+				.$this->background[2];
+		}
+		else if (strlen($this->background) != 6)
+		{
+			header('HTTP/1.1 400 Bad Request');
+			throw new SLIRException('Background fill color must be in '
+				.'hexadecimal format, longhand or shorthand: '
+				. $this->background);
+		} // if
+	}
+
+	/**
+	 * @param string $value
+	 * @return void
+	 */
+	private function setCropRatio($value)
+	{
+		$ratio				= explode(':', (string) urldecode($value));
+		if (count($ratio) >= 2)
+		{
+			if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
+			{
+				header('HTTP/1.1 400 Bad Request');
+				throw new SLIRException('Crop ratio must not contain a zero: ' . (string) $value);
+			}
+			
+			$this->cropRatio	= array(
+				'width'		=> (float) $ratio[0],
+				'height'	=> (float) $ratio[1],
+				'ratio'		=> (float) $ratio[0] / (float) $ratio[1]
+			);
+		}
+		else
+		{
+			header('HTTP/1.1 400 Bad Request');
+			throw new SLIRException('Crop ratio must be in width:height'
+				. ' format: ' . (string) $value);
+		} // if
 	}
 	
 	/**
@@ -316,6 +374,10 @@ Example usage:
 		}
 	}
 	
+	/**
+	 * @since 2.0
+	 * @param string $path
+	 */
 	private function setPath($path)
 	{
 		$this->path	= $this->localizePath((string) urldecode($path));
