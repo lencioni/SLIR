@@ -78,6 +78,7 @@ class SLIRException extends Exception
 	{
 		parent::__construct($exception);
 		
+		/* @todo fix this
 		if (defined('SLIR_ERROR_LOG_PATH') && (!defined('SLIR_LOG_ERRORS') || SLIR_LOG_ERRORS !== FALSE))
 		{
 			$log	= $this->log();
@@ -88,36 +89,9 @@ class SLIRException extends Exception
 					. 'and give the web server permissions to write to it.';
 			}
 		} // if
+		*/
 		
-		// Make sure we have an up to date configuration file with all of the
-		// settings
-		$constants	= array(
-			'SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS',
-			'SLIR_USE_REQUEST_CACHE',
-			'SLIR_COPY_EXIF',
-			'SLIR_MEMORY_TO_ALLOCATE',
-			'SLIR_DEFAULT_QUALITY',
-			'SLIR_DEFAULT_PROGRESSIVE_JPEG',
-			'SLIR_LOG_ERRORS',
-			'SLIR_ERROR_IMAGES',
-			'SLIR_DOCUMENT_ROOT',
-			'SLIR_DIR',
-			'SLIR_CACHE_DIR_NAME',
-			'SLIR_CACHE_DIR',
-			'SLIR_ERROR_LOG_PATH'
-		);
-		
-		$constants	= array_filter($constants, array($this, 'isNotDefined'));
-		
-		if (count($constants))
-		{
-			$explanationText	.= "\n\nThe following configuration settings "
-				. 'were not defined in the configuration file '
-				. '\'slir-config.php\'. Please see \'slir-config-sample.php\' '
-				. 'for example usage. ' . implode(', ', $constants);
-		}
-		
-		if (!defined('SLIR_ERROR_IMAGES') || SLIR_ERROR_IMAGES === TRUE)
+		if (SLIRConfig::$errorImages === TRUE)
 		{
 			$this->errorImage($explanationText);
 		}
@@ -154,7 +128,7 @@ class SLIRException extends Exception
 			. $_SERVER['REMOTE_ADDR'] . $userAgent . '] ' . $this->getMessage()
 			. "\n\n" . $referrer . $request . $this->getTraceAsString() . "\n";
 		
-		return @error_log($message, 3, SLIR_ERROR_LOG_PATH);
+		return @error_log($message, 3, SLIRConfig::$errorLogPath);
 	}
 	
 	/**

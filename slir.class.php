@@ -196,7 +196,7 @@ class SLIR
 		$this->request	= new SLIRRequest();
 		
 		// Check the cache based on the request URI
-		if (SLIR_USE_REQUEST_CACHE && $this->isRequestCached())
+		if (SLIRConfig::$useRequestCache === TRUE && $this->isRequestCached())
 		{
 			$this->serveRequestCachedImage();
 		}
@@ -255,23 +255,23 @@ class SLIR
 		{
 			require self::configFilename();
 		}
-		else if (file_exists('slir-config-sample.php'))
+		else if (file_exists('slirconfig-sample.class.php'))
 		{
-			if (copy('slir-config-sample.php', self::configFilename()))
+			if (copy('slirconfig-sample.class.php', self::configFilename()))
 			{
 				require self::configFilename();
 			}
 			else
 			{
 				throw new SLIRException('Could not load configuration file. '
-					. 'Please copy "slir-config-sample.php" to '
+					. 'Please copy "slirconfig-sample.class.php" to '
 					. '"' . self::configFilename() . '".');
 			}
 		}
 		else
 		{
 			throw new SLIRException('Could not find "' . self::configFilename() . '" or '
-				. '"slir-config-sample.php"');
+				. '"slirconfig-sample.class.php"');
 		} // if
 	}
 	
@@ -288,7 +288,7 @@ class SLIR
 		}
 		else
 		{
-			return 'slir-config.php';
+			return 'slirconfig.class.php';
 		}
 	}
 	
@@ -330,7 +330,7 @@ class SLIR
 		// Convert memory to Megabyte and add 10 in order to allow some slack
 		$estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 10;
 
-		$v = ini_set('memory_limit', min($estimatedMemory, SLIR_MAX_MEMORY_TO_ALLOCATE) . 'M');
+		$v = ini_set('memory_limit', min($estimatedMemory, SLIRConfig::$maxMemoryToAllocate) . 'M');
 	}
 
 	/**
@@ -674,7 +674,7 @@ class SLIR
 		
 		// Determine the quality of the output image
 		$this->rendered->quality		= ($this->request->quality !== NULL)
-			? $this->request->quality : SLIR_DEFAULT_QUALITY;
+			? $this->request->quality : SLIRConfig::$defaultQuality;
 
 		// Set up the appropriate image handling parameters based on the original
 		// image's mime type
@@ -700,7 +700,7 @@ class SLIR
 		else if ($this->source->isJPEG())
 		{
 				$this->rendered->progressive	= ($this->request->progressive !== NULL)
-					? $this->request->progressive : SLIR_DEFAULT_PROGRESSIVE_JPEG;
+					? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
 				$this->rendered->background		= NULL;
 		}
 		else
@@ -869,7 +869,7 @@ class SLIR
 	 */
 	private function renderedCacheFilePath()
 	{
-		return SLIR_CACHE_DIR . '/rendered' . $this->renderedCacheFilename();
+		return SLIRConfig::$cacheDir . '/rendered' . $this->renderedCacheFilename();
 	}
 	
 	/**
@@ -887,7 +887,7 @@ class SLIR
 	 */
 	private function requestCacheFilename()
 	{
-		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIR_DEFAULT_CROP_CLASS);
+		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIRConfig::$defaultCropper);
 	}
 	
 	/**
@@ -896,7 +896,7 @@ class SLIR
 	 */
 	private function requestURI()
 	{
-		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
+		if (SLIRConfig::$forceQueryString === TRUE)
 		{
 			return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($_GET);
 		}
@@ -912,7 +912,7 @@ class SLIR
 	 */
 	private function requestCacheFilePath()
 	{
-		return SLIR_CACHE_DIR . '/request' . $this->requestCacheFilename();
+		return SLIRConfig::$cacheDir . '/request' . $this->requestCacheFilename();
 	}
 
 	/**
@@ -926,7 +926,7 @@ class SLIR
 	{
 		$this->cacheRendered();
 		
-		if (SLIR_USE_REQUEST_CACHE)
+		if (SLIRConfig::$useRequestCache === TRUE)
 		{
 			return $this->cacheRequest($this->rendered->data, TRUE);
 		}
@@ -997,7 +997,7 @@ class SLIR
 			return FALSE;
 		}
 
-		if (SLIR_COPY_EXIF && $copyEXIF && $this->source->isJPEG())
+		if (SLIRConfig::$copyEXIF == TRUE && $copyEXIF && $this->source->isJPEG())
 		{
 			// Copy IPTC data
 			if (isset($this->source->iptc) && !$this->copyIPTC($cacheFilePath))
@@ -1057,9 +1057,9 @@ class SLIR
 			return TRUE;
 		}
 
-		$this->initializeDirectory(SLIR_CACHE_DIR);
-		$this->initializeDirectory(SLIR_CACHE_DIR . '/rendered', FALSE);
-		$this->initializeDirectory(SLIR_CACHE_DIR . '/request', FALSE);
+		$this->initializeDirectory(SLIRConfig::$cacheDir);
+		$this->initializeDirectory(SLIRConfig::$cacheDir . '/rendered', FALSE);
+		$this->initializeDirectory(SLIRConfig::$cacheDir . '/request', FALSE);
 
 		$this->isCacheInitialized	= TRUE;
 		return TRUE;
@@ -1290,13 +1290,13 @@ class SLIR
 		header("Content-SLIR: $SLIRHeader");
 
 		// Keep in browser cache how long?
-		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS) . ' GMT');
+		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL) . ' GMT');
 
 		// Public in the Cache-Control lets proxies know that it is okay to
 		// cache this content. If this is being served over HTTPS, there may be
 		// sensitive content and therefore should probably not be cached by
 		// proxy servers.
-		header('Cache-Control: max-age=' . SLIR_BROWSER_CACHE_EXPIRES_AFTER_SECONDS . ', public');
+		header('Cache-Control: max-age=' . SLIRConfig::$browserCacheTTL . ', public');
 
 		$this->doConditionalGet($lastModified);
 

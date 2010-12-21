@@ -238,7 +238,7 @@ class SLIRImage
 	 */
 	final public function fullPath()
 	{
-		return SLIR_DOCUMENT_ROOT . $this->path;
+		return SLIRConfig::$documentRoot . $this->path;
 	}
 	
 	/**
@@ -520,7 +520,7 @@ class SLIRImage
 	{
 		if ($className === NULL)
 		{
-			$className	= SLIR_DEFAULT_CROP_CLASS;
+			$className	= SLIRConfig::$defaultCropper;
 		}
 
 		$cropClass	= strtolower($className);
@@ -638,7 +638,7 @@ class SLIRImage
 			'quality'		=> $this->quality,
 			'progressive'	=> $this->progressive,
 			'background'	=> $this->background,
-			'cropper'		=> SLIR_DEFAULT_CROP_CLASS,
+			'cropper'		=> SLIRConfig::$defaultCropper,
 		);
 	}
 	

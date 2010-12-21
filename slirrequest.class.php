@@ -307,7 +307,7 @@ class SLIRRequest
 
 		// The parameters should be the first set of characters after the
 		// SLIR path
-		$request	= preg_replace('`.*?' . preg_quote(SLIR_DIR) . '`', '', (string) $_SERVER['REQUEST_URI']);
+		$request	= preg_replace('`.*?' . preg_quote(SLIRConfig::$SLIRDir) . '`', '', (string) $_SERVER['REQUEST_URI']);
 		$request	= explode('/', trim($request, '/'));
 
 		if (count($request) < 2)
@@ -322,7 +322,7 @@ b = Background fill color (RRGGBB or RGB)
 p = Progressive (0 or 1)
 
 Example usage:
-<img src="' . SLIR_DIR . '/w300-h300-c1:1/path/to/image.jpg" alt="Don\'t forget '
+<img src="' . SLIRConfig::$SLIRDir . '/w300-h300-c1:1/path/to/image.jpg" alt="Don\'t forget '
 .'your alt text!" />'
 			);
 
@@ -360,7 +360,7 @@ Example usage:
 	 */
 	private function isUsingQueryString()
 	{
-		if (defined('SLIR_FORCE_QUERY_STRING') && SLIR_FORCE_QUERY_STRING)
+		if (SLIRConfig::$forceQueryString === TRUE)
 		{
 			return TRUE;
 		}
@@ -468,7 +468,7 @@ Example usage:
 	 */
 	final public function fullPath()
 	{
-		return SLIR_DOCUMENT_ROOT . $this->path;
+		return SLIRConfig::$documentRoot . $this->path;
 	}
 	
 	/**
