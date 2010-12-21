@@ -324,11 +324,11 @@ class SLIR
 	 */
 	private function allocateMemory()
 	{
-		// Multiply width * height * 4 bytes
-		$estimatedMemory = $this->source->width * $this->source->height * 4;
+		// Multiply width * height * 5 bytes
+		$estimatedMemory = $this->source->width * $this->source->height * 5;
 
-		// Convert memory to Megabyte and add 10 in order to allow some slack
-		$estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 10;
+		// Convert memory to Megabytes and add 15 in order to allow some slack
+		$estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 15;
 
 		$v = ini_set('memory_limit', min($estimatedMemory, SLIRConfig::$maxMemoryToAllocate) . 'M');
 	}
