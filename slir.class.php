@@ -859,7 +859,7 @@ class SLIR
 	 */
 	private function requestCacheFilename()
 	{
-		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI());
+		return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIR_DEFAULT_CROP_CLASS);
 	}
 	
 	/**

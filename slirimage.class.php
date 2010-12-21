@@ -522,6 +522,7 @@ class SLIRImage
 		{
 			$className	= SLIR_DEFAULT_CROP_CLASS;
 		}
+
 		$cropClass	= strtolower($className);
 		$fileName	= "croppers/$cropClass.class.php";
 		$class		= 'SLIRCropper' . ucfirst($cropClass);
@@ -652,7 +653,8 @@ class SLIRImage
 			'iptc'			=> $this->iptc,
 			'quality'		=> $this->quality,
 			'progressive'	=> $this->progressive,
-			'background'	=> $this->background
+			'background'	=> $this->background,
+			'cropper'		=> SLIR_DEFAULT_CROP_CLASS,
 		);
 	}
 	
