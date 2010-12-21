@@ -26,7 +26,7 @@
  */
  
 /* $Id$ */
-
+c
 /**
  * How long (in seconds) the web browser should use its cached copy of the image
  * before checking with the server for a new version
@@ -73,12 +73,12 @@ define('SLIR_DEFAULT_QUALITY',	80);
 
 /**
  * Default crop mode setting to use if crop mode is not specified in the request.
- * Possible values are SLIR::CROP_MODE_CENTERED and SLIR::CROP_MODE_SMART.
+ * Possible values are SLIR::CROP_CLASS_CENTERED and SLIR::CROP_CLASS_SMART.
  * 
  * @since 2.0
  * @var string
  */
-define('SLIR_DEFAULT_CROP_MODE',	SLIR::CROP_MODE_CENTERED);
+define('SLIR_DEFAULT_CROP_CLASS',	SLIR::CROP_CLASS_CENTERED);
 
 /**
  * Default setting for whether JPEGs should be progressive JPEGs (interlaced)
