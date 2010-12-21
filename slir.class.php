@@ -108,7 +108,6 @@
  * tip, and a button that tells me they are using it on their site if they like
  * @todo document new code
  * @todo clean up new code
- * @todo include crop class in cache hash
  */
 class SLIR
 {
@@ -129,6 +128,12 @@ class SLIR
 	 * @var string
 	 */
 	const CROP_CLASS_SMART		= 'smart';
+
+	/**
+	 * @since 2.0
+	 * @var string
+	 */
+	 const CROP_CLASS_FACE		= 'face';
 
 	/**
 	 * Request object
