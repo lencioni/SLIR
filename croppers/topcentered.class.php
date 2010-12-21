@@ -27,7 +27,6 @@
 
 /* $Id$ */
 
-require_once 'slircropper.interface.php';
 require_once 'centered.class.php';
 
 /**
