@@ -590,22 +590,6 @@ class SLIRImage
 	}
 	
 	/**
-	 * @since 2.0
-	 * @return boolean
-	 */
-	private function isSmartCroppingWanted()
-	{
-		if (SLIR_DEFAULT_CROP_MODE === SLIR::CROP_MODE_SMART)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}	
-	
-	/**
 	 * Sharpens the image
 	 *
 	 * @param integer $sharpness
