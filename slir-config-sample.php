@@ -54,12 +54,12 @@ define('SLIR_USE_REQUEST_CACHE',	TRUE);
 define('SLIR_COPY_EXIF',			FALSE);
 
 /**
- * How much memory to allocate for memory-intensive processes such as rendering
+ * How much memory (in megabytes) SLIR is allowed to allocate for memory-intensive processes such as rendering
  *
  * @since 2.0
- * @var string
+ * @var integer
  */
-define('SLIR_MEMORY_TO_ALLOCATE',	'100M');
+define('SLIR_MAX_MEMORY_TO_ALLOCATE',	100);
 
 /**
  * Default quality setting to use if quality is not specified in the request.

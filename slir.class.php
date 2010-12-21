@@ -317,16 +317,33 @@ class SLIR
 	}
 
 	/**
+	 * Allocates memory for the request
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	private function allocateMemory()
+	{
+		// Multiply width * height * 4 bytes
+		$estimatedMemory = $this->source->width * $this->source->height * 4;
+
+		// Convert memory to Megabyte and add 10 in order to allow some slack
+		$estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 10;
+
+		$v = ini_set('memory_limit', min($estimatedMemory, SLIR_MAX_MEMORY_TO_ALLOCATE) . 'M');
+	}
+
+	/**
 	 * Renders specified changes to the image
 	 *
 	 * @since 2.0
 	 */
 	private function render()
 	{
-		// We don't want to run out of memory
-		ini_set('memory_limit', SLIR_MEMORY_TO_ALLOCATE);
+		$this->allocateMemory();
 
 		$this->source->createImageFromFile();
+
 		$this->rendered->createBlankImage();
 		$this->rendered->background($this->isBackgroundFillOn());
 
