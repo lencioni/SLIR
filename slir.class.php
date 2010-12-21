@@ -122,6 +122,12 @@ class SLIR
 	 * @var string
 	 */
 	const CROP_CLASS_CENTERED	= 'centered';
+
+	/**
+	 * @since 2.0
+	 * @var string
+	 */
+	const CROP_CLASS_TOP_CENTERED	= 'topcentered';
 	
 	/**
 	 * @since 2.0

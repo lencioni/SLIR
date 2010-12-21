@@ -73,7 +73,12 @@ define('SLIR_DEFAULT_QUALITY',	80);
 
 /**
  * Default crop mode setting to use if crop mode is not specified in the request.
- * Possible values are SLIR::CROP_CLASS_CENTERED and SLIR::CROP_CLASS_SMART.
+ * 
+ * Possible values are:
+ * SLIR::CROP_CLASS_CENTERED
+ * SLIR::CROP_CLASS_TOP_CENTERED
+ * SLIR::CROP_CLASS_SMART
+ * SLIR::CROP_CLASS_FACE (not finished)
  * 
  * @since 2.0
  * @var string

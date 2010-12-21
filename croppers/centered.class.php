@@ -63,6 +63,26 @@ class SLIRCropperCentered implements SLIRCropper
 	}
 
 	/**
+	 * @since 2.0
+	 * @param SLIRImage $image
+	 * @return integer
+	 */
+	public function getCropY(SLIRImage $image)
+	{
+		return round(($image->height - $image->cropHeight) / 2);
+	}
+
+	/**
+	 * @since 2.0
+	 * @param SLIRImage $image
+	 * @return integer
+	 */
+	public function getCropX(SLIRImage $image)
+	{
+		return round(($image->width - $image->cropWidth) / 2);
+	}
+
+	/**
 	 * Calculates the crop offset anchored in the center of the image
 	 * 
 	 * @since 2.0
@@ -80,12 +100,12 @@ class SLIRCropperCentered implements SLIRCropper
 		if ($this->shouldCropTopAndBottom($image))
 		{
 			// Image is too tall so we will crop the top and bottom
-			$crop['y']	= round(($image->height - $image->cropHeight) / 2);
+			$crop['y']	= $this->getCropY($image);
 		}
 		else
 		{
 			// Image is too wide so we will crop off the left and right sides
-			$crop['x']	= round(($image->width - $image->cropWidth) / 2);
+			$crop['x']	= $this->getCropX($image);
 		}
 		
 		return $crop;
