@@ -1,0 +1,273 @@
+<refentry id="{@id}">
+  <refnamediv>
+    <refname>Frequently Asked Questions (FAQ)</refname>
+    <refpurpose>Quick answers to common questions</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <authorblurb>
+      <para>
+        <author>
+          <firstname>Martin</firstname>
+          <surname>Geisler</surname>
+        </author>
+        {@link mailto:mgeisler@users.sourceforge.net
+        mgeisler@users.sourceforge.net}
+      </para>
+    </authorblurb>
+  </refsynopsisdiv>
+
+  {@toc}
+
+<refsect1 id="{@id pel-acronym}">
+
+  <title>What does PEL stand for?</title>
+
+  <para>PEL is an acronym for "PHP Exif Library".  Sound simple
+  enough, doesn't it?</para>
+
+  <para>But did you realise that PEL is an acronym consisting of two
+  acronyms, one of which is recursive!  So "PEL" actually stands for
+  "PHP Hypertext Preprocessor Exchangeable image file format Library".
+  Pyh!</para>
+</refsect1>
+
+
+<refsect1 id="{@id exif-vs-exif}">
+
+  <title>What's the business with EXIF vs. Exif?</title>
+
+  <para>Well, since Exif is an acronym for "Exchangeable image file
+  format" and thus you would expect it to be spelled "EXIF", just like
+  "JPEG" which is an acronym for Joint Photographic Experts
+  Group.</para>
+
+  <para>But the Exif standards spell Exif as "Exif" and so does PEL,
+  at least since version 0.9.  But should they ever decide to update
+  their acronym to "EXIF" then PEL will revert...  Luckily it does not
+  affect the acronym PEL itself :-)</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id why-php5}">
+  <title>Why does PEL require PHP version 5?</title>
+
+  <para>The support for object-oriented programming was completely
+  overhauled with the introduction of PHP 5 in July 2004.  The changes
+  included both semantic changes and syntaxtical changes to the PHP
+  language.</para>
+
+  <para>The semantic change was the use of object references per
+  default.  This change means that when you do</para>
+  
+  <programlisting role="php">
+    <![CDATA[
+$object_a = $ifd->getEntry(PelTag::IMAGE_DESCRIPTION);
+$object_a->setValue('This is my new description.');
+$object_b = $ifd->getEntry(PelTag::IMAGE_DESCRIPTION);
+    ]]>
+  </programlisting>
+
+  <para>then <literal>$object_a</literal> and
+  <literal>$object_b</literal> will both reference <emphasis>the
+  same</emphasis> element.  In particular, you will see that
+  <literal>$object_b->getValue()</literal> returns the string just
+  stored in <literal>$object_a</literal> (since they are the same
+  object).  With PHP 4 you would have gotten two different objects,
+  which is generally not what you want.</para>
+
+  <para>The syntaxtical changes from PHP 5 to PHP 4 include the
+  addition of access modifiers to object fields (the private,
+  protected, and public keywords), object constants, constructors
+  named <literal>__construct()</literal>, interfaces and abstract
+  classes, and exceptions.  PEL uses all these new features to the
+  fullest, which means that PHP 4 doesn't understand the code.</para>
+
+  <para>If your provider is still using PHP 4, then you should ask
+  them to upgrade.  PHP 5 has been declared stable since July 2004 and
+  all major PHP applications ({@link http://www.wordpress.org
+  WordPress}, {@link http://gallery.menalto.com/ Gallery},
+  {@link http://phpwiki.sourceforge.net/ PhpWiki},
+  {@link http://www.phpmyadmin.net/ phpMyAdmin}, etc...), have been
+  upgraded to work with PHP 5, so an upgrade should not bring you any
+  problems, just more features and better performance.</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id fatal-php4-errors}">
+
+  <title>Why do I get fatal errors from PHP?</title>
+
+  <para>If you get a fatal error when trying to use PEL, then your
+  installation of PHP might be too old.  PEL requires PHP version 5.
+  Please see the question "{@tutorial faq.pkg#why-php5}" for more
+  information.</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id call-on-non-object}">
+  <title>What does "<literal>Call to a member function
+  <function>f</function> on a non-object</literal>" (where
+  <function>f</function> is <literal>getTiff()</literal> or
+  <literal>setValue()</literal>) mean?</title>
+
+  <para>This is the error PHP gives when you call a method on a
+  variable which is not an object.</para>
+
+  <para>PEL uses objects to represent the entire structure of a JPEG
+  image, and many of the methods defined on those objects return other
+  objects.  In particular, the method {@link PelJpeg::getExif()}
+  returns a {@link PelExif} object and {@link PelIfd::getEntry()}
+  returns a {@link PelEntry} object.</para>
+
+  <para>But both methods can return <literal>null</literal> if no such
+  section or entry exist.  The correct way to use them is thus
+  something along the lines of:</para>
+
+  <programlisting role="php">
+    <![CDATA[
+$exif = $jpeg->getExif();
+if ($exif != null) {
+  $tiff = $exif->getTiff();
+  /* Do something with the TIFF data. */
+} else {
+  /* Sorry --- no Exif data found. */
+}
+    ]]>
+  </programlisting>
+  
+  <para>The same principle applies to the return values of
+  {@link PelIfd::getEntry()} and all other methods which return
+  objects.</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id IPTC-entries}">
+
+  <title>Does PEL handle IPTC entries?</title>
+
+  <para>No, PEL only deals with Exif data, and no such extension is
+  planned.  Try taking at look at the
+  {@link http://www.ozhiker.com/electronics/pjmt/ PHP JPEG Metadata
+  Toolkit} which should handle IPTC along with a huge number of other
+  metadata formats.</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id missing-Gettext}">
+
+  <title>Why does Gettext not work?</title>
+
+  <para>PEL uses Gettext for localization, and thus your system must
+  fulfill a few requirements:</para>
+
+  <orderedlist>
+
+    <listitem>
+      <para>PHP must have support for the
+      {@link http://www.php.net/manual/en/ref.gettext.php Gettext
+      extension}.  Most installations of PHP already has this, but
+      please double-check with <function>
+      {@link http://www.php.net/manual/en/function.phpinfo.php
+      phpinfo}</function> before asking for help on the
+      mailinglist.</para>
+    </listitem>
+
+    <listitem>
+      <para>The system must be setup to generate locales for the
+      languages into which PEL has been translated.  Again, most
+      commercial webhosts would have their systems configured to deal
+      with all locales, but if you're installing PEL on your own
+      server you'll probably have to reconfigure it.</para>
+
+      <para>How to configure the locales differ from system to system.
+      With the {@link http://www.debian.net/ Debian GNU/Linux}
+      distribution you should run</para>
+
+      <programlisting>
+        dpkg-reconfigure locales
+      </programlisting>
+
+      <para>and then select all locales that you want your system to
+      support.</para>
+
+      <para>Restart your webserver after changing the locale setup to
+      make the changes effective.</para>
+
+    </listitem>
+
+  </orderedlist>
+
+</refsect1>
+
+
+<refsect1 id="{@id error-handling}">
+
+  <title>How to deal with broken images?</title>
+
+  <para>By default PEL will try to load as much from an image as
+  possible and continue dispite any errors found.  The Exif standard
+  mandates certain formats and lengths for some entries, and sometimes
+  these requirements are violated.</para>
+
+  <para>The strictness of PEL is controlled by the the method
+  {@link Pel::setStrictParsing()}.  The default is non-strict parsing.
+  In this mode, PEL will not throw exceptions for parse errors but
+  instead store them for later inspection via the
+  {@link Pel::getExceptions()} method.</para>
+
+  <para>With an argument of <literal>true</literal> to
+  {@link Pel::setStrictParsing()} you make PEL throw exceptions upon
+  parse errors.</para>
+
+  <para>This may all sound very complex, but it is actually fairly
+  simple for most uses: have PEL load your images in non-strict mode
+  and check for errors afterwards, if necessary.</para>
+
+  <para>Please note that even if PEL is in non-strict mode it might
+  throw exceptions while parsing an image, for example if the image
+  cannot be recognized a JPEG or TIFF image.  So it is always
+  necessary to wrap calls to PEL in a try-catch block.</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id commercial-use}">
+
+  <title>Can I use PEL for a commercial application?</title>
+
+  <para>Yes, no problem as long as you do not distribute your
+  application under another license than the GNU GPL.</para>
+
+  <para>As you should know, PEL is licensed to you under the
+  conditions of the GNU GPL.  The license deals
+  <emphasis>only</emphasis> with the distribution of PEL and any
+  derivative works based on PEL, the license has nothing to say over
+  how you may use PEL.</para>
+
+  <para>So if you do not distribute your code, then you can use it for
+  whatever you want, including writing a website (commercial or not)
+  that integrates PEL.  Please see
+  {@link http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic
+  this question} in the GPL FAQ.</para>
+
+</refsect1>
+
+
+<refsect1 id="{@id unanswered-question}">
+
+  <title>My question is not answered here!</title>
+
+  <para>Please ask your questions on the
+  {@link http://lists.sourceforge.net/lists/listinfo/pel-devel PEL
+  Development List}.  If an answer is found, then the FAQ will be
+  updated.</para>
+
+</refsect1>
+
+
+</refentry>

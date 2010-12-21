@@ -1,0 +1,60 @@
+<refentry id="{@id}">
+  <refnamediv>
+    <refname>PHP Exif Library</refname>
+    <refpurpose>Overview of PEL</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <authorblurb>
+      <para>
+        <author>
+          <firstname>Martin</firstname>
+          <surname>Geisler</surname>
+        </author>
+        {@link mailto:mgeisler@users.sourceforge.net
+        mgeisler@users.sourceforge.net}
+      </para>
+    </authorblurb>
+  </refsynopsisdiv>
+
+  <refsect1 id="{@id intro}">
+    <title>What is the PHP Exif Library?</title>
+
+    <para>The PHP Exif Library (called PEL for short) is a library
+    written in {@link http://www.php.net/ PHP} which will allow you to
+    manipulate {@link http://www.exif.org/ Exif} data.  This is the
+    data that digital cameras place in their images, such as the date
+    and time, shutter speed, ISO value and so on.</para>
+
+    <para>PEL makes it easy to parse Exif data stored in JPEG and TIFF
+    images.  Once an image has been loaded, the data can be changed at
+    will by manipulating the objects representing the data.  The
+    objects can be saved again to produce a valid image.</para>
+
+    <para>This documentation contains:</para>
+    <itemizedlist>
+
+      <listitem>
+        <para>Full details on all classes and methods in PEL.  Begin
+        with {@link PelJpeg}.</para>
+      </listitem>
+
+      <listitem>
+        <para>Instructions on {@tutorial using.pkg}.</para>
+      </listitem>
+
+      <listitem>
+        <para>A list of {@tutorial faq.pkg}.</para>
+      </listitem>
+
+    </itemizedlist>
+
+    <warning>
+      <para>Please note that PEL <emphasis>requires</emphasis> PHP
+      version 5.  It will not run on PHP 4. See
+      {@tutorial faq.pkg#why-php5 the FAQ} for more
+      information.</para>
+    </warning>
+
+  </refsect1>
+
+</refentry>
