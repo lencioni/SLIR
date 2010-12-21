@@ -37,6 +37,8 @@
  */
 class SLIRRequest
 {
+
+	const CROP_RATIO_DELIMITERS	= ':.';
 	
 	/**
 	 * Path to image
@@ -251,7 +253,8 @@ class SLIRRequest
 	 */
 	private function setCropRatio($value)
 	{
-		$ratio				= explode(':', (string) urldecode($value));
+		$delimiters			= preg_quote(self::CROP_RATIO_DELIMITERS);
+		$ratio				= preg_split("/[$delimiters]/", (string) urldecode($value));
 		if (count($ratio) >= 2)
 		{
 			if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
