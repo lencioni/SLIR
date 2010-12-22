@@ -748,6 +748,9 @@ class SLIR
 				$this->source->cropWidth	= $this->source->height * $this->request->cropRatio['ratio'];
 				$this->source->cropHeight	= $this->source->height;
 			} // if
+
+			$this->source->cropper	= $this->request->cropper;
+			$this->rendered->cropper	= $this->source->cropper;
 		} // if
 
 		if ($this->shouldResizeBasedOnWidth())

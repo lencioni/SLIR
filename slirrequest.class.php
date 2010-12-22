@@ -75,6 +75,14 @@ class SLIRRequest
 	 * @var array
 	 */
 	private $cropRatio;
+
+	/**
+	 * Name of the cropper to use, e.g. 'centered' or 'smart'
+	 * 
+	 * @since 2.0
+	 * @var string
+	 */
+	private $cropper;
 	
 	/**
 	 * Quality of rendered image
@@ -166,7 +174,7 @@ class SLIRRequest
 			
 			case 'c':
 			case 'cropRatio':
-				$this->setCropRatio($value);
+				$this->setCrop($value);
 			break;
 		} // switch
 	}
@@ -251,7 +259,7 @@ class SLIRRequest
 	 * @param string $value
 	 * @return void
 	 */
-	private function setCropRatio($value)
+	private function setCrop($value)
 	{
 		$delimiters			= preg_quote(self::CROP_RATIO_DELIMITERS);
 		$ratio				= preg_split("/[$delimiters]/", (string) urldecode($value));
@@ -268,6 +276,12 @@ class SLIRRequest
 				'height'	=> (float) $ratio[1],
 				'ratio'		=> (float) $ratio[0] / (float) $ratio[1]
 			);
+
+			// If there was a third part, that is the cropper being specified
+			if (count($ratio) >= 3)
+			{
+				$this->cropper	= (string) $ratio[2];
+			}
 		}
 		else
 		{

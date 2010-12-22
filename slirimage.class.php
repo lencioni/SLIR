@@ -92,6 +92,13 @@ class SLIRImage
 	 * @since 2.0
 	 */
 	private $cropHeight;
+
+	/**
+	 * Name of the cropper to use
+	 * @var string
+	 * @since 2.0
+	 */
+	private $cropper;
 	
 	/**
 	 * IPTC data embedded in image
@@ -510,6 +517,29 @@ class SLIRImage
 	}
 
 	/**
+	 * Gets the name of the class that will be used to determine the crop offset for the image
+	 * 
+	 * @since 2.0
+	 * @param string $className Name of the cropper class name to get
+	 * @return string
+	 */
+	private function getCropperClassName($className = NULL)
+	{
+		if ($className !== NULL)
+		{
+			return $className;
+		}
+		else if ($this->cropper !== NULL)
+		{
+			return $this->cropper;
+		}
+		else
+		{
+			return SLIRConfig::$defaultCropper;
+		}
+	}
+
+	/**
 	 * Gets the class that will be used to determine the crop offset for the image
 	 * 
 	 * @since 2.0
@@ -518,12 +548,7 @@ class SLIRImage
 	 */
 	final public function getCropperClass($className = NULL)
 	{
-		if ($className === NULL)
-		{
-			$className	= SLIRConfig::$defaultCropper;
-		}
-
-		$cropClass	= strtolower($className);
+		$cropClass	= strtolower($this->getCropperClassName($className));
 		$fileName	= "croppers/$cropClass.class.php";
 		$class		= 'SLIRCropper' . ucfirst($cropClass);
 		require_once $fileName;
@@ -638,7 +663,7 @@ class SLIRImage
 			'quality'		=> $this->quality,
 			'progressive'	=> $this->progressive,
 			'background'	=> $this->background,
-			'cropper'		=> SLIRConfig::$defaultCropper,
+			'cropper'		=> $this->getCropperClassName(),
 		);
 	}
 	
