@@ -190,12 +190,12 @@ class SLIRConfigDefaults
 	public static $garbageCollectDivisor	= 200;
 
 	/**
-	 * Specifies the number of seconds after which data will be seen as 'garbage' and potentially cleaned up (deleted from the cache).
+	 * Specifies the number of seconds after which data will be seen as 'garbage' and potentially cleaned up (deleted from the cache). 
 	 * 
 	 * @since 2.0
 	 * @var integer
 	 */
-	public static $garbageCollectFileCacheMaxLifetime	= 604800; // 7 * 24 * 60 * 60
+	public static $garbageCollectFileCacheMaxLifetime	= 86400; // 1 day = 1 * 24 * 60 * 60
 
 	/**
 	 * Initialize variables that require some dynamic processing.

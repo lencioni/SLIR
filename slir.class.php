@@ -305,7 +305,7 @@ class SLIR
 		$dir	= new DirectoryIterator($path);
 		foreach ($dir as $file)
 		{
-			if (!$file->isDot() && ($now - $file->getMTime()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
+			if (!$file->isDot() && ($now - $file->getATime()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
 			{
 				unlink($file->getPathName());
 			}
