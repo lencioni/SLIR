@@ -99,11 +99,10 @@
  * @todo Seam carving?
  * @todo Crop zoom?
  * @todo Crop offsets?
- * @todo Periodic cache clearing?
  * @todo Remote image fetching?
  * @todo Alternative support for ImageMagick?
  * @todo Prevent files in cache from being read directly?
- * @todo split directory initialization and variable checking into a separate
+ * @todo split directory initialization into a separate
  * install/upgrade script with friendly error messages, an opportunity to give a
  * tip, and a button that tells me they are using it on their site if they like
  * @todo document new code
@@ -288,6 +287,8 @@ class SLIR
 	{
 		if ($this->garbageCollectionShouldRun())
 		{
+			// Register this as a shutdown function so the additional processing time
+			// will not affect the speed of the request
 			register_shutdown_function(array($this, 'collectGarbage'));
 		}
 	}
@@ -404,7 +405,9 @@ class SLIR
 	}
 
 	/**
-	 * Allocates memory for the request
+	 * Allocates memory for the request.
+	 * 
+	 * Tries to dynamically guess how much memory will be needed for the request based on the dimensions of the source image.
 	 * 
 	 * @since 2.0
 	 * @return void
@@ -421,7 +424,7 @@ class SLIR
 	}
 
 	/**
-	 * Renders specified changes to the image
+	 * Renders requested changes to the image
 	 *
 	 * @since 2.0
 	 * @return void
@@ -445,6 +448,8 @@ class SLIR
 	}
 	
 	/**
+	 * Copies the source image to the rendered image, resizing (resampling) it if resizing is requested
+	 * 
 	 * @since 2.0
 	 * @return void
 	 */
@@ -482,8 +487,10 @@ class SLIR
 	}
 	
 	/**
+	 * Calculates how much to sharpen the image based on the difference in dimensions of the source image and the rendered image
+	 * 
 	 * @since 2.0
-	 * @return integer
+	 * @return integer Sharpness factor
 	 */
 	private function calculateSharpnessFactor()
 	{
@@ -515,6 +522,8 @@ class SLIR
 	}
 
 	/**
+	 * Copies IPTC data from the source image to the cached file
+	 * 
 	 * @since 2.0
 	 * @param string $cacheFilePath
 	 * @return boolean
@@ -594,14 +603,14 @@ class SLIR
 	}
 
 	/**
+	 * Determines if the requested width is different than the width of the source image
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
 	private function isWidthDifferent()
 	{
-		if ($this->request->width !== NULL
-			&& $this->request->width < $this->source->width
-			)
+		if ($this->request->width !== NULL && $this->request->width < $this->source->width)
 		{
 			return TRUE;
 		}
@@ -612,14 +621,14 @@ class SLIR
 	}
 
 	/**
+	 * Determines if the requested height is different than the height of the source image
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
 	private function isHeightDifferent()
 	{
-		if ($this->request->height !== NULL
-			&& $this->request->height < $this->source->height
-			)
+		if ($this->request->height !== NULL && $this->request->height < $this->source->height)
 		{
 			return TRUE;
 		}
@@ -630,6 +639,8 @@ class SLIR
 	}
 
 	/**
+	 * Determines if a background fill has been requested and if the image is able to have transparency (not for JPEG files)
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -646,6 +657,8 @@ class SLIR
 	}
 
 	/**
+	 * Determines if the user included image quality in the request
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -655,6 +668,8 @@ class SLIR
 	}
 
 	/**
+	 * Determines if the image should be cropped based on the requested crop ratio and the width:height ratio of the source image
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -804,6 +819,8 @@ class SLIR
 	}
 	
 	/**
+	 * Detemrines if the image should be resized based on its width (i.e. the width is the constraining dimension for this request)
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -820,6 +837,7 @@ class SLIR
 	}
 	
 	/**
+	 * Detemrines if the image should be resized based on its height (i.e. the height is the constraining dimension for this request)
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -904,6 +922,8 @@ class SLIR
 	}
 	
 	/**
+	 * Determines if the rendered file is in the rendered cache
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -913,6 +933,8 @@ class SLIR
 	}
 
 	/**
+	 * Determines if the request is symlinked to the rendered file
+	 * 
 	 * @since 2.0
 	 * @return boolean
 	 */
@@ -922,6 +944,8 @@ class SLIR
 	}
 
 	/**
+	 * Determines if a given file exists in the cache
+	 * 
 	 * @since 2.0
 	 * @param string $cacheFilePath
 	 * @return boolean
