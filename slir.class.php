@@ -183,16 +183,18 @@ class SLIR
 	 */
 	final public function __construct()
 	{
-		// This helps prevents unnecessary warnings (which messes up images)
+		// This helps prevent unnecessary warnings (which messes up images)
 		// on servers that are set to display E_STRICT errors.
-		error_reporting(error_reporting() & ~E_STRICT);
+		$this->disableStrictErrorReporting();
 		
 		// Prevents ob_start('ob_gzhandler') in auto_prepend files from messing
-		// up SLIR's output
+		// up SLIR's output.
 		$this->escapeOutputBuffering();
 		
 		$this->getConfig();
 		
+		$this->initializeGarbageCollection();
+
 		$this->request	= new SLIRRequest();
 		
 		// Check the cache based on the request URI
@@ -229,6 +231,20 @@ class SLIR
 	}
 	
 	/**
+	 * Disables E_STRICT error reporting
+	 * 
+	 * @since 2.0
+	 * @return integer
+	 */
+	private function disableStrictErrorReporting()
+	{
+		return error_reporting(error_reporting() & ~E_STRICT);
+	}
+
+	/**
+	 * Escapes from output buffering.
+	 * 
+	 * @since 2.0
 	 * @return void
 	 */
 	private function escapeOutputBuffering()
@@ -237,7 +253,7 @@ class SLIR
 		{
 			ob_end_clean();
 			
-			if ($level == ob_get_level())
+			if ($level == ob_get_level()) // On some setups, ob_get_level() will return a 1 instead of a 0 when there are no more buffers
 			{
 				return;
 			}
@@ -245,9 +261,78 @@ class SLIR
 	}
 
 	/**
-	 * Includes the configuration file
+	 * Determines if the garbage collector should run for this request.
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 */
+	private function garbageCollectionShouldRun()
+	{
+		if (rand(1, SLIRConfig::$garbageCollectDivisor) <= SLIRConfig::$garbageCollectProbability)
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Checks to see if the garbage collector should be initialized, and if it should, initializes it.
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	private function initializeGarbageCollection()
+	{
+		if ($this->garbageCollectionShouldRun())
+		{
+			register_shutdown_function(array($this, 'collectGarbage'));
+		}
+	}
+
+	/**
+	 * Deletes stale files from a directory.
+	 * 
+	 * Used by the garbage collector to keep the cache directories from overflowing.
+	 * 
+	 * @param string $path Directory to delete stale files from
+	 */
+	private function deleteStaleFilesFromDirectory($path)
+	{
+		$now	= time();
+		$dir	= new DirectoryIterator($path);
+		foreach ($dir as $file)
+		{
+			if (!$file->isDot() && ($now - $file->getMTime()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
+			{
+				unlink($file->getPathName());
+			}
+		}
+	}
+
+	/**
+	 * Garbage collector
+	 * 
+	 * Clears out old files from the cache
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	public function collectGarbage()
+	{
+		$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir());
+		$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
+	}
+
+	/**
+	 * Includes the configuration file.
+	 * 
+	 * If the configuration file cannot be included, this will throw an error that will hopefully explain what needs to be done.
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function getConfig()
 	{
@@ -279,6 +364,7 @@ class SLIR
 	 * Returns the configuration filename. Allows the developer to specify an alternate configuration file.
 	 *
 	 * @since 2.0
+	 * @return string
 	 */
 	private function configFilename()
 	{
@@ -296,6 +382,7 @@ class SLIR
 	 * Sets up parameters for image resizing
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function setParameters()
 	{
@@ -337,6 +424,7 @@ class SLIR
 	 * Renders specified changes to the image
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function render()
 	{
@@ -358,6 +446,7 @@ class SLIR
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	private function copySourceToRendered()
 	{
@@ -393,8 +482,8 @@ class SLIR
 	}
 	
 	/**
-	 * @return integer
 	 * @since 2.0
+	 * @return integer
 	 */
 	private function calculateSharpnessFactor()
 	{
@@ -867,9 +956,18 @@ class SLIR
 	 * @since 2.0
 	 * @return string
 	 */
+	private function getRenderedCacheDir()
+	{
+		return SLIRConfig::$cacheDir . '/rendered';
+	}
+
+	/**
+	 * @since 2.0
+	 * @return string
+	 */
 	private function renderedCacheFilePath()
 	{
-		return SLIRConfig::$cacheDir . '/rendered' . $this->renderedCacheFilename();
+		return $this->getRenderedCacheDir() . $this->renderedCacheFilename();
 	}
 	
 	/**
@@ -910,9 +1008,18 @@ class SLIR
 	 * @since 2.0
 	 * @return string
 	 */
+	private function getRequestCacheDir()
+	{
+		return SLIRConfig::$cacheDir . '/request';
+	}
+
+	/**
+	 * @since 2.0
+	 * @return string
+	 */
 	private function requestCacheFilePath()
 	{
-		return SLIRConfig::$cacheDir . '/request' . $this->requestCacheFilename();
+		return $this->getRequestCacheDir() . $this->requestCacheFilename();
 	}
 
 	/**
@@ -1104,6 +1211,7 @@ class SLIR
 	 * Serves the unmodified source image
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function serveSourceImage()
 	{
@@ -1124,6 +1232,7 @@ class SLIR
 	 * image
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function serveRenderedCachedImage()
 	{
@@ -1134,6 +1243,7 @@ class SLIR
 	 * Serves the image from the cache based on the request URI
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function serveRequestCachedImage()
 	{
@@ -1146,6 +1256,7 @@ class SLIR
 	 * @since 2.0
 	 * @param string $cacheFilePath
 	 * @param string $cacheType Can be 'request' or 'image'
+	 * @return void
 	 */
 	private function serveCachedImage($cacheFilePath, $cacheType)
 	{
@@ -1186,6 +1297,7 @@ class SLIR
 	 * Serves the rendered image
 	 *
 	 * @since 2.0
+	 * @return void
 	 */
 	private function serveRenderedImage()
 	{
@@ -1278,6 +1390,7 @@ class SLIR
 	 * @param string $mimeType
 	 * @param integer $fileSize
 	 * @param string $SLIRHeader
+	 * @return void
 	 */
 	private function serveHeaders($lastModified, $mimeType, $fileSize, $SLIRHeader)
 	{
@@ -1325,6 +1438,7 @@ class SLIR
 	 *
 	 * @since 2.0
 	 * @param string $lastModified
+	 * @return void
 	 */
 	private function doConditionalGet($lastModified)
 	{

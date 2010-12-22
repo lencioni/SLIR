@@ -172,6 +172,34 @@ class SLIRConfigDefaults
 	public static $forceQueryString	= FALSE;
 
 	/**
+	 * In conjunction with $garbageCollectDivisor is used to manage probability that the garbage collection routine is started.
+	 * 
+	 * @since 2.0
+	 * @var integer
+	 */
+	public static $garbageCollectProbability	= 1;
+
+	/**
+	 * Coupled with $garbageCollectProbability defines the probability that the garbage collection process is started on every request.
+	 * 
+	 * The probability is calculated by using $garbageCollectProbability/$garbageCollectDivisor, e.g. 1/100 means there is a 1% chance that the garbage collection process starts on each request.
+	 * 
+	 * @since 2.0
+	 * @var integer
+	 */
+	public static $garbageCollectDivisor	= 200;
+
+	/**
+	 * Specifies the number of seconds after which data will be seen as 'garbage' and potentially cleaned up (deleted from the cache).
+	 * 
+	 * @since 2.0
+	 * @var integer
+	 */
+	public static $garbageCollectFileCacheMaxLifetime	= 604800; // 7 * 24 * 60 * 60
+
+	/**
+	 * Initialize variables that require some dynamic processing.
+	 * 
 	 * @since 2.0
 	 * @return void
 	 */
