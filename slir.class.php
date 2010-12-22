@@ -300,13 +300,23 @@ class SLIR
 	 * 
 	 * @param string $path Directory to delete stale files from
 	 */
-	private function deleteStaleFilesFromDirectory($path)
+	private function deleteStaleFilesFromDirectory($path, $useAccessedTime = TRUE)
 	{
 		$now	= time();
 		$dir	= new DirectoryIterator($path);
+
+		if ($useAccessedTime === TRUE)
+		{
+			$function	= 'getATime';
+		}
+		else
+		{
+			$function	= 'getCTime';
+		}
+
 		foreach ($dir as $file)
 		{
-			if (!$file->isDot() && ($now - $file->getATime()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
+			if (!$file->isDot() && ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
 			{
 				unlink($file->getPathName());
 			}
@@ -323,7 +333,7 @@ class SLIR
 	 */
 	public function collectGarbage()
 	{
-		$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir());
+		$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
 		$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
 	}
 
