@@ -327,6 +327,47 @@ class SLIR
 		}
 	}
 
+
+	/**
+	 * Checks to see if the garbage collector is currently running.
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 */
+	private function garbageCollectorIsRunning()
+	{
+		if (file_exists(SLIRConfig::$cacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$cacheDir . '/garbageCollector.tmp') > time() - ini_get('max_execution_time'))
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Writes a file to the cache to use as a signal that the garbage collector is currently running.
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	private function startGarbageCollection()
+	{
+		touch(SLIRConfig::$cacheDir . '/garbageCollector.tmp');
+	}
+
+	/**
+	 * Removes the file that signifies that the garbage collector is currently running.
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	private function finishGarbageCollection()
+	{
+		unlink(SLIRConfig::$cacheDir . '/garbageCollector.tmp');
+	}
+
 	/**
 	 * Garbage collector
 	 * 
@@ -341,8 +382,15 @@ class SLIR
 		// "PHP Fatal error:  Exception thrown without a stack frame in Unknown on line
 		// 0" from showing up in the error log.
 		try {
+			if ($this->garbageCollectorIsRunning())
+			{
+				return;
+			}
+
+			$this->startGarbageCollection();
 			$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
 			$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
+			$this->finishGarbageCollection();
 		} catch (Exception $e) {
 			error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
 			error_log('Exception trace stack: ' . print_r($e->getTrace(), TRUE));    
@@ -436,8 +484,8 @@ class SLIR
 	 */
 	private function allocateMemory()
 	{
-		// Multiply width * height * 5 bytes
-		$estimatedMemory = $this->source->width * $this->source->height * 5;
+		// Multiply width * height * 8 bytes
+		$estimatedMemory = $this->source->width * $this->source->height * 8;
 
 		// Convert memory to Megabytes and add 15 in order to allow some slack
 		$estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 15;
