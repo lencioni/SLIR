@@ -316,7 +316,11 @@ class SLIR
 
 		foreach ($dir as $file)
 		{
-			if (!$file->isDot() && ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
+			// If the file is a link and not readable, the file it was pointing at has probably
+			// been deleted, so we need to delete the link.
+			// Otherwise, if the file is older than the max lifetime specified in the config, it is
+			// stale and should be deleted.
+			if (!$file->isDot() && (($file->isLink() && !$file->isReadable()) || ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime))
 			{
 				unlink($file->getPathName());
 			}
@@ -341,7 +345,7 @@ class SLIR
 			$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
 		} catch (Exception $e) {
 			error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
-			error_log('Exception trace stack: ' . print_r($e->getTrace(), 1));    
+			error_log('Exception trace stack: ' . print_r($e->getTrace(), TRUE));    
 		}
 	}
 
