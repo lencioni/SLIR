@@ -336,7 +336,7 @@ class SLIR
 	 */
 	private function garbageCollectorIsRunning()
 	{
-		if (file_exists(SLIRConfig::$cacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$cacheDir . '/garbageCollector.tmp') > time() - ini_get('max_execution_time'))
+		if (file_exists(SLIRConfig::$cacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$cacheDir . '/garbageCollector.tmp') > time() - 86400) // If the file is more than 1 day old, something probably went wrong and we should run again anyway
 		{
 			return TRUE;
 		}
