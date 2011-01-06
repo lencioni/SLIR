@@ -333,8 +333,16 @@ class SLIR
 	 */
 	public function collectGarbage()
 	{
-		$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
-		$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
+		// This code needs to be in a try/catch block to prevent the epically unhelpful
+		// "PHP Fatal error:  Exception thrown without a stack frame in Unknown on line
+		// 0" from showing up in the error log.
+		try {
+			$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
+			$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
+		} catch (Exception $e) {
+			error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
+			error_log('Exception trace stack: ' . print_r($e->getTrace(), 1));    
+		}
 	}
 
 	/**
