@@ -766,6 +766,7 @@ class SLIR
 		$this->rendered	= new SLIRImage();
 		
 		// Set default properties of the rendered image
+		$this->rendered->path	= $this->source->path;
 		$this->rendered->width	= $this->source->width;
 		$this->rendered->height	= $this->source->height;
 		
