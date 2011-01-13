@@ -1,6 +1,6 @@
 <?php
 /**
- * Class definition file for SLIRException
+ * Class definition file for SLIRExceptionHandler
  * 
  * This file is part of SLIR (Smart Lencioni Image Resizer).
  * 
@@ -31,7 +31,7 @@
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * @date $Date$
+ * date $Date$
  * @version $Revision$
  * @package SLIR
  */
