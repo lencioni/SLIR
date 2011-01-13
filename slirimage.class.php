@@ -551,7 +551,14 @@ class SLIRImage
 		$cropClass	= strtolower($this->getCropperClassName($className));
 		$fileName	= "croppers/$cropClass.class.php";
 		$class		= 'SLIRCropper' . ucfirst($cropClass);
+
+		if (!file_exists($fileName))
+		{
+			throw new RuntimeException('The requested cropper could not be found: ' . $fileName);
+		}
+
 		require_once $fileName;
+
 		return new $class();
 	}
 	

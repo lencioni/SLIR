@@ -191,6 +191,10 @@ class SLIR
 		$this->escapeOutputBuffering();
 		
 		$this->getConfig();
+
+		// Set up our exception and error handler after the request cache to help keep
+		// everything humming along nicely
+		require 'slirexceptionhandler.class.php';
 		
 		$this->initializeGarbageCollection();
 
@@ -201,11 +205,6 @@ class SLIR
 		{
 			$this->serveRequestCachedImage();
 		}
-			
-		// Set up our error handler after the request cache to help keep
-		// everything humming along nicely
-		require 'slirexception.class.php';
-		set_error_handler(array('SLIRException', 'error'));
 		
 		// Set all parameters for resizing
 		$this->setParameters();
@@ -419,15 +418,12 @@ class SLIR
 			}
 			else
 			{
-				throw new SLIRException('Could not load configuration file. '
-					. 'Please copy "slirconfig-sample.class.php" to '
-					. '"' . self::configFilename() . '".');
+				throw new RuntimeException('Could not load configuration file. Please copy "slirconfig-sample.class.php" to "' . self::configFilename() . '".');
 			}
 		}
 		else
 		{
-			throw new SLIRException('Could not find "' . self::configFilename() . '" or '
-				. '"slirconfig-sample.class.php"');
+			throw new RuntimeException('Could not find "' . self::configFilename() . '" or "slirconfig-sample.class.php"');
 		} // if
 	}
 	
@@ -883,7 +879,7 @@ class SLIR
 		}
 		else
 		{
-			throw new SLIRException("Unable to determine type of source image");
+			throw new RuntimeException("Unable to determine type of source image");
 		} // if
 		
 		if ($this->isBackgroundFillOn())
@@ -1283,7 +1279,7 @@ class SLIR
 			if (!@mkdir($path, 0755, TRUE))
 			{
 				header('HTTP/1.1 500 Internal Server Error');
-				throw new SLIRException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
+				throw new RuntimeException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
 			}
 		}
 
@@ -1294,12 +1290,12 @@ class SLIR
 		if (!is_readable($path))
 		{
 			header('HTTP/1.1 500 Internal Server Error');
-			throw new SLIRException("Directory ($path) is not readable");
+			throw new RuntimeException("Directory ($path) is not readable");
 		}
 		else if (!is_writable($path))
 		{
 			header('HTTP/1.1 500 Internal Server Error');
-			throw new SLIRException("Directory ($path) is not writable");
+			throw new RuntimeException("Directory ($path) is not writable");
 		}
 
 		return TRUE;

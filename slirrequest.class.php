@@ -121,8 +121,7 @@ class SLIRRequest
 		}
 		else
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Source image was not specified.');
+			throw new RuntimeException('Source image was not specified.');
 		} // if
 
 		// Set the rest of the parameters
@@ -215,8 +214,7 @@ class SLIRRequest
 		$this->quality	= $value;
 		if ($this->quality < 0 || $this->quality > 100)
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Quality must be between 0 and 100: ' . $this->quality);
+			throw new RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
 		}
 	}
 
@@ -248,10 +246,7 @@ class SLIRRequest
 		}
 		else if (strlen($this->background) != 6)
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Background fill color must be in '
-				.'hexadecimal format, longhand or shorthand: '
-				. $this->background);
+			throw new RuntimeException('Background fill color must be in hexadecimal format, longhand or shorthand: ' . $this->background);
 		} // if
 	}
 
@@ -267,8 +262,7 @@ class SLIRRequest
 		{
 			if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
 			{
-				header('HTTP/1.1 400 Bad Request');
-				throw new SLIRException('Crop ratio must not contain a zero: ' . (string) $value);
+				throw new RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
 			}
 			
 			$this->cropRatio	= array(
@@ -285,9 +279,7 @@ class SLIRRequest
 		}
 		else
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Crop ratio must be in width:height'
-				. ' format: ' . (string) $value);
+			throw new RuntimeException('Crop ratio must be in width:height format: ' . (string) $value);
 		} // if
 	}
 	
@@ -326,19 +318,18 @@ class SLIRRequest
 
 		if (count($request) < 2)
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Not enough parameters were given.', 'Available parameters:
-w = Maximum width
-h = Maximum height
-c = Crop ratio (width:height)
-q = Quality (0-100)
-b = Background fill color (RRGGBB or RGB)
-p = Progressive (0 or 1)
+			throw new RuntimeException(sprintf('Not enough parameters were given.
+
+Available parameters:
+ w = Maximum width
+ h = Maximum height
+ c = Crop ratio (width.height(.cropper?))
+ q = Quality (0-100)
+ b = Background fill color (RRGGBB or RGB)
+ p = Progressive (0 or 1)
 
 Example usage:
-<img src="' . SLIRConfig::$SLIRDir . '/w300-h300-c1:1/path/to/image.jpg" alt="Don\'t forget '
-.'your alt text!" />'
-			);
+%s/w300-h300-c1.1/path/to/image.jpg', SLIRConfig::$SLIRDir));
 
 		} // if
 
@@ -402,15 +393,12 @@ Example usage:
 		// Make sure the image path is secure
 		if (!$this->isPathSecure())
 		{
-			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('Image path may not contain ":", ".'
-				. '.", "<", or ">"');
+			throw new RuntimeException('Image path may not contain ":", "..", "<", or ">"');
 		}
 		// Make sure the image file exists
 		else if (!$this->pathExists())
 		{
-			header('HTTP/1.1 404 Not Found');
-			throw new SLIRException('Image does not exist: ' . $this->fullPath());
+			throw new RuntimeException('Image does not exist: ' . $this->fullPath());
 		}
 	}
 	
