@@ -24,15 +24,15 @@
  * @package SLIR
  */
 
-/* $Id: slirexception.class.php 123 2010-12-21 18:58:03Z joe.lencioni $ */
+/* $Id$ */
 
 /**
  * Exception and error handler
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * @date $Date: 2010-12-21 12:58:03 -0600 (Tue, 21 Dec 2010) $
- * @version $Revision: 123 $
+ * @date $Date$
+ * @version $Revision$
  * @package SLIR
  */
 class SLIRExceptionHandler
