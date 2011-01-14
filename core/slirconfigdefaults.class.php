@@ -139,7 +139,7 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var string
 	 */
-	public static $SLIRDir	= NULL;
+	public static $pathToSLIR	= NULL;
 
 	/**
 	 * Name of directory to store cached files in (no trailing slash)
@@ -215,19 +215,19 @@ class SLIRConfigDefaults
 			self::$documentRoot	= preg_replace('/\/$/', '', $_SERVER['DOCUMENT_ROOT']);
 		}
 
-		if (self::$SLIRDir === NULL)
+		if (self::$pathToSLIR === NULL)
 		{
-			self::$SLIRDir		= dirname($_SERVER['SCRIPT_NAME']);
+			self::$pathToSLIR	= self::$documentRoot . dirname($_SERVER['SCRIPT_NAME']);
 		}
 
 		if (self::$cacheDir === NULL)
 		{
-			self::$cacheDir 	= self::$documentRoot . self::$SLIRDir . self::$cacheDirName;
+			self::$cacheDir 	= self::$SLIRDir . self::$cacheDirName;
 		}
 
 		if (self::$errorLogPath === NULL)
 		{
-			self::$errorLogPath	= self::$documentRoot . self::$SLIRDir . '/slir-error-log';
+			self::$errorLogPath	= self::$SLIRDir . '/slir-error-log';
 		}
 	}
 }

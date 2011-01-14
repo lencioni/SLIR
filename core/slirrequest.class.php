@@ -323,12 +323,12 @@ class SLIRRequest
 
 		// The parameters should be the first set of characters after the
 		// SLIR path
-		$request	= preg_replace('`.*?' . preg_quote(SLIRConfig::$SLIRDir) . '`', '', (string) $_SERVER['REQUEST_URI']);
+		$request	= preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
 		$request	= explode('/', trim($request, '/'));
 
 		if (count($request) < 2)
 		{
-			throw new RuntimeException(sprintf('Not enough parameters were given.
+			throw new RuntimeException('Not enough parameters were given.
 
 Available parameters:
  w = Maximum width
@@ -339,7 +339,7 @@ Available parameters:
  p = Progressive (0 or 1)
 
 Example usage:
-%s/w300-h300-c1.1/path/to/image.jpg', SLIRConfig::$SLIRDir));
+/slir/w300-h300-c1.1/path/to/image.jpg');
 
 		} // if
 

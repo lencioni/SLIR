@@ -549,7 +549,7 @@ class SLIRImage
 	final public function getCropperClass($className = NULL)
 	{
 		$cropClass	= strtolower($this->getCropperClassName($className));
-		$fileName	= "/croppers/$cropClass.class.php";
+		$fileName	= SLIRConfig::$pathToSLIR . "/croppers/$cropClass.class.php";
 		$class		= 'SLIRCropper' . ucfirst($cropClass);
 
 		if (!file_exists($fileName))
