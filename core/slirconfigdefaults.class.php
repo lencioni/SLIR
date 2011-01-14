@@ -123,7 +123,7 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var boolean
 	 */
-	public static $errorImages	= TRUE;
+	public static $enableErrorImages	= TRUE;
 
 	/**
 	 * Absolute path to the web root (location of files when visiting http://domainname.com/) (no trailing slash).

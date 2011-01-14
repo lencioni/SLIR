@@ -171,7 +171,7 @@ class SLIRExceptionHandler
 	 */
 	public static function handleException(Exception $e)
 	{
-		if (SLIRConfig::$errorImages === TRUE)
+		if (SLIRConfig::$enableErrorImages === TRUE)
 		{
 			self::errorImage($e);
 		}
