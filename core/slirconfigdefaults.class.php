@@ -83,7 +83,7 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var boolean
 	 */
-	public static $useRequestCache	= TRUE;
+	public static $enableRequestCache	= TRUE;
 
 	/**
 	 * If TRUE, SLIR will copy EXIF information should from the source image to the rendered image.

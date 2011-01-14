@@ -241,7 +241,7 @@ class SLIR
 		// The request cache can't be used if the request is falling back to the
 		// default image path because it will prevent the actual image from being
 		// shown if it eventually ends up on the server
-		if (SLIRConfig::$useRequestCache === TRUE && !$this->request->isUsingDefaultImagePath())
+		if (SLIRConfig::$enableRequestCache === TRUE && !$this->request->isUsingDefaultImagePath())
 		{
 			return TRUE;
 		}
