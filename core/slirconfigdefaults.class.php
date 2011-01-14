@@ -86,16 +86,6 @@ class SLIRConfigDefaults
 	public static $enableRequestCache	= TRUE;
 
 	/**
-	 * If TRUE, SLIR will copy EXIF information should from the source image to the rendered image.
-	 *
-	 * This can be particularly useful (necessary?) if you use an embedded color profile.
-	 * 
-	 * @since 2.0
-	 * @var boolean
-	 */
-	public static $copyEXIF	= FALSE;
-
-	/**
 	 * How much memory (in megabytes) SLIR is allowed to allocate for memory-intensive processes such as rendering and cropping.
 	 *
 	 * @since 2.0
@@ -195,6 +185,16 @@ class SLIRConfigDefaults
 	 * @var integer
 	 */
 	public static $garbageCollectFileCacheMaxLifetime	= 604800; // 7 days = 7 * 24 * 60 * 60
+
+	/**
+	 * If TRUE, SLIR will copy EXIF information should from the source image to the rendered image.
+	 *
+	 * This can be particularly useful (necessary?) if you use an embedded color profile.
+	 * 
+	 * @since 2.0
+	 * @var boolean
+	 */
+	public static $copyEXIF	= FALSE;
 
 	/**
 	 * Initialize variables that require some dynamic processing.
