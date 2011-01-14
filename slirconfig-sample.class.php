@@ -25,7 +25,7 @@
  
 /* $Id$ */
 
-require_once 'slirconfigdefaults.class.php';
+require_once 'core/slirconfigdefaults.class.php';
 
 /**
  * SLIR Config Class
