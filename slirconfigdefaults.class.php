@@ -195,7 +195,7 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var integer
 	 */
-	public static $garbageCollectFileCacheMaxLifetime	= 86400; // 1 day = 1 * 24 * 60 * 60
+	public static $garbageCollectFileCacheMaxLifetime	= 604800; // 7 days = 7 * 24 * 60 * 60
 
 	/**
 	 * Initialize variables that require some dynamic processing.
