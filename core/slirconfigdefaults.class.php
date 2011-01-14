@@ -126,7 +126,9 @@ class SLIRConfigDefaults
 	public static $errorImages	= TRUE;
 
 	/**
-	 * Absolute path to the web root (location of files when visiting http://domainname.com/) (no trailing slash)
+	 * Absolute path to the web root (location of files when visiting http://domainname.com/) (no trailing slash).
+	 * 
+	 * For example, if the files for your website are located in /var/www/ on your server, this should be '/var/www'
 	 * 
 	 * @since 2.0
 	 * @var string
@@ -134,7 +136,7 @@ class SLIRConfigDefaults
 	public static $documentRoot	= NULL;
 
 	/**
-	 * Path to SLIR (no trailing slash)
+	 * Absolute path to SLIR (no trailing slash) from the root directory on your server's filesystem.
 	 * 
 	 * @since 2.0
 	 * @var string
@@ -142,15 +144,7 @@ class SLIRConfigDefaults
 	public static $pathToSLIR	= NULL;
 
 	/**
-	 * Name of directory to store cached files in (no trailing slash)
-	 * 
-	 * @since 2.0
-	 * @var string
-	 */
-	public static $cacheDirName	= '/cache';
-
-	/**
-	 * Absolute path to cache directory. This directory must be world-readable, writable by the web server, and must end with SLIRConfig::$cacheDirName (no trailing slash). Ideally, this directory should be located outside of the web tree.
+	 * Absolute path to cache directory (no trailing slash). This directory must be world-readable, writable by the web server. Ideally, this directory should be located outside of the web tree.
 	 * 
 	 * If not specified, defaults to $pathToSlir . '/cache' inside of the directory SLIR is located.
 	 * 
@@ -222,7 +216,7 @@ class SLIRConfigDefaults
 
 		if (self::$pathToCacheDir === NULL)
 		{
-			self::$pathToCacheDir 	= self::$SLIRDir . self::$cacheDirName;
+			self::$pathToCacheDir 	= self::$SLIRDir . '/cache';
 		}
 
 		if (self::$pathToErrorLog === NULL)
