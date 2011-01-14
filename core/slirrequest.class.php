@@ -321,8 +321,7 @@ class SLIRRequest
 	{
 		$params	= array();
 
-		// The parameters should be the first set of characters after the
-		// SLIR path
+		// The parameters should be the first set of characters after the SLIR path
 		$request	= preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
 		$request	= explode('/', trim($request, '/'));
 

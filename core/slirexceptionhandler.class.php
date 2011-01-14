@@ -92,7 +92,7 @@ class SLIRExceptionHandler
 			$e->getTraceAsString(),
 		));
 		
-		return @error_log($message, 3, SLIRConfig::$errorLogPath);
+		return @error_log($message, 3, SLIRConfig::$pathToErrorLog);
 	}
 
 	/**

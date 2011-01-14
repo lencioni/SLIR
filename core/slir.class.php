@@ -358,7 +358,7 @@ class SLIR
 	 */
 	private function garbageCollectorIsRunning()
 	{
-		if (file_exists(SLIRConfig::$cacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$cacheDir . '/garbageCollector.tmp') > time() - 86400) // If the file is more than 1 day old, something probably went wrong and we should run again anyway
+		if (file_exists(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') > time() - 86400) // If the file is more than 1 day old, something probably went wrong and we should run again anyway
 		{
 			return TRUE;
 		}
@@ -376,7 +376,7 @@ class SLIR
 	 */
 	private function startGarbageCollection()
 	{
-		touch(SLIRConfig::$cacheDir . '/garbageCollector.tmp');
+		touch(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
 	}
 
 	/**
@@ -387,7 +387,7 @@ class SLIR
 	 */
 	private function finishGarbageCollection()
 	{
-		unlink(SLIRConfig::$cacheDir . '/garbageCollector.tmp');
+		unlink(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
 	}
 
 	/**
@@ -1075,7 +1075,7 @@ class SLIR
 	 */
 	private function getRenderedCacheDir()
 	{
-		return SLIRConfig::$cacheDir . '/rendered';
+		return SLIRConfig::$pathToCacheDir . '/rendered';
 	}
 
 	/**
@@ -1127,7 +1127,7 @@ class SLIR
 	 */
 	private function getRequestCacheDir()
 	{
-		return SLIRConfig::$cacheDir . '/request';
+		return SLIRConfig::$pathToCacheDir . '/request';
 	}
 
 	/**
@@ -1281,9 +1281,9 @@ class SLIR
 			return TRUE;
 		}
 
-		$this->initializeDirectory(SLIRConfig::$cacheDir);
-		$this->initializeDirectory(SLIRConfig::$cacheDir . '/rendered', FALSE);
-		$this->initializeDirectory(SLIRConfig::$cacheDir . '/request', FALSE);
+		$this->initializeDirectory(SLIRConfig::$pathToCacheDir);
+		$this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/rendered', FALSE);
+		$this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/request', FALSE);
 
 		$this->isCacheInitialized	= TRUE;
 		return TRUE;

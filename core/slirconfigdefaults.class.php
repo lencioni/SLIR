@@ -152,11 +152,11 @@ class SLIRConfigDefaults
 	/**
 	 * Absolute path to cache directory. This directory must be world-readable, writable by the web server, and must end with SLIRConfig::$cacheDirName (no trailing slash). Ideally, this directory should be located outside of the web tree.
 	 * 
-	 * If not specified, defaults to '/cache' inside of the directory SLIR is located.
+	 * If not specified, defaults to $pathToSlir . '/cache' inside of the directory SLIR is located.
 	 * 
 	 * @var string
 	 */
-	public static $cacheDir	= NULL;
+	public static $pathToCacheDir	= NULL;
 
 	/**
 	 * Path to the error log file. Needs to be writable by the web server. Ideally, this should be located outside of the web tree.
@@ -166,7 +166,7 @@ class SLIRConfigDefaults
 	 * @since 2.0
 	 * @var string
 	 */
-	public static $errorLogPath	= NULL;
+	public static $pathToErrorLog	= NULL;
 
 	/**
 	 * If TRUE, forces SLIR to always use the query string for parameters instead of mod_rewrite.
@@ -220,14 +220,14 @@ class SLIRConfigDefaults
 			self::$pathToSLIR	= self::$documentRoot . dirname($_SERVER['SCRIPT_NAME']);
 		}
 
-		if (self::$cacheDir === NULL)
+		if (self::$pathToCacheDir === NULL)
 		{
-			self::$cacheDir 	= self::$SLIRDir . self::$cacheDirName;
+			self::$pathToCacheDir 	= self::$SLIRDir . self::$cacheDirName;
 		}
 
-		if (self::$errorLogPath === NULL)
+		if (self::$pathToErrorLog === NULL)
 		{
-			self::$errorLogPath	= self::$SLIRDir . '/slir-error-log';
+			self::$pathToErrorLog	= self::$SLIRDir . '/slir-error-log';
 		}
 	}
 }
