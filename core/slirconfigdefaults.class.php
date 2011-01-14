@@ -108,7 +108,7 @@ class SLIRConfigDefaults
 	public static $defaultCropper	= SLIR::CROP_CLASS_CENTERED;
 
 	/**
-	 * Whether SLIR should generate and output images from error messages.
+	 * If TRUE, SLIR will generate and output images from error messages. If FALSE, error messages will be plaintext.
 	 * 
 	 * @since 2.0
 	 * @var boolean
