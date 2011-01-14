@@ -198,6 +198,7 @@ class SLIR
 		
 		$this->initializeGarbageCollection();
 
+		require 'slirrequest.class.php';
 		$this->request	= new SLIRRequest();
 		
 		// Check the cache based on the request URI
@@ -206,6 +207,7 @@ class SLIR
 			$this->serveRequestCachedImage();
 		}
 		
+		require 'slirimage.class.php';
 		// Set all parameters for resizing
 		$this->setParameters();
 
