@@ -51,6 +51,22 @@ class SLIRConfigDefaults
 	public static $defaultImagePath	= NULL;
 
 	/**
+	 * Default quality setting to use if quality is not specified in the request. Ranges from 0 (worst quality, smaller file) to 100 (best quality, largest filesize).
+	 * 
+	 * @since 2.0
+	 * @var integer
+	 */
+	public static $defaultQuality	= 80;
+
+	/**
+	 * Default setting for whether JPEGs should be progressive JPEGs (interlaced) or not.
+	 * 
+	 * @since 2.0
+	 * @var boolean
+	 */
+	public static $defaultProgressiveJPEG	= TRUE;
+
+	/**
 	 * How long (in seconds) the web browser should use its cached copy of the image
 	 * before checking with the server for a new version
 	 * 
@@ -60,8 +76,9 @@ class SLIRConfigDefaults
 	public static $browserCacheTTL	= 604800; // 7 days = 7 * 24 * 60 * 60
 
 	/**
-	 * Whether we should use the faster, symlink-based request cache as a first
-	 * line cache
+	 * If TRUE, enables the faster, symlink-based request cache as a first-line cache. If FALSE, the request cache is disabled.
+	 * 
+	 * The request cache seems to have issues on some Windows servers.
 	 * 
 	 * @since 2.0
 	 * @var boolean
@@ -69,7 +86,9 @@ class SLIRConfigDefaults
 	public static $useRequestCache	= TRUE;
 
 	/**
-	 * Whether EXIF information should be copied from the source image
+	 * If TRUE, SLIR will copy EXIF information should from the source image to the rendered image.
+	 *
+	 * This can be particularly useful (necessary?) if you use an embedded color profile.
 	 * 
 	 * @since 2.0
 	 * @var boolean
@@ -77,22 +96,12 @@ class SLIRConfigDefaults
 	public static $copyEXIF	= FALSE;
 
 	/**
-	 * How much memory (in megabytes) SLIR is allowed to allocate for memory-intensive processes such as rendering
+	 * How much memory (in megabytes) SLIR is allowed to allocate for memory-intensive processes such as rendering and cropping.
 	 *
 	 * @since 2.0
 	 * @var integer
 	 */
 	public static $maxMemoryToAllocate	= 100;
-
-	/**
-	 * Default quality setting to use if quality is not specified in the request.
-	 * Ranges from 0 (worst quality, smaller file) to 100 (best quality, largest
-	 * filesize).
-	 * 
-	 * @since 2.0
-	 * @var integer
-	 */
-	public static $defaultQuality	= 80;
 
 	/**
 	 * Default crop mode setting to use if crop mode is not specified in the request.
@@ -101,7 +110,7 @@ class SLIRConfigDefaults
 	 * SLIR::CROP_CLASS_CENTERED
 	 * SLIR::CROP_CLASS_TOP_CENTERED
 	 * SLIR::CROP_CLASS_SMART
-	 * SLIR::CROP_CLASS_FACE (not finished)
+	 * SLIR::CROP_CLASS_FACE (not finished--does not work)
 	 * 
 	 * @since 2.0
 	 * @var string
@@ -109,24 +118,7 @@ class SLIRConfigDefaults
 	public static $defaultCropper	= SLIR::CROP_CLASS_CENTERED;
 
 	/**
-	 * Default setting for whether JPEGs should be progressive JPEGs (interlaced)
-	 * or not.
-	 * 
-	 * @since 2.0
-	 * @var boolean
-	 */
-	public static $defaultProgressiveJPEG	= TRUE;
-
-	/**
-	 * Whether SLIR should log errors
-	 *
-	 * @since 2.0
-	 * @var boolean
-	 */
-	public static $logErrors	= TRUE;
-
-	/**
-	 * Whether SLIR should generate and output images from error messages
+	 * Whether SLIR should generate and output images from error messages.
 	 * 
 	 * @since 2.0
 	 * @var boolean
@@ -134,8 +126,7 @@ class SLIRConfigDefaults
 	public static $errorImages	= TRUE;
 
 	/**
-	 * Absolute path to the web root (location of files when visiting
-	 * http://domainname.com/) (no trailing slash)
+	 * Absolute path to the web root (location of files when visiting http://domainname.com/) (no trailing slash)
 	 * 
 	 * @since 2.0
 	 * @var string
@@ -159,17 +150,18 @@ class SLIRConfigDefaults
 	public static $cacheDirName	= '/cache';
 
 	/**
-	 * Absolute path to cache directory. This directory must be world-readable,
-	 * writable by the web server, and must end with SLIR_CACHE_DIR_NAME (no
-	 * trailing slash). Ideally, this should be located outside of the web tree.
+	 * Absolute path to cache directory. This directory must be world-readable, writable by the web server, and must end with SLIRConfig::$cacheDirName (no trailing slash). Ideally, this directory should be located outside of the web tree.
+	 * 
+	 * If not specified, defaults to '/cache' inside of the directory SLIR is located.
 	 * 
 	 * @var string
 	 */
 	public static $cacheDir	= NULL;
 
 	/**
-	 * Path to the error log file. Needs to be writable by the web server. Ideally,
-	 * this should be located outside of the web tree.
+	 * Path to the error log file. Needs to be writable by the web server. Ideally, this should be located outside of the web tree.
+	 * 
+	 * If not specified, defaults to 'slir-error-log' in the directory SLIR is located.
 	 * 
 	 * @since 2.0
 	 * @var string
@@ -177,8 +169,7 @@ class SLIRConfigDefaults
 	public static $errorLogPath	= NULL;
 
 	/**
-	 * If TRUE, forces SLIR to always use the query string for parameters instead
-	 * of mod_rewrite.
+	 * If TRUE, forces SLIR to always use the query string for parameters instead of mod_rewrite.
 	 *
 	 * @since 2.0
 	 * @var boolean
@@ -231,12 +222,12 @@ class SLIRConfigDefaults
 
 		if (self::$cacheDir === NULL)
 		{
-			self::$cacheDir = self::$documentRoot . self::$SLIRDir . self::$cacheDirName;
+			self::$cacheDir 	= self::$documentRoot . self::$SLIRDir . self::$cacheDirName;
 		}
 
 		if (self::$errorLogPath === NULL)
 		{
-			self::$documentRoot . self::$SLIRDir . '/slir-error-log';
+			self::$errorLogPath	= self::$documentRoot . self::$SLIRDir . '/slir-error-log';
 		}
 	}
 }

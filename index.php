@@ -22,7 +22,7 @@
  * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
- * @date $Date$
+ * date $Date$
  * @version $Revision$
  */
  
