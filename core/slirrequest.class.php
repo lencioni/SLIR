@@ -31,7 +31,7 @@
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * @date $Date$
+ * date $Date$
  * @version $Revision$
  * @package SLIR
  */
