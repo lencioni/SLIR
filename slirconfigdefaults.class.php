@@ -37,13 +37,27 @@
 class SLIRConfigDefaults
 {
 	/**
+	 * Path to default the source image to if the requested image cannot be found.
+	 * 
+	 * This should match the style of path you would normally pass to SLIR in the URL (not the full path on the filesystem).
+	 * 
+	 * For example, if your website was http://mysite.com and your document root was /var/www/, and your default image was at http://mysite.com/images/default.png, you would set $defaultImagePath = '/images/default.png';
+	 * 
+	 * If NULL, SLIR will throw an exception if the requested image cannot be found.
+	 * 
+	 * @since 2.0
+	 * @var string
+	 */
+	public static $defaultImagePath	= NULL;
+
+	/**
 	 * How long (in seconds) the web browser should use its cached copy of the image
 	 * before checking with the server for a new version
 	 * 
 	 * @since 2.0
 	 * @var integer
 	 */
-	public static $browserCacheTTL	= 604800; // 7 * 24 * 60 * 60
+	public static $browserCacheTTL	= 604800; // 7 days = 7 * 24 * 60 * 60
 
 	/**
 	 * Whether we should use the faster, symlink-based request cache as a first

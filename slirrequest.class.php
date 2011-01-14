@@ -105,6 +105,12 @@ class SLIRRequest
 	 * @since 2.0
 	 */
 	private $background;
+
+	/**
+	 * @since 2.0
+	 * @var boolean
+	 */
+	private $isUsingDefaultImagePath	= FALSE;
 	
 	/**
 	 * @since 2.0
@@ -118,6 +124,10 @@ class SLIRRequest
 		{
 			$this->__set('i', $params['i']);
 			unset($params['i']);
+		}
+		else if (SLIRConfig::$defaultImagePath !== NULL)
+		{
+			$this->__set('i', SLIRConfig::$defaultImagePath);
 		}
 		else
 		{
@@ -381,6 +391,17 @@ Example usage:
 			return FALSE;
 		}
 	}
+
+	/**
+	 * Checks if the default image path set in the config is being used for this request
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 */
+	public function isUsingDefaultImagePath()
+	{
+		return $this->isUsingDefaultImagePath;
+	}
 	
 	/**
 	 * @since 2.0
@@ -398,7 +419,15 @@ Example usage:
 		// Make sure the image file exists
 		else if (!$this->pathExists())
 		{
-			throw new RuntimeException('Image does not exist: ' . $this->fullPath());
+			if (SLIRConfig::$defaultImagePath !== NULL && !$this->isUsingDefaultImagePath())
+			{
+				$this->isUsingDefaultImagePath	= TRUE;
+				return $this->setPath(SLIRConfig::$defaultImagePath);
+			}
+			else
+			{
+				throw new RuntimeException('Image does not exist: ' . $this->fullPath());
+			}
 		}
 	}
 	

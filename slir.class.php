@@ -201,7 +201,7 @@ class SLIR
 		$this->request	= new SLIRRequest();
 		
 		// Check the cache based on the request URI
-		if (SLIRConfig::$useRequestCache === TRUE && $this->isRequestCached())
+		if ($this->shouldUseRequestCache() && $this->isRequestCached())
 		{
 			$this->serveRequestCachedImage();
 		}
@@ -226,6 +226,27 @@ class SLIR
 			$this->render();
 			$this->serveRenderedImage();
 		} // if
+	}
+
+	/**
+	 * Checks to see if the request cache should be used
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 */
+	private function shouldUseRequestCache()
+	{
+		// The request cache can't be used if the request is falling back to the
+		// default image path because it will prevent the actual image from being
+		// shown if it eventually ends up on the server
+		if (SLIRConfig::$useRequestCache === TRUE && !$this->request->isUsingDefaultImagePath())
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 	
 	/**
@@ -1127,7 +1148,7 @@ class SLIR
 	{
 		$this->cacheRendered();
 		
-		if (SLIRConfig::$useRequestCache === TRUE)
+		if ($this->shouldUseRequestCache())
 		{
 			return $this->cacheRequest($this->rendered->data, TRUE);
 		}
