@@ -199,8 +199,7 @@ class SLIRImage
 			if (!$this->isImage())
 			{
 				header('HTTP/1.1 400 Bad Request');
-				throw new SLIRException('Requested file is not an '
-					. 'accepted image type: ' . $this->fullPath());
+				throw new RuntimeException('Requested file is not an accepted image type: ' . $this->fullPath());
 			} // if
 		}
 	}
@@ -407,8 +406,7 @@ class SLIRImage
 		if ($info == FALSE)
 		{
 			header('HTTP/1.1 400 Bad Request');
-			throw new SLIRException('getimagesize failed (source file may not '
-				. 'be an image): ' . $this->fullPath());
+			throw new RuntimeException('getimagesize failed (source file may not be an image): ' . $this->fullPath());
 		}
 		
 		$info['width']	=& $info[0];
