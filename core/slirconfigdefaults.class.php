@@ -216,12 +216,12 @@ class SLIRConfigDefaults
 
 		if (self::$pathToCacheDir === NULL)
 		{
-			self::$pathToCacheDir 	= self::$SLIRDir . '/cache';
+			self::$pathToCacheDir 	= self::$pathToSLIR . '/cache';
 		}
 
 		if (self::$pathToErrorLog === NULL)
 		{
-			self::$pathToErrorLog	= self::$SLIRDir . '/slir-error-log';
+			self::$pathToErrorLog	= self::$pathToSLIR . '/slir-error-log';
 		}
 	}
 }
