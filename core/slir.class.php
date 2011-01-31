@@ -1517,7 +1517,7 @@ class SLIR
 
 		// Lets us easily know whether the image was rendered from scratch,
 		// from the cache, or served directly from the source image
-		header("Content-SLIR: $SLIRHeader");
+		header("X-Content-SLIR: $SLIRHeader");
 
 		// Keep in browser cache how long?
 		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL) . ' GMT');
