@@ -515,6 +515,93 @@ class SLIRImage
 	}
 
 	/**
+	 * Determines if the image can be converted to a palette image
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 * @link http://perplexed.co.uk/1814_png_optimization_with_gd_library.htm
+	 */
+	private function isPalette()
+	{
+		if (!$this->isPNG() && !$this->isGIF())
+		{
+			return FALSE;
+		}
+
+		if (imagecolortransparent($this->image) >= 0)
+		{
+			return FALSE;
+		}
+
+		if ($this->data !== NULL && $this->data !== '')
+		{
+			$alpha	= substr($this->data, 25, 1);
+		}
+		else
+		{
+			$alpha	= file_get_contents(SLIRConfig::$documentRoot . $this->path, FALSE, NULL, 25, 1);
+		}
+
+		if ((ord($alpha) & 4) !== 0)
+		{
+			return FALSE;
+		}
+
+		$colors	= array();
+
+		for ($x = 0; $x < $this->width; ++$x)
+		{
+			for ($y = 0; $y < $this->height; ++$y)
+			{
+				$color			= ImageColorAt($this->image, $x, $y);
+				$colors[$color]	= TRUE;
+
+				if (count($colors) > 255)
+				{
+					// Too many colors to convert to a palette image without losing quality
+					return FALSE;
+				}
+
+				$index			= ImageColorsForIndex($this->image, $color);
+
+				// What is the threshold for visibility in an alpha channel? (out of 127)
+				if ($index['alpha'] > 1)
+				{
+					return FALSE;
+				}
+			}
+		}
+		
+		return TRUE;
+	}
+
+	/**
+	 * @since 2.0
+	 * @return void
+	 * @link http://us.php.net/manual/ro/function.imagetruecolortopalette.php#44803
+	 */
+	private function trueColorToPalette($dither, $ncolors)
+	{
+		$colorsHandle = ImageCreateTrueColor($this->width, $this->height);
+		ImageCopyMerge($colorsHandle, $this->image, 0, 0, 0, 0, $this->width, $this->height, 100);
+		ImageTrueColorToPalette($this->image, $dither, $ncolors);
+		ImageColorMatch($colorsHandle, $this->image);
+		ImageDestroy($colorsHandle);
+	}
+
+	/**
+	 * @since 2.0
+	 * @return void
+	 */
+	final public function optimize()
+	{
+		if ($this->isPalette())
+		{
+			$this->trueColorToPalette(FALSE, 255);
+		}
+	}
+
+	/**
 	 * Gets the name of the class that will be used to determine the crop offset for the image
 	 * 
 	 * @since 2.0

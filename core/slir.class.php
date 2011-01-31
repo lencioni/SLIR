@@ -534,6 +534,7 @@ class SLIR
 		$this->rendered->crop($this->isBackgroundFillOn());
 		$this->rendered->sharpen($this->calculateSharpnessFactor());
 		$this->rendered->interlace();
+		$this->rendered->optimize();
 	}
 	
 	/**
