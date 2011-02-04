@@ -41,10 +41,45 @@ require_once 'slircropper.interface.php';
  */
 class SLIRCropperSmart implements SLIRCropper
 {
+	const OFFSET_NEAR	= 0;
+	const OFFSET_FAR	= 1;
+
+	const PIXEL_LAB				= 0;
+	const PIXEL_DELTA_E			= 1;
+	const PIXEL_INTERESTINGNESS	= 2;
+
+	const RGB_RED	= 0;
+	const RGB_GREEN	= 1;
+	const RGB_BLUE	= 2;
+
+	const XYZ_X	= 0;
+	const XYZ_Y	= 1;
+	const XYZ_Z	= 2;
+
+	const LAB_L	= 0;
+	const LAB_A	= 1;
+	const LAB_B	= 2;
+
 	/**
 	 * @var array
 	 */
 	private $colors;
+
+	/**
+	 * @param integer $size
+	 * @return array|SplFixedArray
+	 */
+	private function newArray($size)
+	{
+		if (class_exists('SplFixedArray'))
+		{
+			return new SplFixedArray($size);
+		}
+		else
+		{
+			return array();
+		}
+	}
 
 	/**
 	 * Determines if the top and bottom need to be cropped
@@ -105,9 +140,9 @@ class SLIRCropperSmart implements SLIRCropper
 		// $this->colors = array(
 		//   x1	=> array(
 		//   	x1y1	=> array(
-		//			'lab'	=> array(l, a, b),
-		//			'dE'	=> array(TL, TC, TR, LC, LR, BL, BC, BR),
-		//			'i'		=> computedInterestingness
+		//			self::PIXEL_LAB	=> array(l, a, b),
+		//			self::PIXEL_DELTA_E	=> array(TL, TC, TR, LC, LR, BL, BC, BR),
+		//			self::PIXEL_INTERESTINGNESS		=> computedInterestingness
 		//   	),
 		//		x1y2	=> array( ... ),
 		//		...
@@ -115,14 +150,13 @@ class SLIRCropperSmart implements SLIRCropper
 		//   x2	=> array( ... ),
 		//   ...
 		// );
-		
 		$this->colors	= array();
 		
 		// Offset will remember how far in from each side we are in the
 		// cropping game
 		$offset	= array(
-			'near'	=> 0,
-			'far'	=> 0,
+			self::OFFSET_NEAR	=> 0,
+			self::OFFSET_FAR	=> 0,
 		);
 		
 		$rowsToCrop	= $originalLength - $length;
@@ -147,8 +181,8 @@ class SLIRCropperSmart implements SLIRCropper
 		$ratio				= 1;
 		for ($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped)
 		{
-			$a	= $this->rowInterestingness($image, $offset['near'], $pixelStep, $originalLength);
-			$b	= $this->rowInterestingness($image, $originalLength - $offset['far'] - 1, $pixelStep, $originalLength);
+			$a	= $this->rowInterestingness($image, $offset[self::OFFSET_NEAR], $pixelStep, $originalLength);
+			$b	= $this->rowInterestingness($image, $originalLength - $offset[self::OFFSET_FAR] - 1, $pixelStep, $originalLength);
 			
 			if ($a == 0 && $b == 0)
 			{
@@ -165,43 +199,43 @@ class SLIRCropperSmart implements SLIRCropper
 			
 			if ($ratio > $upperTol)
 			{
-				++$offset['far'];
+				++$offset[self::OFFSET_FAR];
 				
 				// Fightback. Winning side gets to go backwards through fallen rows
 				// to see if they are stronger
-				if ($returningChampion == 'near')
+				if ($returningChampion == self::OFFSET_NEAR)
 				{
-					$offset['near']	-= ($offset['near'] > 0) ? 1 : 0;
+					$offset[self::OFFSET_NEAR]	-= ($offset[self::OFFSET_NEAR] > 0) ? 1 : 0;
 				}
 				else
 				{
-					$returningChampion	= 'near';
+					$returningChampion	= self::OFFSET_NEAR;
 				}
 			}
 			else if ($ratio < $lowerTol)
 			{
-				++$offset['near'];
+				++$offset[self::OFFSET_NEAR];
 				
-				if ($returningChampion == 'far')
+				if ($returningChampion == self::OFFSET_FAR)
 				{
-					$offset['far']	-= ($offset['far'] > 0) ? 1 : 0;
+					$offset[self::OFFSET_FAR]	-= ($offset[self::OFFSET_FAR] > 0) ? 1 : 0;
 				}
 				else
 				{
-					$returningChampion	= 'far';
+					$returningChampion	= self::OFFSET_FAR;
 				}
 			}
 			else
 			{
 				// There is no strong winner, so discard rows from the side that
 				// has lost the fewest so far. Essentially this is a draw.
-				if ($offset['near'] > $offset['far'])
+				if ($offset[self::OFFSET_NEAR] > $offset[self::OFFSET_FAR])
 				{
-					++$offset['far'];
+					++$offset[self::OFFSET_FAR];
 				}
 				else // Discard near
 				{
-					++$offset['near'];
+					++$offset[self::OFFSET_NEAR];
 				}
 					
 				// No fightback for draws
@@ -216,14 +250,14 @@ class SLIRCropperSmart implements SLIRCropper
 		// ground.
 		if ($ratio > (1 + ($tolerance * 1.25)))
 		{
-			$offset['near'] -= round($length * .03);
+			$offset[self::OFFSET_NEAR] -= round($length * .03);
 		}
 		else if ($ratio < (1 / (1 + ($tolerance * 1.25))))
 		{
-			$offset['near']	+= round($length * .03);
+			$offset[self::OFFSET_NEAR]	+= round($length * .03);
 		}
 			
-		return min($rowsToCrop, max(0, $offset['near']));
+		return min($rowsToCrop, max(0, $offset[self::OFFSET_NEAR]));
 	}
 	
 	/**
@@ -283,8 +317,8 @@ class SLIRCropperSmart implements SLIRCropper
 	 * @return float
 	 */
 	private function pixelInterestingness(SLIRImage $image, $x, $y)
-	{
-		if (!isset($this->colors[$x][$y]['i']))
+	{	
+		if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS]))
 		{
 			// Ensure this pixel's color information has already been loaded
 			$this->loadPixelInfo($image, $x, $y);
@@ -298,11 +332,11 @@ class SLIRCropperSmart implements SLIRCropper
 			$this->calculateInterestingness($x, $y);
 		} // if
 		
-		return $this->colors[$x][$y]['i'];
+		return $this->colors[$x][$y][self::PIXEL_INTERESTINGNESS];
 	}
 	
 	/**
-	 * Load the color information of the requested pixel into the $this->colors array
+	 * Load the color information of the requested pixel into the $colors array
 	 * 
 	 * @since 2.0
 	 * @param SLIRImage $image
@@ -317,8 +351,6 @@ class SLIRCropperSmart implements SLIRCropper
 			{
 				return FALSE;
 			}
-				
-		
 		
 		if (!isset($this->colors[$x]))
 		{
@@ -330,9 +362,9 @@ class SLIRCropperSmart implements SLIRCropper
 			$this->colors[$x][$y]	= array();
 		}
 		
-		if (!isset($this->colors[$x][$y]['i']) && !isset($this->colors[$x][$y]['lab']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS]) && !isset($this->colors[$x][$y][self::PIXEL_LAB]))
 		{
-			$this->colors[$x][$y]['lab']	= $this->evaluateColor(imagecolorat($image->image, $x, $y));
+			$this->colors[$x][$y][self::PIXEL_LAB]	= $this->evaluateColor(imagecolorat($image->image, $x, $y));
 		}
 			
 		return TRUE;
@@ -353,37 +385,35 @@ class SLIRCropperSmart implements SLIRCropper
 		// pixel (top left, top center, top right, center left, center right,
 		// bottom left, bottom center, and bottom right)
 		
-		
-		
-		if (!isset($this->colors[$x][$y]['dE']['d-1-1']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d-1-1']))
 		{
 			$this->calculateDelta($image, $x, $y, -1, -1);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d0-1']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d0-1']))
 		{
 			$this->calculateDelta($image, $x, $y, 0, -1);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d1-1']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d1-1']))
 		{
 			$this->calculateDelta($image, $x, $y, 1, -1);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d-10']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d-10']))
 		{
 			$this->calculateDelta($image, $x, $y, -1, 0);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d10']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d10']))
 		{
 			$this->calculateDelta($image, $x, $y, 1, 0);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d-11']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d-11']))
 		{
 			$this->calculateDelta($image, $x, $y, -1, 1);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d01']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d01']))
 		{
 			$this->calculateDelta($image, $x, $y, 0, 1);
 		}
-		if (!isset($this->colors[$x][$y]['dE']['d11']))
+		if (!isset($this->colors[$x][$y][self::PIXEL_DELTA_E]['d11']))
 		{
 			$this->calculateDelta($image, $x, $y, 1, 1);
 		}
@@ -414,24 +444,22 @@ class SLIRCropperSmart implements SLIRCropper
 				return NULL;
 			}
 		
-		
-		
-		if (!isset($this->colors[$x1][$y1]['lab']))
+		if (!isset($this->colors[$x1][$y1][self::PIXEL_LAB]))
 		{
 			$this->loadPixelInfo($image, $x1, $y1);
 		}
-		if (!isset($this->colors[$x2][$y2]['lab']))
+		if (!isset($this->colors[$x2][$y2][self::PIXEL_LAB]))
 		{
 			$this->loadPixelInfo($image, $x2, $y2);
 		}
 		
-		$delta	= $this->deltaE($this->colors[$x1][$y1]['lab'], $this->colors[$x2][$y2]['lab']);
+		$delta	= $this->deltaE($this->colors[$x1][$y1][self::PIXEL_LAB], $this->colors[$x2][$y2][self::PIXEL_LAB]);
 		
-		$this->colors[$x1][$y1]['dE']["d$xMove$yMove"]	= $delta;
+		$this->colors[$x1][$y1][self::PIXEL_DELTA_E]["d$xMove$yMove"]	= $delta;
 		
 		$x2Move	= $xMove * -1;
 		$y2Move	= $yMove * -1;
-		$this->colors[$x2][$y2]['dE']["d$x2Move$y2Move"]	=& $this->colors[$x1][$y1]['dE']["d$xMove$yMove"];
+		$this->colors[$x2][$y2][self::PIXEL_DELTA_E]["d$x2Move$y2Move"]	=& $this->colors[$x1][$y1][self::PIXEL_DELTA_E]["d$xMove$yMove"];
 		
 		return TRUE;
 	}
@@ -446,11 +474,9 @@ class SLIRCropperSmart implements SLIRCropper
 	 */
 	private function calculateInterestingness($x, $y)
 	{
-		
-		
 		// The interestingness is the average of the pixel's Delta E values
-		$this->colors[$x][$y]['i']	= array_sum($this->colors[$x][$y]['dE'])
-			/ count(array_filter($this->colors[$x][$y]['dE'], 'is_numeric'));
+		$this->colors[$x][$y][self::PIXEL_INTERESTINGNESS]	= array_sum($this->colors[$x][$y][self::PIXEL_DELTA_E])
+			/ count(array_filter($this->colors[$x][$y][self::PIXEL_DELTA_E], 'is_numeric'));
 		
 		return TRUE;
 	}
@@ -480,7 +506,12 @@ class SLIRCropperSmart implements SLIRCropper
 		$r	= (($int >> 16) & 0xFF) * $a;
 		$g	= (($int >> 8) & 0xFF) * $a;
 		$b	= ($int & 0xFF) * $a;
-		return array('r' => $r, 'g' => $g, 'b' => $b);
+
+		return array(
+				self::RGB_RED	=> $r,
+				self::RGB_GREEN	=> $g,
+				self::RGB_BLUE	=> $b,
+			);
 	}
 	
 	/**
@@ -491,9 +522,9 @@ class SLIRCropperSmart implements SLIRCropper
 	 */
 	private function RGBtoXYZ($rgb)
 	{
-		$r	= $rgb['r'] / 255;
-		$g	= $rgb['g'] / 255;
-		$b	= $rgb['b'] / 255;
+		$r	= $rgb[self::RGB_RED] / 255;
+		$g	= $rgb[self::RGB_GREEN] / 255;
+		$b	= $rgb[self::RGB_BLUE] / 255;
 		
 		if ($r > 0.04045)
 		{
@@ -527,11 +558,11 @@ class SLIRCropperSmart implements SLIRCropper
 		$b	*= 100;
 
 		//Observer. = 2°, Illuminant = D65
-		$x = $r * 0.4124 + $g * 0.3576 + $b * 0.1805;
-		$y = $r * 0.2126 + $g * 0.7152 + $b * 0.0722;
-		$z = $r * 0.0193 + $g * 0.1192 + $b * 0.9505;
-		
-		return array('x' => $x, 'y' => $y, 'z' => $z);
+		return array(
+				self::XYZ_X => $r * 0.4124 + $g * 0.3576 + $b * 0.1805,
+				self::XYZ_Y => $r * 0.2126 + $g * 0.7152 + $b * 0.0722,
+				self::XYZ_Z => $r * 0.0193 + $g * 0.1192 + $b * 0.9505,
+			);
 	}
 	
 	/**
@@ -539,16 +570,20 @@ class SLIRCropperSmart implements SLIRCropper
 	 */ 
 	private function XYZtoHunterLab($xyz)
 	{
-		if ($xyz['y'] == 0)
+		if ($xyz[self::XYZ_Y] == 0)
 		{
-			return array('l' => 0, 'a' => 0, 'b' => 0);
+			return array(
+					self::LAB_L	=> 0,
+					self::LAB_A	=> 0,
+					self::LAB_B	=> 0,
+				);
 		}
 		
-		$l	= 10 * sqrt($xyz['y']);
-		$a	= 17.5 * ( ( ( 1.02 * $xyz['x'] ) - $xyz['y']) / sqrt( $xyz['y'] ) );
-		$b	= 7 * ( ( $xyz['y'] - ( 0.847 * $xyz['z'] ) ) / sqrt( $xyz['y'] ) );
-		
-		return array('l' => $l, 'a' => $a, 'b' => $b);
+		return array(
+				self::LAB_L	=> 10 * sqrt($xyz[self::XYZ_Y]),
+				self::LAB_A	=> 17.5 * ( ( ( 1.02 * $xyz[self::XYZ_X] ) - $xyz[self::XYZ_Y]) / sqrt( $xyz[self::XYZ_Y] ) ),
+				self::LAB_B	=> 7 * ( ( $xyz[self::XYZ_Y] - ( 0.847 * $xyz[self::XYZ_Z] ) ) / sqrt( $xyz[self::XYZ_Y] ) ),
+			);
 	}
 	
 	/**
@@ -564,9 +599,9 @@ class SLIRCropperSmart implements SLIRCropper
 		$refY	= 100;
 		$refZ	= 100;
 		
-		$X = $xyz['x'] / $refX;
-		$Y = $xyz['y'] / $refY;
-		$Z = $xyz['z'] / $refZ;
+		$X = $xyz[self::XYZ_X] / $refX;
+		$Y = $xyz[self::XYZ_Y] / $refY;
+		$Z = $xyz[self::XYZ_Z] / $refZ;
 		
 		if ( $X > 0.008856 )
 		{
@@ -595,18 +630,24 @@ class SLIRCropperSmart implements SLIRCropper
 			$Z = ( 7.787 * $Z ) + ( 16 / 116 );
 		}
 
-		$l = ( 116 * $Y ) - 16;
-		$a = 500 * ( $X - $Y );
-		$b = 200 * ( $Y - $Z );
-		
-		return array('l' => $l, 'a' => $a, 'b' => $b);
+		return array(
+				self::LAB_L => ( 116 * $Y ) - 16,
+				self::LAB_A => 500 * ( $X - $Y ),
+				self::LAB_B => 200 * ( $Y - $Z ),
+			);
 	}
 	
+	/**
+	 * @since 2.0
+	 * @param array $lab1 LAB color array
+	 * @param array $lab2 LAB color array
+	 * @return float
+	 */
 	private function deltaE($lab1, $lab2)
 	{
-		return sqrt( ( pow( $lab1['l'] - $lab2['l'], 2 ) )
-               + ( pow( $lab1['a'] - $lab2['a'], 2 ) )
-               + ( pow( $lab1['b'] - $lab2['b'], 2 ) ) );
+		return sqrt( ( pow( $lab1[self::LAB_L] - $lab2[self::LAB_L], 2 ) )
+               + ( pow( $lab1[self::LAB_A] - $lab2[self::LAB_A], 2 ) )
+               + ( pow( $lab1[self::LAB_B] - $lab2[self::LAB_B], 2 ) ) );
 	}
 	
 	/**
@@ -625,17 +666,17 @@ class SLIRCropperSmart implements SLIRCropper
 		$weightC	= 1; // Chroma
 		$weightH	= 1; // Hue
 		
-		$xC1 = sqrt( $lab1['a'] * $lab1['a'] + $lab1['b'] * $lab1['b'] );
-		$xC2 = sqrt( $lab2['a'] * $lab2['a'] + $lab2['b'] * $lab2['b'] );
+		$xC1 = sqrt( $lab1[self::LAB_A] * $lab1[self::LAB_A] + $lab1[self::LAB_B] * $lab1[self::LAB_B] );
+		$xC2 = sqrt( $lab2[self::LAB_A] * $lab2[self::LAB_A] + $lab2[self::LAB_B] * $lab2[self::LAB_B] );
 		$xCX = ( $xC1 + $xC2 ) / 2;
 		$xGX = 0.5 * ( 1 - sqrt( ( pow($xCX, 7) ) / ( ( pow($xCX, 7) ) + ( pow(25, 7) ) ) ) );
-		$xNN = ( 1 + $xGX ) * $lab1['a'];
-		$xC1 = sqrt( $xNN * $xNN + $lab1['b'] * $lab1['b'] );
-		$xH1 = $this->LABtoHue( $xNN, $lab1['b'] );
-		$xNN = ( 1 + $xGX ) * $lab2['a'];
-		$xC2 = sqrt( $xNN * $xNN + $lab2['b'] * $lab2['b'] );
-		$xH2 = $this->LABtoHue( $xNN, $lab2['b'] );
-		$xDL = $lab2['l'] - $lab1['l'];
+		$xNN = ( 1 + $xGX ) * $lab1[self::LAB_A];
+		$xC1 = sqrt( $xNN * $xNN + $lab1[self::LAB_B] * $lab1[self::LAB_B] );
+		$xH1 = $this->LABtoHue( $xNN, $lab1[self::LAB_B] );
+		$xNN = ( 1 + $xGX ) * $lab2[self::LAB_A];
+		$xC2 = sqrt( $xNN * $xNN + $lab2[self::LAB_B] * $lab2[self::LAB_B] );
+		$xH2 = $this->LABtoHue( $xNN, $lab2[self::LAB_B] );
+		$xDL = $lab2[self::LAB_L] - $lab1[self::LAB_L];
 		$xDC = $xC2 - $xC1;
 		
 		if ( ( $xC1 * $xC2 ) == 0 )
@@ -663,7 +704,7 @@ class SLIRCropperSmart implements SLIRCropper
 		} // if
 
 		$xDH = 2 * sqrt( $xC1 * $xC2 ) * sin( rad2deg( $xDH / 2 ) );
-		$xLX = ( $lab1['l'] + $lab2['l'] ) / 2;
+		$xLX = ( $lab1[self::LAB_L] + $lab2[self::LAB_L] ) / 2;
 		$xCY = ( $xC1 + $xC2 ) / 2;
 
 		if ( ( $xC1 *  $xC2 ) == 0 )
@@ -727,10 +768,10 @@ class SLIRCropperSmart implements SLIRCropper
 		$weightL	= 2; // Lightness
 		$weightC	= 1; // Chroma
 		
-		$xC1	= sqrt( ( pow($lab1['a'], 2) ) + ( pow($lab1['b'], 2) ) );
-		$xC2	= sqrt( ( pow($lab2['a'], 2) ) + ( pow($lab2['b'], 2) ) );
+		$xC1	= sqrt( ( pow($lab1[self::LAB_A], 2) ) + ( pow($lab1[self::LAB_B], 2) ) );
+		$xC2	= sqrt( ( pow($lab2[self::LAB_A], 2) ) + ( pow($lab2[self::LAB_B], 2) ) );
 		$xff	= sqrt( ( pow($xC1, 4) ) / ( ( pow($xC1, 4) ) + 1900 ) );
-		$xH1	= $this->LABtoHue( $lab1['a'], $lab1['b'] );
+		$xH1	= $this->LABtoHue( $lab1[self::LAB_A], $lab1[self::LAB_B] );
 		
 		if ( $xH1 < 164 || $xH1 > 345 )
 		{
@@ -741,19 +782,19 @@ class SLIRCropperSmart implements SLIRCropper
 			$xTT	= 0.56 + abs( 0.2 * cos( deg2rad( 168 + $xH1 ) ) );
 		}
 		
-		if ( $lab1['l'] < 16 )
+		if ( $lab1[self::LAB_L] < 16 )
 		{
 			$xSL	= 0.511;
 		}
 		else
 		{
-			$xSL	= ( 0.040975 * $lab1['l'] ) / ( 1 + ( 0.01765 * $lab1['l'] ) );
+			$xSL	= ( 0.040975 * $lab1[self::LAB_L] ) / ( 1 + ( 0.01765 * $lab1[self::LAB_L] ) );
 		}
 			
 		$xSC = ( ( 0.0638 * $xC1 ) / ( 1 + ( 0.0131 * $xC1 ) ) ) + 0.638;
 		$xSH = ( ( $xff * $xTT ) + 1 - $xff ) * $xSC;
-		$xDH = sqrt( pow( $lab2['a'] - $lab1['a'], 2 ) + pow( $lab2['b'] - $lab1['b'], 2 ) - pow( $xC2 - $xC1, 2 ) );
-		$xSL = ( $lab2['l'] - $lab1['l'] ) / $weightL * $xSL;
+		$xDH = sqrt( pow( $lab2[self::LAB_A] - $lab1[self::LAB_A], 2 ) + pow( $lab2[self::LAB_B] - $lab1[self::LAB_B], 2 ) - pow( $xC2 - $xC1, 2 ) );
+		$xSL = ( $lab2[self::LAB_L] - $lab1[self::LAB_L] ) / $weightL * $xSL;
 		$xSC = ( $xC2 - $xC1 ) / $weightC * $xSC;
 		$xSH = $xDH / $xSH;
 		
