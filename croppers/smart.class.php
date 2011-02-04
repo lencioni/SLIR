@@ -42,6 +42,11 @@ require_once 'slircropper.interface.php';
 class SLIRCropperSmart implements SLIRCropper
 {
 	/**
+	 * @var array
+	 */
+	private $colors;
+
+	/**
 	 * Determines if the top and bottom need to be cropped
 	 *
 	 * @since 2.0
@@ -91,13 +96,13 @@ class SLIRCropperSmart implements SLIRCropper
 		// row is, we can determine whether or not to discard it. We start with
 		// the closest row and the farthest row and then move on from there.
 		
-		// All colors in the image will be stored in the global colors array.
+		// All colors in the image will be stored in the colors array.
 		// This array will also include information about each pixel's
 		// interestingness.
 		// 
 		// For example (rough representation):
 		// 
-		// $colors = array(
+		// $this->colors = array(
 		//   x1	=> array(
 		//   	x1y1	=> array(
 		//			'lab'	=> array(l, a, b),
@@ -110,8 +115,8 @@ class SLIRCropperSmart implements SLIRCropper
 		//   x2	=> array( ... ),
 		//   ...
 		// );
-		global $colors;
-		$colors	= array();
+		
+		$this->colors	= array();
 		
 		// Offset will remember how far in from each side we are in the
 		// cropping game
@@ -279,9 +284,7 @@ class SLIRCropperSmart implements SLIRCropper
 	 */
 	private function pixelInterestingness(SLIRImage $image, $x, $y)
 	{
-		global $colors;
-		
-		if (!isset($colors[$x][$y]['i']))
+		if (!isset($this->colors[$x][$y]['i']))
 		{
 			// Ensure this pixel's color information has already been loaded
 			$this->loadPixelInfo($image, $x, $y);
@@ -295,11 +298,11 @@ class SLIRCropperSmart implements SLIRCropper
 			$this->calculateInterestingness($x, $y);
 		} // if
 		
-		return $colors[$x][$y]['i'];
+		return $this->colors[$x][$y]['i'];
 	}
 	
 	/**
-	 * Load the color information of the requested pixel into the $colors array
+	 * Load the color information of the requested pixel into the $this->colors array
 	 * 
 	 * @since 2.0
 	 * @param SLIRImage $image
@@ -315,21 +318,21 @@ class SLIRCropperSmart implements SLIRCropper
 				return FALSE;
 			}
 				
-		global $colors;
 		
-		if (!isset($colors[$x]))
+		
+		if (!isset($this->colors[$x]))
 		{
-			$colors[$x]	= array();
+			$this->colors[$x]	= array();
 		}
 			
-		if (!isset($colors[$x][$y]))
+		if (!isset($this->colors[$x][$y]))
 		{
-			$colors[$x][$y]	= array();
+			$this->colors[$x][$y]	= array();
 		}
 		
-		if (!isset($colors[$x][$y]['i']) && !isset($colors[$x][$y]['lab']))
+		if (!isset($this->colors[$x][$y]['i']) && !isset($this->colors[$x][$y]['lab']))
 		{
-			$colors[$x][$y]['lab']	= $this->evaluateColor(imagecolorat($image->image, $x, $y));
+			$this->colors[$x][$y]['lab']	= $this->evaluateColor(imagecolorat($image->image, $x, $y));
 		}
 			
 		return TRUE;
@@ -350,37 +353,37 @@ class SLIRCropperSmart implements SLIRCropper
 		// pixel (top left, top center, top right, center left, center right,
 		// bottom left, bottom center, and bottom right)
 		
-		global $colors;
 		
-		if (!isset($colors[$x][$y]['dE']['d-1-1']))
+		
+		if (!isset($this->colors[$x][$y]['dE']['d-1-1']))
 		{
 			$this->calculateDelta($image, $x, $y, -1, -1);
 		}
-		if (!isset($colors[$x][$y]['dE']['d0-1']))
+		if (!isset($this->colors[$x][$y]['dE']['d0-1']))
 		{
 			$this->calculateDelta($image, $x, $y, 0, -1);
 		}
-		if (!isset($colors[$x][$y]['dE']['d1-1']))
+		if (!isset($this->colors[$x][$y]['dE']['d1-1']))
 		{
 			$this->calculateDelta($image, $x, $y, 1, -1);
 		}
-		if (!isset($colors[$x][$y]['dE']['d-10']))
+		if (!isset($this->colors[$x][$y]['dE']['d-10']))
 		{
 			$this->calculateDelta($image, $x, $y, -1, 0);
 		}
-		if (!isset($colors[$x][$y]['dE']['d10']))
+		if (!isset($this->colors[$x][$y]['dE']['d10']))
 		{
 			$this->calculateDelta($image, $x, $y, 1, 0);
 		}
-		if (!isset($colors[$x][$y]['dE']['d-11']))
+		if (!isset($this->colors[$x][$y]['dE']['d-11']))
 		{
 			$this->calculateDelta($image, $x, $y, -1, 1);
 		}
-		if (!isset($colors[$x][$y]['dE']['d01']))
+		if (!isset($this->colors[$x][$y]['dE']['d01']))
 		{
 			$this->calculateDelta($image, $x, $y, 0, 1);
 		}
-		if (!isset($colors[$x][$y]['dE']['d11']))
+		if (!isset($this->colors[$x][$y]['dE']['d11']))
 		{
 			$this->calculateDelta($image, $x, $y, 1, 1);
 		}
@@ -411,24 +414,24 @@ class SLIRCropperSmart implements SLIRCropper
 				return NULL;
 			}
 		
-		global $colors;
 		
-		if (!isset($colors[$x1][$y1]['lab']))
+		
+		if (!isset($this->colors[$x1][$y1]['lab']))
 		{
 			$this->loadPixelInfo($image, $x1, $y1);
 		}
-		if (!isset($colors[$x2][$y2]['lab']))
+		if (!isset($this->colors[$x2][$y2]['lab']))
 		{
 			$this->loadPixelInfo($image, $x2, $y2);
 		}
 		
-		$delta	= $this->deltaE($colors[$x1][$y1]['lab'], $colors[$x2][$y2]['lab']);
+		$delta	= $this->deltaE($this->colors[$x1][$y1]['lab'], $this->colors[$x2][$y2]['lab']);
 		
-		$colors[$x1][$y1]['dE']["d$xMove$yMove"]	= $delta;
+		$this->colors[$x1][$y1]['dE']["d$xMove$yMove"]	= $delta;
 		
 		$x2Move	= $xMove * -1;
 		$y2Move	= $yMove * -1;
-		$colors[$x2][$y2]['dE']["d$x2Move$y2Move"]	=& $colors[$x1][$y1]['dE']["d$xMove$yMove"];
+		$this->colors[$x2][$y2]['dE']["d$x2Move$y2Move"]	=& $this->colors[$x1][$y1]['dE']["d$xMove$yMove"];
 		
 		return TRUE;
 	}
@@ -443,11 +446,11 @@ class SLIRCropperSmart implements SLIRCropper
 	 */
 	private function calculateInterestingness($x, $y)
 	{
-		global $colors;
+		
 		
 		// The interestingness is the average of the pixel's Delta E values
-		$colors[$x][$y]['i']	= array_sum($colors[$x][$y]['dE'])
-			/ count(array_filter($colors[$x][$y]['dE'], 'is_numeric'));
+		$this->colors[$x][$y]['i']	= array_sum($this->colors[$x][$y]['dE'])
+			/ count(array_filter($this->colors[$x][$y]['dE'], 'is_numeric'));
 		
 		return TRUE;
 	}
