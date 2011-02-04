@@ -159,7 +159,7 @@ class SLIRExceptionHandler
 	 */
 	private static function errorText(Exception $e)
 	{
-		echo nl2br($e->getMessage()) . "\n";
+		echo nl2br($e->getMessage() . ' in ' . $e->getFile() . ' on ' . $e->getLine()) . "\n";
 	}
 
 	/**
