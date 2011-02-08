@@ -513,6 +513,36 @@ class SLIRImage
 			imageinterlace($this->image, 1);
 		}
 	}
+	
+	/**
+	 * @return integer
+	 */
+	private function getWidth()
+	{
+		if ($this->cropWidth === NULL)
+		{
+			return $this->width;
+		}
+		else
+		{
+			return $this->cropWidth;
+		}
+	}
+
+	/**
+	 * @return integer
+	 */
+	private function getHeight()
+	{
+		if ($this->cropHeight === NULL)
+		{
+			return $this->height;
+		}
+		else
+		{
+			return $this->cropHeight;
+		}
+	}
 
 	/**
 	 * Determines if the image can be converted to a palette image
@@ -549,9 +579,9 @@ class SLIRImage
 
 		$colors	= array();
 
-		for ($x = 0; $x < $this->width; ++$x)
+		for ($x = 0, $width = $this->getWidth(); $x < $width; ++$x)
 		{
-			for ($y = 0; $y < $this->height; ++$y)
+			for ($y = 0, $height = $this->getHeight(); $y < $height; ++$y)
 			{
 				$color			= ImageColorAt($this->image, $x, $y);
 				$colors[$color]	= TRUE;
@@ -582,8 +612,8 @@ class SLIRImage
 	 */
 	private function trueColorToPalette($dither, $ncolors)
 	{
-		$colorsHandle = ImageCreateTrueColor($this->width, $this->height);
-		ImageCopyMerge($colorsHandle, $this->image, 0, 0, 0, 0, $this->width, $this->height, 100);
+		$colorsHandle = ImageCreateTrueColor($this->getWidth(), $this->getHeight());
+		ImageCopyMerge($colorsHandle, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight(), 100);
 		ImageTrueColorToPalette($this->image, $dither, $ncolors);
 		ImageColorMatch($colorsHandle, $this->image);
 		ImageDestroy($colorsHandle);
