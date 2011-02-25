@@ -1379,7 +1379,7 @@ class SLIR
 	private function serveCachedImage($cacheFilePath, $cacheType)
 	{
 		// Serve the image
-		$data = $this->serveFile(
+		$this->serveFile(
 			$cacheFilePath,
 			NULL,
 			NULL,
@@ -1392,7 +1392,7 @@ class SLIR
 		// request cache to the rendered file
 		if ($cacheType != 'request')
 		{
-			$this->cacheRequest($data, FALSE);
+			$this->cacheRequest(file_get_contents($cacheFilePath), FALSE);
 		}
 		
 		exit();
@@ -1447,26 +1447,26 @@ class SLIR
 	 * @param integer $lastModified Timestamp of when the file was last modified
 	 * @param string $mimeType
 	 * @param string $SLIRheader
-	 * @return string Image data
+	 * @return void
 	 */
 	private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $SLIRHeader)
 	{
-		if ($imagePath != NULL)
+		if ($imagePath !== NULL)
 		{
-			if ($lastModified == NULL)
+			if ($lastModified === NULL)
 			{
 				$lastModified	= filemtime($imagePath);
 			}
-			if ($length == NULL)
+			if ($length === NULL)
 			{
 				$length			= filesize($imagePath);
 			}
-			if ($mimeType == NULL)
+			if ($mimeType === NULL)
 			{
 				$mimeType		= $this->mimeType($imagePath);
 			}
 		}
-		else if ($length == NULL)
+		else if ($length === NULL)
 		{
 			$length		= strlen($data);
 		} // if
@@ -1479,25 +1479,14 @@ class SLIR
 			$SLIRHeader
 		);
 		
-		// Read the image data into memory if we need to
-		if ($data == NULL)
+		if ($data === NULL)
 		{
-			$data	= file_get_contents($imagePath);
+			readfile($imagePath);
 		}
-
-		// Send the image to the browser in bite-sized chunks
-		$chunkSize	= 1024 * 8;
-		$fp			= fopen('php://memory', 'r+b');
-		fwrite($fp, $data);
-		rewind($fp);
-		while (!feof($fp))
+		else
 		{
-			echo fread($fp, $chunkSize);
-			flush();
-		} // while
-		fclose($fp);
-		
-		return $data;
+			echo $data;
+		}
 	}
 
 	/**
