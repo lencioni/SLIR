@@ -471,7 +471,7 @@ Example usage:
 	 */
 	private function isPathSecure()
 	{
-		if (strpos(dirname($this->path), ':') || preg_match('/(\.\.|<|>)/', $this->path))
+		if (strpos(dirname($this->path), ':') || preg_match('/(?:\.\.|<|>)/', $this->path))
 		{
 			return FALSE;
 		}

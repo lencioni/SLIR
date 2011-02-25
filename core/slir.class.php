@@ -836,26 +836,28 @@ class SLIR
 
 		if ($this->shouldResizeBasedOnWidth())
 		{
-			$this->rendered->height	= round($this->resizeWidthFactor() * $this->source->height);
-			$this->rendered->width	= round($this->resizeWidthFactor() * $this->source->width);
+			$resizeFactor	= $this->resizeWidthFactor();
+			$this->rendered->height	= round($resizeFactor * $this->source->height);
+			$this->rendered->width	= round($resizeFactor * $this->source->width);
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
-				$this->rendered->cropHeight	= round($this->resizeWidthFactor() * $this->source->cropHeight);
-				$this->rendered->cropWidth	= round($this->resizeWidthFactor() * $this->source->cropWidth);
+				$this->rendered->cropHeight	= round($resizeFactor * $this->source->cropHeight);
+				$this->rendered->cropWidth	= round($resizeFactor * $this->source->cropWidth);
 			} // if
 		}
 		else if ($this->shouldResizeBasedOnHeight())
 		{
-			$this->rendered->width	= round($this->resizeHeightFactor() * $this->source->width);
-			$this->rendered->height	= round($this->resizeHeightFactor() * $this->source->height);
+			$resizeFactor	= $this->resizeWidthFactor();
+			$this->rendered->width	= round($resizeFactor * $this->source->width);
+			$this->rendered->height	= round($resizeFactor * $this->source->height);
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
-				$this->rendered->cropHeight	= round($this->resizeHeightFactor() * $this->source->cropHeight);
-				$this->rendered->cropWidth	= round($this->resizeHeightFactor() * $this->source->cropWidth);
+				$this->rendered->cropHeight	= round($resizeFactor * $this->source->cropHeight);
+				$this->rendered->cropWidth	= round($resizeFactor * $this->source->cropWidth);
 			} // if
 		}
 		else if ($this->isCroppingNeeded()) // No resizing is needed but we still need to crop
