@@ -147,6 +147,20 @@ class SLIRImage
 			case 'path':
 				$this->setPath($value);
 			break;
+
+			case 'image':
+			case 'mime':
+			case 'width':
+			case 'height':
+			case 'cropWidth':
+			case 'cropHeight':
+			case 'cropper':
+			case 'iptc':
+			case 'quality':
+			case 'progressive':
+			case 'background':
+				return $this->$name	= $value;
+			break;
 			
 			default:
 				if (property_exists($this, $name))
@@ -170,6 +184,20 @@ class SLIRImage
 					$this->data	= $this->getData();
 				}
 				return $this->data;
+			break;
+
+			case 'image':
+			case 'mime':
+			case 'width':
+			case 'height':
+			case 'cropWidth':
+			case 'cropHeight':
+			case 'cropper':
+			case 'iptc':
+			case 'quality':
+			case 'progressive':
+			case 'background':
+				return $this->$name;
 			break;
 			
 			default:
