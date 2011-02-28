@@ -1512,13 +1512,13 @@ class SLIR
 		header("X-Content-SLIR: $SLIRHeader");
 
 		// Keep in browser cache how long?
-		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL) . ' GMT');
+		header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL)));
 
 		// Public in the Cache-Control lets proxies know that it is okay to
 		// cache this content. If this is being served over HTTPS, there may be
 		// sensitive content and therefore should probably not be cached by
 		// proxy servers.
-		header('Cache-Control: max-age=' . SLIRConfig::$browserCacheTTL . ', public');
+		header(sprintf('Cache-Control: max-age=%d, public', SLIRConfig::$browserCacheTTL));
 
 		$this->doConditionalGet($lastModified);
 
