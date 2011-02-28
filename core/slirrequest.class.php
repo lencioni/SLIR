@@ -447,7 +447,7 @@ Example usage:
 	 */
 	private function stripProtocolAndDomain($path)
 	{
-		return preg_replace('/^(?:s?f|ht)tps?:\/\/[^\/]+/i', '', $path);
+		return preg_replace('/^[^:]+:\/\/[^\/]+/i', '', $path);
 	}
 	
 	/**
@@ -457,7 +457,7 @@ Example usage:
 	 */
 	private function stripQueryString($path)
 	{
-		return preg_replace('/\?.*/', '', $path);
+		return preg_replace('/\?.*+/', '', $path);
 	}
 	
 	/**
