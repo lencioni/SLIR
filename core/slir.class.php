@@ -140,6 +140,14 @@ class SLIR
 	 */
 	 const CROP_CLASS_FACE		= 'face';
 
+	 /**
+	  * Setting for the garbage collector to sleep for a second after looking at this many files
+	  * 
+	  * @since 2.0
+	  * @var integer
+	  */
+	 const GARBAGE_COLLECTOR_BREATHE_EVERY	= 5000;
+
 	/**
 	 * Request object
 	 *
@@ -338,6 +346,11 @@ class SLIR
 
 		foreach ($dir as $file)
 		{
+			if ($file->key() % self::GARBAGE_COLLECTOR_BREATHE_EVERY == 0)
+			{
+				sleep(1);
+			}
+
 			// If the file is a link and not readable, the file it was pointing at has probably
 			// been deleted, so we need to delete the link.
 			// Otherwise, if the file is older than the max lifetime specified in the config, it is
