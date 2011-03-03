@@ -346,6 +346,7 @@ class SLIR
 
 		foreach ($dir as $file)
 		{
+			// Every x files, stop for a second to help let other things on the server happen
 			if ($file->key() % self::GARBAGE_COLLECTOR_BREATHE_EVERY == 0)
 			{
 				sleep(1);
