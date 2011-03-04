@@ -863,7 +863,7 @@ class SLIR
 		}
 		else if ($this->shouldResizeBasedOnHeight())
 		{
-			$resizeFactor	= $this->resizeWidthFactor();
+			$resizeFactor	= $this->resizeHeightFactor();
 			$this->rendered->width	= round($resizeFactor * $this->source->width);
 			$this->rendered->height	= round($resizeFactor * $this->source->height);
 			
