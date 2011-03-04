@@ -576,61 +576,45 @@ class SLIRImage
 	 * Determines if the image can be converted to a palette image
 	 * 
 	 * @since 2.0
-	 * @return boolean
-	 * @link http://perplexed.co.uk/1814_png_optimization_with_gd_library.htm
+	 * @return array colors in image, otherwise FALSE if image is not palette
 	 */
 	private function isPalette()
 	{
-		if (!$this->isPNG() && !$this->isGIF())
-		{
-			return FALSE;
-		}
-
-		if (imagecolortransparent($this->image) >= 0)
-		{
-			return FALSE;
-		}
-
-		if ($this->data !== NULL && $this->data !== '')
-		{
-			$alpha	= substr($this->data, 25, 1);
-		}
-		else
-		{
-			$alpha	= file_get_contents(SLIRConfig::$documentRoot . $this->path, FALSE, NULL, 25, 1);
-		}
-
-		if ((ord($alpha) & 4) !== 0)
-		{
-			return FALSE;
-		}
-
 		$colors	= array();
 
+		// Loop over all of the pixels in the image, counting the colors and checking their alpha channels
 		for ($x = 0, $width = $this->getWidth(); $x < $width; ++$x)
 		{
 			for ($y = 0, $height = $this->getHeight(); $y < $height; ++$y)
 			{
 				$color			= ImageColorAt($this->image, $x, $y);
+
+				if (isset($colors[$color]))
+				{
+					// This color has already been checked, move on to the next pixel
+					continue;
+				}
+
 				$colors[$color]	= TRUE;
 
-				if (count($colors) > 255)
+				if (count($colors) > 256)
 				{
 					// Too many colors to convert to a palette image without losing quality
 					return FALSE;
 				}
 
-				$index			= ImageColorsForIndex($this->image, $color);
+				// Get the alpha channel of the color
+				$alpha	= ($color & 0x7F000000) >> 24;
 
 				// What is the threshold for visibility in an alpha channel? (out of 127)
-				if ($index['alpha'] > 1)
+				if ($alpha > 1 && $alpha < 126)
 				{
 					return FALSE;
 				}
 			}
 		}
 		
-		return TRUE;
+		return $colors;
 	}
 
 	/**
@@ -640,11 +624,19 @@ class SLIRImage
 	 */
 	private function trueColorToPalette($dither, $ncolors)
 	{
+		$palette	= ImageCreate($this->getWidth(), $this->getHeight());
+		ImageCopy($palette, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
+		ImageColorMatch($this->image, $palette);
+		$this->image	= $palette;
+
+		/* For some reason, ImageTrueColorToPalette produces horrible results. http://stackoverflow.com/questions/5187480/imagetruecolortopalette-losing-colors
+
 		$colorsHandle = ImageCreateTrueColor($this->getWidth(), $this->getHeight());
-		ImageCopyMerge($colorsHandle, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight(), 100);
+		ImageCopy($colorsHandle, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
 		ImageTrueColorToPalette($this->image, $dither, $ncolors);
 		ImageColorMatch($colorsHandle, $this->image);
 		ImageDestroy($colorsHandle);
+		*/
 	}
 
 	/**
@@ -653,9 +645,10 @@ class SLIRImage
 	 */
 	final public function optimize()
 	{
-		if ($this->isPalette())
+		$colors	= $this->isPalette();
+		if ($colors !== FALSE)
 		{
-			$this->trueColorToPalette(FALSE, 255);
+			$this->trueColorToPalette(FALSE, count($colors));
 		}
 	}
 
