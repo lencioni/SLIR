@@ -613,7 +613,7 @@ class SLIRImage
 				}
 			}
 		}
-		
+
 		return $colors;
 	}
 
@@ -626,10 +626,9 @@ class SLIRImage
 	{
 		$palette	= ImageCreate($this->getWidth(), $this->getHeight());
 		ImageCopy($palette, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
-		ImageColorMatch($this->image, $palette);
 		$this->image	= $palette;
-
-		/* For some reason, ImageTrueColorToPalette produces horrible results. http://stackoverflow.com/questions/5187480/imagetruecolortopalette-losing-colors
+		
+		/* For some reason, ImageTrueColorToPalette produces horrible results for true color images that have less than 256 colors. http://stackoverflow.com/questions/5187480/imagetruecolortopalette-losing-colors
 
 		$colorsHandle = ImageCreateTrueColor($this->getWidth(), $this->getHeight());
 		ImageCopy($colorsHandle, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
