@@ -407,6 +407,7 @@ class SLIRImage
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	private function setImageInfoFromFile()
 	{
@@ -451,6 +452,7 @@ class SLIRImage
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	final public function createBlankImage()
 	{
@@ -459,6 +461,7 @@ class SLIRImage
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	final public function createImageFromFile()
 	{
@@ -482,6 +485,7 @@ class SLIRImage
 	 *
 	 * @param boolean $isBackgroundFillOn
 	 * @since 2.0
+	 * @return void
 	 */
 	final public function background($isBackgroundFillOn, $image = NULL)
 	{
@@ -509,6 +513,7 @@ class SLIRImage
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	private function transparency($image)
 	{
@@ -518,6 +523,7 @@ class SLIRImage
 	
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	private function fillBackground($image)
 	{
@@ -533,6 +539,7 @@ class SLIRImage
 
 	/**
 	 * @since 2.0
+	 * @return void
 	 */
 	final public function interlace()
 	{
@@ -543,6 +550,7 @@ class SLIRImage
 	}
 	
 	/**
+	 * @since 2.0
 	 * @return integer
 	 */
 	private function getWidth()
@@ -558,6 +566,7 @@ class SLIRImage
 	}
 
 	/**
+	 * @since 2.0
 	 * @return integer
 	 */
 	private function getHeight()
@@ -569,6 +578,23 @@ class SLIRImage
 		else
 		{
 			return $this->cropHeight;
+		}
+	}
+
+	/**
+	 * @return integer
+	 * @since 2.0
+	 */
+	private function getQuality()
+	{
+		if ($this->isJPEG())
+		{
+			return $this->quality;
+		}
+		else if ($this->isPNG() || $this->isGIF())
+		{
+			// We convert GIF to PNG, and PNG needs a compression level of 0 (no compression) through 9
+			return round(10 - ($this->quality / 10));
 		}
 	}
 
@@ -627,6 +653,7 @@ class SLIRImage
 		$palette	= ImageCreate($this->getWidth(), $this->getHeight());
 		ImageCopy($palette, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
 		$this->image	= $palette;
+		$this->mime		= 'image/png';
 		
 		/* For some reason, ImageTrueColorToPalette produces horrible results for true color images that have less than 256 colors. http://stackoverflow.com/questions/5187480/imagetruecolortopalette-losing-colors
 
@@ -802,7 +829,7 @@ class SLIRImage
 			'cropWidth'		=> $this->cropWidth,
 			'cropHeight'	=> $this->cropHeight,
 			'iptc'			=> $this->iptc,
-			'quality'		=> $this->quality,
+			'quality'		=> $this->getQuality(),
 			'progressive'	=> $this->progressive,
 			'background'	=> $this->background,
 			'cropper'		=> $this->getCropperClassName(),
@@ -834,15 +861,15 @@ class SLIRImage
 	{
 		if ($this->isJPEG())
 		{
-			return imagejpeg($this->image, $filename, $this->quality);
+			return ImageJpeg($this->image, $filename, $this->getQuality());
 		}		
 		else if ($this->isPNG())
 		{
-			return imagepng($this->image, $filename, $this->quality);
+			return ImagePng($this->image, $filename, $this->getQuality());
 		}			
 		else if ($this->isGIF())
 		{
-			return imagegif($this->image, $filename, $this->quality);
+			return ImageGif($this->image, $filename, $this->getQuality());
 		}			
 		else
 		{
