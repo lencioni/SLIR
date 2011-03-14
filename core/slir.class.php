@@ -208,7 +208,7 @@ class SLIR
 
 		require 'slirrequest.class.php';
 		$this->request	= new SLIRRequest();
-		
+
 		// Check the cache based on the request URI
 		if ($this->shouldUseRequestCache() && $this->isRequestCached())
 		{
@@ -535,6 +535,9 @@ class SLIR
 	private function render()
 	{
 		$this->allocateMemory();
+
+		// Allows some funky JPEGs to work instead of breaking everything
+		ini_set('gd.jpeg_ignore_warning', '1');
 
 		$this->source->createImageFromFile();
 

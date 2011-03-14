@@ -195,9 +195,9 @@ class SLIRExceptionHandler
 	 */
 	public static function handleError($severity, $message, $filename = NULL, $lineno = NULL, $context = array())
 	{
-		if (error_reporting() == 0)
+		if (!(error_reporting() & $severity))
 		{
-			// Error has been supressed with an @ or error reporting is off
+			// This error code is not included in error_reporting
 			return;
 		}
 

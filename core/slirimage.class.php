@@ -465,17 +465,25 @@ class SLIRImage
 	 */
 	final public function createImageFromFile()
 	{
-		if ($this->isJPEG())
+		try
 		{
-			$this->image	= ImageCreateFromJpeg($this->fullPath());
+			if ($this->isJPEG())
+			{
+				$this->image	= ImageCreateFromJpeg($this->fullPath());
+			}
+			else if ($this->isGIF())
+			{
+				$this->image	= ImageCreateFromGif($this->fullPath());
+			}
+			else if ($this->isPNG())
+			{
+				$this->image	= ImageCreateFromPng($this->fullPath());
+			}
 		}
-		else if ($this->isGIF())
+		catch (Exception $e)
 		{
-			$this->image	= ImageCreateFromGif($this->fullPath());
-		}
-		else if ($this->isPNG())
-		{
-			$this->image	= ImageCreateFromPng($this->fullPath());
+			// Try an alternate catch-all method
+			$this->image	= ImageCreateFromString(file_get_contents($this->fullPath()));
 		}
 	}
 	
