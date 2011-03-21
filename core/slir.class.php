@@ -897,25 +897,25 @@ class SLIR
 		// image's mime type
 		// @todo some of this code should be moved to the SLIRImage class
 		$this->rendered->mime				= $this->source->mime;
-		if ($this->source->isGIF())
+		if ($this->source->isJPEG())
 		{
-			// We need to convert GIFs to PNGs
-			$this->rendered->mime			= 'image/png';
-			$this->rendered->progressive	= FALSE;
+			$this->rendered->progressive	= ($this->request->progressive !== NULL)
+				? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
+			$this->rendered->background		= NULL;
 		}
 		else if ($this->source->isPNG())
 		{
 			$this->rendered->progressive	= FALSE;
 		}
-		else if ($this->source->isJPEG())
+		else if ($this->source->isGIF() || $this->source->isBMP())
 		{
-				$this->rendered->progressive	= ($this->request->progressive !== NULL)
-					? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
-				$this->rendered->background		= NULL;
+			// We convert GIFs and BMPs to PNGs
+			$this->rendered->mime			= 'image/png';
+			$this->rendered->progressive	= FALSE;
 		}
 		else
 		{
-			throw new RuntimeException("Unable to determine type of source image");
+			throw new RuntimeException("Unable to determine type of source image ({$this->source->mime})");
 		} // if
 		
 		if ($this->isBackgroundFillOn())

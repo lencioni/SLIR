@@ -127,6 +127,28 @@ class SLIRImage
 	 * @since 2.0
 	 */
 	public $background;
+
+	/**
+	 * Mime types
+	 * @var array
+	 * @since 2.0
+	 */
+	private	$mimeTypes	= array(
+			'jpeg'	=> array(
+				'image/jpeg'	=> 1,
+				),
+			'gif'	=> array(
+				'image/gif'		=> 1,
+				),
+			'png'	=> array(
+				'image/png'		=> 1,
+				'image/x-png'	=> 1,
+				),
+			'bmp'	=> array(
+				'image/bmp'			=> 1,
+				'image/x-ms-bmp'	=> 1,
+				)
+		);
 	
 	/**
 	 * @since 2.0
@@ -295,7 +317,7 @@ class SLIRImage
 	
 	/**
 	 * @since 2.0
-	 * @param string $type Can be 'JPEG', 'GIF', or 'PNG'
+	 * @param string $type Can be 'JPEG', 'GIF', 'PNG', or 'BMP'
 	 * @return boolean
 	 */
 	final public function isOfType($type = 'JPEG')
@@ -313,7 +335,7 @@ class SLIRImage
 	 */
 	final public function isJPEG()
 	{
-		if ($this->mime == 'image/jpeg')
+		if (isset($this->mimeTypes['jpeg'][$this->mime]))
 		{
 			return TRUE;
 		}
@@ -329,7 +351,19 @@ class SLIRImage
 	 */
 	final public function isGIF()
 	{
-		if ($this->mime == 'image/gif')
+		if (isset($this->mimeTypes['gif'][$this->mime]))
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	final public function isBMP()
+	{
+		if (isset($this->mimeTypes['bmp'][$this->mime]))
 		{
 			return TRUE;
 		}
@@ -345,7 +379,7 @@ class SLIRImage
 	 */
 	final public function isPNG()
 	{
-		if (in_array($this->mime, array('image/png', 'image/x-png')))
+		if (isset($this->mimeTypes['png'][$this->mime]))
 		{
 			return TRUE;
 		}
@@ -458,6 +492,100 @@ class SLIRImage
 	{
 		$this->image	= imagecreatetruecolor($this->width, $this->height);
 	}
+
+	/**
+	 * @since 2.0
+	 * @param string $path path to BMP file
+	 * @return resource
+	 * @link http://us.php.net/manual/en/function.imagecreatefromwbmp.php#86214
+	 */
+	public function ImageCreateFromBmp($path) 
+    { 
+		// Load the image into a string
+		$read	= file_get_contents($path);
+
+		$temp	= unpack('H*', $read); 
+		$hex	= $temp[1]; 
+		$header	= substr($hex, 0, 108); 
+
+		// Process the header 
+		// Structure: http://www.fastgraph.com/help/bmp_header_format.html 
+		if (substr($header, 0, 4) == '424d') 
+		{
+			// Get the width 4 bytes
+			$width	= hexdec($header[38] . $header[39] . $header[36] . $header[37]);
+
+			// Get the height 4 bytes 
+			$height	= hexdec($header[46] . $header[47] . $header[44] . $header[45]);
+		} 
+
+		// Define starting X and Y 
+		$x	= 0; 
+		$y	= 1; 
+
+		// Create newimage 
+		$image	= imagecreatetruecolor($width, $height); 
+
+		// Grab the body from the image 
+		$body	= substr($hex, 108); 
+
+		// Calculate if padding at the end-line is needed 
+		// Divided by two to keep overview. 
+		// 1 byte = 2 HEX-chars 
+		$body_size		= (strlen($body) / 2); 
+		$header_size	= ($width * $height); 
+
+		// Use end-line padding? Only when needed 
+		$usePadding	= ($body_size > ($header_size * 3) + 4); 
+
+		// Using a for-loop with index-calculation instaid of str_split to avoid large memory consumption 
+		// Calculate the next DWORD-position in the body 
+		for ($i = 0; $i < $body_size; $i += 3) 
+		{ 
+		    // Calculate line-ending and padding 
+		    if ($x >= $width) 
+		    { 
+				// If padding needed, ignore image-padding 
+				// Shift i to the ending of the current 32-bit-block 
+				if ($usePadding)
+				{
+					$i += $width % 4; 
+				}
+
+				// Reset horizontal position 
+				$x	= 0; 
+
+				// Raise the height-position (bottom-up) 
+				++$y; 
+
+				// Reached the image-height? Break the for-loop 
+				if ($y > $height)
+				{
+					break; 
+				}
+			} 
+
+			// Calculation of the RGB-pixel (defined as BGR in image-data) 
+			// Define $i_pos as absolute position in the body 
+			$i_pos	= $i * 2;
+			$r		= hexdec($body[$i_pos + 4] . $body[$i_pos + 5]); 
+			$g		= hexdec($body[$i_pos + 2] . $body[$i_pos + 3]); 
+			$b		= hexdec($body[$i_pos] . $body[$i_pos + 1]); 
+
+			// Calculate and draw the pixel 
+			$color	= imagecolorallocate($image, $r, $g, $b);
+			imagesetpixel($image, $x, $height - $y, $color); 
+
+			// Raise the horizontal position 
+			++$x;
+		} 
+
+		// Unset the body / free the memory 
+		unset($body);
+
+		// Return image-object 
+		return $image; 
+    } 
 	
 	/**
 	 * @since 2.0
@@ -478,6 +606,10 @@ class SLIRImage
 			else if ($this->isPNG())
 			{
 				$this->image	= ImageCreateFromPng($this->fullPath());
+			}
+			else if ($this->isBMP())
+			{
+				$this->image	= $this->ImageCreateFromBmp($this->fullPath());
 			}
 		}
 		catch (Exception $e)
