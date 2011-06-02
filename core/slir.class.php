@@ -267,7 +267,7 @@ class SLIR
 	 */
 	private function disableStrictErrorReporting()
 	{
-		return error_reporting(error_reporting() & ~E_STRICT);
+		return error_reporting(error_reporting() & ~E_STRICT & ~E_NOTICE);
 	}
 
 	/**
