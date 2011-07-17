@@ -22,16 +22,13 @@
  * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
- * @date $Date$
+ * date $Date$
  * @version $Revision$
  */
  
  /* $Id$ */
 
 // define('SLIR_CONFIG_FILENAME', 'slir-config-alternate.php');
-function __autoload($className)
-{
-	require_once strtolower($className) . '.class.php';
-}
 
+require_once 'core/slir.class.php';
 new SLIR();

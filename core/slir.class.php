@@ -140,6 +140,14 @@ class SLIR
 	 */
 	 const CROP_CLASS_FACE		= 'face';
 
+	 /**
+	  * Setting for the garbage collector to sleep for a second after looking at this many files
+	  * 
+	  * @since 2.0
+	  * @var integer
+	  */
+	 const GARBAGE_COLLECTOR_BREATHE_EVERY	= 5000;
+
 	/**
 	 * Request object
 	 *
@@ -191,22 +199,23 @@ class SLIR
 		$this->escapeOutputBuffering();
 		
 		$this->getConfig();
+
+		// Set up our exception and error handler after the request cache to help keep
+		// everything humming along nicely
+		require 'slirexceptionhandler.class.php';
 		
 		$this->initializeGarbageCollection();
 
+		require 'slirrequest.class.php';
 		$this->request	= new SLIRRequest();
-		
+
 		// Check the cache based on the request URI
-		if (SLIRConfig::$useRequestCache === TRUE && $this->isRequestCached())
+		if ($this->shouldUseRequestCache() && $this->isRequestCached())
 		{
 			$this->serveRequestCachedImage();
 		}
-			
-		// Set up our error handler after the request cache to help keep
-		// everything humming along nicely
-		require 'slirexception.class.php';
-		set_error_handler(array('SLIRException', 'error'));
 		
+		require 'slirimage.class.php';
 		// Set all parameters for resizing
 		$this->setParameters();
 
@@ -228,6 +237,27 @@ class SLIR
 			$this->serveRenderedImage();
 		} // if
 	}
+
+	/**
+	 * Checks to see if the request cache should be used
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 */
+	private function shouldUseRequestCache()
+	{
+		// The request cache can't be used if the request is falling back to the
+		// default image path because it will prevent the actual image from being
+		// shown if it eventually ends up on the server
+		if (SLIRConfig::$enableRequestCache === TRUE && !$this->request->isUsingDefaultImagePath())
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
 	
 	/**
 	 * Disables E_STRICT error reporting
@@ -237,7 +267,7 @@ class SLIR
 	 */
 	private function disableStrictErrorReporting()
 	{
-		return error_reporting(error_reporting() & ~E_STRICT);
+		return error_reporting(error_reporting() & ~E_STRICT & ~E_NOTICE);
 	}
 
 	/**
@@ -316,11 +346,62 @@ class SLIR
 
 		foreach ($dir as $file)
 		{
-			if (!$file->isDot() && ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)
+			// Every x files, stop for a second to help let other things on the server happen
+			if ($file->key() % self::GARBAGE_COLLECTOR_BREATHE_EVERY == 0)
+			{
+				sleep(1);
+			}
+
+			// If the file is a link and not readable, the file it was pointing at has probably
+			// been deleted, so we need to delete the link.
+			// Otherwise, if the file is older than the max lifetime specified in the config, it is
+			// stale and should be deleted.
+			if (!$file->isDot() && (($file->isLink() && !$file->isReadable()) || ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime))
 			{
 				unlink($file->getPathName());
 			}
 		}
+	}
+
+
+	/**
+	 * Checks to see if the garbage collector is currently running.
+	 * 
+	 * @since 2.0
+	 * @return boolean
+	 */
+	private function garbageCollectorIsRunning()
+	{
+		if (file_exists(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') > time() - 86400) // If the file is more than 1 day old, something probably went wrong and we should run again anyway
+		{
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+
+	/**
+	 * Writes a file to the cache to use as a signal that the garbage collector is currently running.
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	private function startGarbageCollection()
+	{
+		touch(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
+	}
+
+	/**
+	 * Removes the file that signifies that the garbage collector is currently running.
+	 * 
+	 * @since 2.0
+	 * @return void
+	 */
+	private function finishGarbageCollection()
+	{
+		unlink(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
 	}
 
 	/**
@@ -333,8 +414,23 @@ class SLIR
 	 */
 	public function collectGarbage()
 	{
-		$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
-		$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
+		// This code needs to be in a try/catch block to prevent the epically unhelpful
+		// "PHP Fatal error:  Exception thrown without a stack frame in Unknown on line
+		// 0" from showing up in the error log.
+		try {
+			if ($this->garbageCollectorIsRunning())
+			{
+				return;
+			}
+
+			$this->startGarbageCollection();
+			$this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
+			$this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
+			$this->finishGarbageCollection();
+		} catch (Exception $e) {
+			error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
+			error_log('Exception trace stack: ' . print_r($e->getTrace(), TRUE));    
+		}
 	}
 
 	/**
@@ -359,15 +455,12 @@ class SLIR
 			}
 			else
 			{
-				throw new SLIRException('Could not load configuration file. '
-					. 'Please copy "slirconfig-sample.class.php" to '
-					. '"' . self::configFilename() . '".');
+				throw new RuntimeException('Could not load configuration file. Please copy "slirconfig-sample.class.php" to "' . self::configFilename() . '".');
 			}
 		}
 		else
 		{
-			throw new SLIRException('Could not find "' . self::configFilename() . '" or '
-				. '"slirconfig-sample.class.php"');
+			throw new RuntimeException('Could not find "' . self::configFilename() . '" or "slirconfig-sample.class.php"');
 		} // if
 	}
 	
@@ -424,8 +517,8 @@ class SLIR
 	 */
 	private function allocateMemory()
 	{
-		// Multiply width * height * 5 bytes
-		$estimatedMemory = $this->source->width * $this->source->height * 5;
+		// Multiply width * height * 8 bytes
+		$estimatedMemory = $this->source->width * $this->source->height * 8;
 
 		// Convert memory to Megabytes and add 15 in order to allow some slack
 		$estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 15;
@@ -443,6 +536,9 @@ class SLIR
 	{
 		$this->allocateMemory();
 
+		// Allows some funky JPEGs to work instead of breaking everything
+		ini_set('gd.jpeg_ignore_warning', '1');
+
 		$this->source->createImageFromFile();
 
 		$this->rendered->createBlankImage();
@@ -455,6 +551,7 @@ class SLIR
 		$this->rendered->crop($this->isBackgroundFillOn());
 		$this->rendered->sharpen($this->calculateSharpnessFactor());
 		$this->rendered->interlace();
+		$this->rendered->optimize();
 	}
 	
 	/**
@@ -706,6 +803,7 @@ class SLIR
 		$this->rendered	= new SLIRImage();
 		
 		// Set default properties of the rendered image
+		$this->rendered->path	= $this->source->path;
 		$this->rendered->width	= $this->source->width;
 		$this->rendered->height	= $this->source->height;
 		
@@ -755,26 +853,28 @@ class SLIR
 
 		if ($this->shouldResizeBasedOnWidth())
 		{
-			$this->rendered->height	= round($this->resizeWidthFactor() * $this->source->height);
-			$this->rendered->width	= round($this->resizeWidthFactor() * $this->source->width);
+			$resizeFactor	= $this->resizeWidthFactor();
+			$this->rendered->height	= round($resizeFactor * $this->source->height);
+			$this->rendered->width	= round($resizeFactor * $this->source->width);
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
-				$this->rendered->cropHeight	= round($this->resizeWidthFactor() * $this->source->cropHeight);
-				$this->rendered->cropWidth	= round($this->resizeWidthFactor() * $this->source->cropWidth);
+				$this->rendered->cropHeight	= round($resizeFactor * $this->source->cropHeight);
+				$this->rendered->cropWidth	= round($resizeFactor * $this->source->cropWidth);
 			} // if
 		}
 		else if ($this->shouldResizeBasedOnHeight())
 		{
-			$this->rendered->width	= round($this->resizeHeightFactor() * $this->source->width);
-			$this->rendered->height	= round($this->resizeHeightFactor() * $this->source->height);
+			$resizeFactor	= $this->resizeHeightFactor();
+			$this->rendered->width	= round($resizeFactor * $this->source->width);
+			$this->rendered->height	= round($resizeFactor * $this->source->height);
 			
 			// Determine dimensions after cropping
 			if ($this->isCroppingNeeded())
 			{
-				$this->rendered->cropHeight	= round($this->resizeHeightFactor() * $this->source->cropHeight);
-				$this->rendered->cropWidth	= round($this->resizeHeightFactor() * $this->source->cropWidth);
+				$this->rendered->cropHeight	= round($resizeFactor * $this->source->cropHeight);
+				$this->rendered->cropWidth	= round($resizeFactor * $this->source->cropWidth);
 			} // if
 		}
 		else if ($this->isCroppingNeeded()) // No resizing is needed but we still need to crop
@@ -797,32 +897,25 @@ class SLIR
 		// image's mime type
 		// @todo some of this code should be moved to the SLIRImage class
 		$this->rendered->mime				= $this->source->mime;
-		if ($this->source->isGIF())
+		if ($this->source->isJPEG())
 		{
-			// We need to convert GIFs to PNGs
-			$this->rendered->mime			= 'image/png';
-			$this->rendered->progressive	= FALSE;
-
-			// We are converting the GIF to a PNG, and PNG needs a
-			// compression level of 0 (no compression) through 9
-			$this->rendered->quality		= round(10 - ($this->rendered->quality / 10));
+			$this->rendered->progressive	= ($this->request->progressive !== NULL)
+				? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
+			$this->rendered->background		= NULL;
 		}
 		else if ($this->source->isPNG())
 		{
 			$this->rendered->progressive	= FALSE;
-
-			// PNG needs a compression level of 0 (no compression) through 9
-			$this->rendered->quality		= round(10 - ($this->rendered->quality / 10));
 		}
-		else if ($this->source->isJPEG())
+		else if ($this->source->isGIF() || $this->source->isBMP())
 		{
-				$this->rendered->progressive	= ($this->request->progressive !== NULL)
-					? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
-				$this->rendered->background		= NULL;
+			// We convert GIFs and BMPs to PNGs
+			$this->rendered->mime			= 'image/png';
+			$this->rendered->progressive	= FALSE;
 		}
 		else
 		{
-			throw new SLIRException("Unable to determine type of source image");
+			throw new RuntimeException("Unable to determine type of source image ({$this->source->mime})");
 		} // if
 		
 		if ($this->isBackgroundFillOn())
@@ -995,7 +1088,7 @@ class SLIR
 	 */
 	private function getRenderedCacheDir()
 	{
-		return SLIRConfig::$cacheDir . '/rendered';
+		return SLIRConfig::$pathToCacheDir . '/rendered';
 	}
 
 	/**
@@ -1047,7 +1140,7 @@ class SLIR
 	 */
 	private function getRequestCacheDir()
 	{
-		return SLIRConfig::$cacheDir . '/request';
+		return SLIRConfig::$pathToCacheDir . '/request';
 	}
 
 	/**
@@ -1070,7 +1163,7 @@ class SLIR
 	{
 		$this->cacheRendered();
 		
-		if (SLIRConfig::$useRequestCache === TRUE)
+		if ($this->shouldUseRequestCache())
 		{
 			return $this->cacheRequest($this->rendered->data, TRUE);
 		}
@@ -1201,9 +1294,9 @@ class SLIR
 			return TRUE;
 		}
 
-		$this->initializeDirectory(SLIRConfig::$cacheDir);
-		$this->initializeDirectory(SLIRConfig::$cacheDir . '/rendered', FALSE);
-		$this->initializeDirectory(SLIRConfig::$cacheDir . '/request', FALSE);
+		$this->initializeDirectory(SLIRConfig::$pathToCacheDir);
+		$this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/rendered', FALSE);
+		$this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/request', FALSE);
 
 		$this->isCacheInitialized	= TRUE;
 		return TRUE;
@@ -1222,7 +1315,7 @@ class SLIR
 			if (!@mkdir($path, 0755, TRUE))
 			{
 				header('HTTP/1.1 500 Internal Server Error');
-				throw new SLIRException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
+				throw new RuntimeException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
 			}
 		}
 
@@ -1233,12 +1326,12 @@ class SLIR
 		if (!is_readable($path))
 		{
 			header('HTTP/1.1 500 Internal Server Error');
-			throw new SLIRException("Directory ($path) is not readable");
+			throw new RuntimeException("Directory ($path) is not readable");
 		}
 		else if (!is_writable($path))
 		{
 			header('HTTP/1.1 500 Internal Server Error');
-			throw new SLIRException("Directory ($path) is not writable");
+			throw new RuntimeException("Directory ($path) is not writable");
 		}
 
 		return TRUE;
@@ -1298,7 +1391,7 @@ class SLIR
 	private function serveCachedImage($cacheFilePath, $cacheType)
 	{
 		// Serve the image
-		$data = $this->serveFile(
+		$this->serveFile(
 			$cacheFilePath,
 			NULL,
 			NULL,
@@ -1311,7 +1404,7 @@ class SLIR
 		// request cache to the rendered file
 		if ($cacheType != 'request')
 		{
-			$this->cacheRequest($data, FALSE);
+			$this->cacheRequest(file_get_contents($cacheFilePath), FALSE);
 		}
 		
 		exit();
@@ -1366,26 +1459,26 @@ class SLIR
 	 * @param integer $lastModified Timestamp of when the file was last modified
 	 * @param string $mimeType
 	 * @param string $SLIRheader
-	 * @return string Image data
+	 * @return void
 	 */
 	private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $SLIRHeader)
 	{
-		if ($imagePath != NULL)
+		if ($imagePath !== NULL)
 		{
-			if ($lastModified == NULL)
+			if ($lastModified === NULL)
 			{
 				$lastModified	= filemtime($imagePath);
 			}
-			if ($length == NULL)
+			if ($length === NULL)
 			{
 				$length			= filesize($imagePath);
 			}
-			if ($mimeType == NULL)
+			if ($mimeType === NULL)
 			{
 				$mimeType		= $this->mimeType($imagePath);
 			}
 		}
-		else if ($length == NULL)
+		else if ($length === NULL)
 		{
 			$length		= strlen($data);
 		} // if
@@ -1398,25 +1491,14 @@ class SLIR
 			$SLIRHeader
 		);
 		
-		// Read the image data into memory if we need to
-		if ($data == NULL)
+		if ($data === NULL)
 		{
-			$data	= file_get_contents($imagePath);
+			readfile($imagePath);
 		}
-
-		// Send the image to the browser in bite-sized chunks
-		$chunkSize	= 1024 * 8;
-		$fp			= fopen('php://memory', 'r+b');
-		fwrite($fp, $data);
-		rewind($fp);
-		while (!feof($fp))
+		else
 		{
-			echo fread($fp, $chunkSize);
-			flush();
-		} // while
-		fclose($fp);
-		
-		return $data;
+			echo $data;
+		}
 	}
 
 	/**
@@ -1437,16 +1519,16 @@ class SLIR
 
 		// Lets us easily know whether the image was rendered from scratch,
 		// from the cache, or served directly from the source image
-		header("Content-SLIR: $SLIRHeader");
+		header("X-Content-SLIR: $SLIRHeader");
 
 		// Keep in browser cache how long?
-		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL) . ' GMT');
+		header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL)));
 
 		// Public in the Cache-Control lets proxies know that it is okay to
 		// cache this content. If this is being served over HTTPS, there may be
 		// sensitive content and therefore should probably not be cached by
 		// proxy servers.
-		header('Cache-Control: max-age=' . SLIRConfig::$browserCacheTTL . ', public');
+		header(sprintf('Cache-Control: max-age=%d, public', SLIRConfig::$browserCacheTTL));
 
 		$this->doConditionalGet($lastModified);
 

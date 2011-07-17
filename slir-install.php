@@ -1,6 +1,6 @@
 <?php
 /**
- * Configuration file for SLIR (Smart Lencioni Image Resizer)
+ * Installer file for SLIR (Smart Lencioni Image Resizer)
  * 
  * This file is part of SLIR (Smart Lencioni Image Resizer).
  * 
@@ -17,34 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * @copyright Copyright © 2010, Joe Lencioni
- * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * @copyright Copyright Â© 2010, Joe Lencioni
+ * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public
+ * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
- */
- 
-/* $Id$ */
-
-require_once 'core/slirconfigdefaults.class.php';
-
-/**
- * SLIR Config Class
- * 
- * @since 2.0
- * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
+ * date $Date$
  * @version $Revision$
- * @package SLIR
  */
-class SLIRConfig extends SLIRConfigDefaults
-{
-	// override configuration values here
 
-	public static function init()
-	{
-		// This must be the last line of this function
-		parent::init();
-	}
-}
-
-SLIRConfig::init();
