@@ -47,7 +47,7 @@ class SLIRInstaller
 		$vars	= array(
 			'pageTitle'		=> self::DEFAULT_PAGE_TITLE,
 			'contentTitle'	=> self::DEFAULT_CONTENT_TITLE,
-			'body'			=> '<p>Installing SLIR&hellip;</p><p>Test</p>',
+			'body'			=> '<p>Installing SLIR&hellip;</p>',
 		);
 		
 		echo $this->renderTemplate(self::PAGE_TEMPLATE, $vars);
