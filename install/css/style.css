@@ -240,8 +240,16 @@ footer:hover {
 	opacity: 1;
 }
 
-
-
+.responses p {
+	text-indent: -3em;
+	margin-left: 3em;
+}
+.Positive i {
+	color: green;
+}
+.Negative i {
+	color: red;
+}
 
 
 
