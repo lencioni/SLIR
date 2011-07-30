@@ -147,7 +147,7 @@ class SLIR
 	 * @var string
 	 * @since 2.0
 	 */
-	const CONFIG_FILEPATH			= '../slirconfig.class.php';
+	const CONFIG_FILENAME			= 'slirconfig.class.php';
 
 	/**
 	 * Request object
@@ -470,7 +470,7 @@ class SLIR
 		}
 		else
 		{
-			return self::CONFIG_FILEPATH;
+			return self::CONFIG_FILENAME;
 		}
 	}
 	

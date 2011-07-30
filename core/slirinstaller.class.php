@@ -86,7 +86,7 @@ class SLIRInstaller
 		{
 			define('__DIR__', dirname(__FILE__));
 		}
-		
+
 		$this->slir			= new SLIR();
 
 		$vars	= array(
@@ -176,7 +176,7 @@ class SLIRInstaller
 	private function initializeConfig()
 	{
 		$task			= 'Config';
-		$config			= $this->slir->configFilename();
+		$config			= '../' . $this->slir->configFilename();
 
 		if (file_exists($config))
 		{
