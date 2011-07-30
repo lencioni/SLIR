@@ -207,7 +207,7 @@ class SLIRConfigDefaults
 
 		if (self::$documentRoot === NULL)
 		{
-			self::$documentRoot	= rtrim($_SERVER['DOCUMENT_ROOT'], '/');
+			self::$documentRoot	= rtrim(realpath($_SERVER['DOCUMENT_ROOT']), '/');
 		}
 
 		if (self::$pathToSLIR === NULL)
