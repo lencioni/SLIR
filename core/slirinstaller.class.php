@@ -216,6 +216,52 @@ class SLIRInstaller
 	}
 
 	/**
+	 * @return string
+	 * @since 2.0
+	 */
+	private function getConfigPath()
+	{
+		return $this->slir->getConfigPath();
+	}
+
+	/**
+	 * @return string
+	 * @since 2.0
+	 */
+	private function getSampleConfigPath()
+	{
+		return $this->slir->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH);
+	}
+
+	/**
+	 * @return string
+	 * @since 2.0
+	 */
+	private function getDefaultConfigPath()
+	{
+		return $this->slir->resolveRelativePath(self::DEFAULT_CONFIG_FILEPATH);
+	}
+
+	/**
+	 * @since 2.0
+	 * @param integer $number
+	 * @param string $singularPattern
+	 * @param string $pluralPattern
+	 * @return string
+	 */
+	private function renderQuantity($number, $singularPattern = '%d thing', $pluralPattern = '%d things')
+	{
+		if ($number === 1)
+		{
+			return sprintf($singularPattern, $number);
+		}
+		else
+		{
+			return sprintf($pluralPattern, $number);
+		}
+	}
+
+	/**
 	 * Initializes SLIR's configuration file if it needs to be done.
 	 * 
 	 * @return SLIRInstallerResponse
@@ -224,37 +270,37 @@ class SLIRInstaller
 	private function initializeConfigFile()
 	{
 		$task	= 'Config File';
-		$config	= $this->slir->getConfigPath();
+		$config	= $this->getConfigPath();
 
 		if (file_exists($config))
 		{
-			return new PositiveSLIRInstallerResponse($task, vsprintf('Config file exists. Edit <code>%s</code> to override the default settings in <code>%s</code>.', array(
-				$this->resolveRelativePath($config),
-				$this->resolveRelativePath(self::DEFAULT_CONFIG_FILEPATH),
+			return new PositiveSLIRInstallerResponse($task, vsprintf('Config file exists. Edit <code>%s</code> if you want to override any of the default settings found in <code>%s</code>.', array(
+				$config,
+				$this->getDefaultConfigPath(),
 			)));
 		}
 		
-		if (file_exists(self::SAMPLE_CONFIG_FILEPATH))
+		if (file_exists($this->getSampleConfigPath()))
 		{
-			if (copy(self::SAMPLE_CONFIG_FILEPATH, $config))
+			if (copy($this->getSampleConfigPath(), $config))
 			{
-				return new PositiveSLIRInstallerResponse($task, vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file to override the default settings in <code>%s</code>.', array(
-					$this->resolveRelativePath($config),
-					$this->resolveRelativePath(self::DEFAULT_CONFIG_FILEPATH),
+				return new PositiveSLIRInstallerResponse($task, vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file if you want to override any of the default settings found in <code>%s</code>.', array(
+					$config,
+					$this->getDefaultConfigPath(),
 				)));
 			}
 			else
 			{
-				return new FatalSLIRInstallerResponse($task, vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code>.', array(
-					$this->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH),
-					$this->resolveRelativePath($config),
+				return new FatalSLIRInstallerResponse($task, vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code> and then edit it if you want to override any of the default settings.', array(
+					$this->getSampleConfigPath(),
+					$config,
 				)));
 			}
 		}
 
-		return new FatalSLIRInstallerResponse($task, vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR.', array(
-			$this->resolveRelativePath($config),
-			$this->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH),
+		return new FatalSLIRInstallerResponse($task, vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR and running the installer again.', array(
+			$config,
+			$this->getSampleConfigPath(),
 		)));
 	}
 }
