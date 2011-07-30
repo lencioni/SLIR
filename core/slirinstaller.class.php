@@ -31,6 +31,35 @@
  * @version $Revision$
  * @package SLIR
  */
-class SLIRInstaller {
-	
+class SLIRInstaller
+{
+	const PAGE_TEMPLATE	= 'page.html';
+
+	const DEFAULT_PAGE_TITLE	= 'Install SLIR (Smart Lencioni Image Resizer)';
+	const DEFAULT_CONTENT_TITLE	= '<h1>Install <abbr title="Smart Lencioni Image Resizer">SLIR</abbr></h1>';
+
+	/**
+	 * @since 2.0
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$vars	= array(
+			'pageTitle'		=> self::DEFAULT_PAGE_TITLE,
+			'contentTitle'	=> self::DEFAULT_CONTENT_TITLE,
+			'body'			=> '<p>Installing SLIR&hellip;</p><p>Test</p>',
+		);
+		
+		echo $this->renderTemplate(self::PAGE_TEMPLATE, $vars);
+	}
+
+	/**
+	 * @param string $filename
+	 * @param array $variables
+	 * @return string
+	 */
+	private function renderTemplate($filename, array $variables)
+	{
+		return vsprintf(file_get_contents("templates/$filename"), $variables);
+	}
 }
