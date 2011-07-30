@@ -33,7 +33,7 @@
 class SLIRRequest
 {
 
-	const CROP_RATIO_DELIMITERS	= ':.';
+	const CROP_RATIO_DELIMITERS	= ':.x';
 	
 	/**
 	 * Path to image
