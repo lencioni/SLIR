@@ -82,6 +82,11 @@ class SLIRInstaller
 	 */
 	public function __construct()
 	{
+		if (!defined('__DIR__'))
+		{
+			define('__DIR__', dirname(__FILE__));
+		}
+		
 		$this->slir			= new SLIR();
 
 		$vars	= array(
