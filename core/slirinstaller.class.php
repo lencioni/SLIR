@@ -60,11 +60,13 @@ class SLIRInstaller
 	const DEFAULT_CONFIG_FILEPATH	= 'slirconfigdefaults.class.php';
 
 	/**
+	 * @since 2.0
 	 * @var SLIR
 	 */
 	private $slir;
 
 	/**
+	 * @since 2.0
 	 * @var array
 	 */
 	private $templateCache;
