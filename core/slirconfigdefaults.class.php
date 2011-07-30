@@ -200,6 +200,11 @@ class SLIRConfigDefaults
 	 */
 	public static function init()
 	{
+		if (!defined('__DIR__'))
+		{
+			define('__DIR__', dirname(__FILE__));
+		}
+
 		if (self::$documentRoot === NULL)
 		{
 			self::$documentRoot	= preg_replace('/\/$/', '', $_SERVER['DOCUMENT_ROOT']);
