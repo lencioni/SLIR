@@ -96,10 +96,12 @@ class SLIRInstaller
 			'initializeConfigFile',
 		);
 
+		echo '<div class="responses">';
 		foreach($tasks as $task)
 		{
 			echo $this->renderResponse($this->$task());
 		}
+		echo '</div>';
 
 		echo $this->renderTemplate('footer.html', array());
 	}
