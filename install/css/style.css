@@ -171,6 +171,15 @@ a:hover { color: #036; }
 body {
 	background-color: #def;
 }
+p {
+	margin: 1em 0;
+}
+p:first-child {
+	margin-top: 0;
+}
+p:last-child {
+	margin-bottom: 0;
+}
 #container, footer {
 	max-width: 65em;
 }
