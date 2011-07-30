@@ -99,11 +99,63 @@ class SLIRInstaller
 		echo '<div class="responses">';
 		foreach($tasks as $task)
 		{
-			echo $this->renderResponse($this->$task());
+			$response	= $this->$task();
+			echo $this->renderResponse($response);
+
+			if ($this->responseIsFatal($response))
+			{
+				echo $this->renderFatalResponseReceivedMessage();
+				break;
+			}
 		}
 		echo '</div>';
 
 		echo $this->renderTemplate('footer.html', array());
+	}
+
+	/**
+	 * @since 2.0
+	 * @return string
+	 */
+	private function renderFatalResponseReceivedMessage()
+	{
+		return '<p>Installation has not successfully completed. Please address the issues above and re-run installation.</p>';
+	}
+
+	/**
+	 * Determines if the response is positive
+	 * 
+	 * @since 2.0
+	 * @param SLIRInstallerResponse $response
+	 * @return boolean
+	 */
+	private function responseIsPositive(SLIRInstallerResponse $response)
+	{
+		return is_a($response, 'PositiveSLIRInstallerResponse');
+	}
+
+	/**
+	 * Determines if the response is negative
+	 * 
+	 * @since 2.0
+	 * @param SLIRInstallerResponse $response
+	 * @return boolean
+	 */
+	private function responseIsNegative(SLIRInstallerResponse $response)
+	{
+		return is_a($response, 'NegativeSLIRInstallerResponse');
+	}
+
+	/**
+	 * Determines if the response is fatal
+	 * 
+	 * @since 2.0
+	 * @param SLIRInstallerResponse $response
+	 * @return boolean
+	 */
+	private function responseIsFatal(SLIRInstallerResponse $response)
+	{
+		return is_a($response, 'FatalSLIRInstallerResponse');
 	}
 
 	/**
@@ -210,14 +262,14 @@ class SLIRInstaller
 			}
 			else
 			{
-				return new NegativeSLIRInstallerResponse($task,	vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code>.', array(
+				return new FatalSLIRInstallerResponse($task, vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code>.', array(
 					$this->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH),
 					$this->resolveRelativePath($config),
 				)));
 			}
 		}
 
-		return new NegativeSLIRInstallerResponse($task, vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR.', array(
+		return new FatalSLIRInstallerResponse($task, vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR.', array(
 			$this->resolveRelativePath($config),
 			$this->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH),
 		)));
@@ -341,4 +393,17 @@ class NegativeSLIRInstallerResponse extends SLIRInstallerResponse
 	 * @since 2.0
 	 */
 	protected $message	= 'Failed!';
+}
+
+/**
+ * @package SLIR
+ * @subpackage Installer
+ */
+class FatalSLIRInstallerResponse extends NegativeSLIRInstallerResponse
+{
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
+	protected $type		= 'Fatal';
 }
