@@ -351,7 +351,7 @@ Example usage:
 				// The name of each parameter should be the first character of the parameter string and the value of each parameter should be the remaining characters of the parameter string
 				$params[$rawParam[0]]	= substr($rawParam, 1);
 			}
-			
+
 			$rawParam	= strtok('-');
 		}
 
@@ -371,10 +371,7 @@ Example usage:
 		{
 			return TRUE;
 		}
-		else if (isset($_SERVER['QUERY_STRING'])
-			&& trim($_SERVER['QUERY_STRING']) != ''
-			&& count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET)))
-			)
+		else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET))))
 		{
 			return TRUE;
 		}
