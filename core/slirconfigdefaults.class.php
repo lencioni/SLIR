@@ -112,9 +112,11 @@ class SLIRConfigDefaults
 	public static $enableErrorImages	= TRUE;
 
 	/**
-	 * Absolute path to the web root (location of files when visiting http://domainname.com/) (no trailing slash).
+	 * Absolute path to the web root (location of files when visiting http://example.com/) (no trailing slash).
 	 * 
-	 * For example, if the files for your website are located in /var/www/ on your server, this should be '/var/www'
+	 * For example, if the files for your website are located in /var/www/ on your server, this should be '/var/www'.
+	 * 
+	 * By default, this is dyanmically determined, so it is set in the init() function and hopefully will not need to be overwritten. However, if SLIR isn't working correctly, it might not be determining your document root correctly and you might need to set this manually in your configuration file.
 	 * 
 	 * @since 2.0
 	 * @var string
@@ -124,15 +126,19 @@ class SLIRConfigDefaults
 	/**
 	 * Absolute path to SLIR (no trailing slash) from the root directory on your server's filesystem.
 	 * 
+	 * For example, if the files on your website are in /var/www/ and slir is accessible at http://example.com/slir/, then the value of this setting should be '/var/www/slir'.
+	 * 
+	 * By default, this is dyanmically determined, so it is set in the init() function and hopefully will not need to be overwritten. However, if SLIR isn't working correctly, it might not be determining the path to SLIR correctly and you might need to set this manually in your configuration file.
+	 * 
 	 * @since 2.0
 	 * @var string
 	 */
 	public static $pathToSLIR	= NULL;
 
 	/**
-	 * Absolute path to cache directory (no trailing slash). This directory must be world-readable, writable by the web server. Ideally, this directory should be located outside of the web tree.
+	 * Absolute path to cache directory (no trailing slash). This directory must be world-readable, writable by the web server. Ideally, this directory should be located outside of the web tree for security reasons.
 	 * 
-	 * If not specified, defaults to $pathToSlir . '/cache' inside of the directory SLIR is located.
+	 * By default, this is dynamically determined in the init() function and it defaults to /path/to/slir/cache (or $pathToSlir . '/cache') which is the cache directory inside the directory SLIR is located.
 	 * 
 	 * @var string
 	 */
