@@ -286,7 +286,7 @@ class SLIR
 	 * @since 2.0
 	 * @return void
 	 */
-	private function escapeOutputBuffering()
+	final public function escapeOutputBuffering()
 	{
 		while ($level = ob_get_level())
 		{

@@ -75,6 +75,9 @@ class SLIRInstaller
 	 */
 	public function __construct()
 	{
+		$this->slir	= new SLIR();
+		$this->slir->escapeOutputBuffering();
+
 		echo $this->renderTemplate('header.html', array(
 			self::DEFAULT_PAGE_TITLE,
 			self::DEFAULT_CONTENT_TITLE,
@@ -84,8 +87,6 @@ class SLIRInstaller
 		{
 			define('__DIR__', dirname(__FILE__));
 		}
-
-		$this->slir			= new SLIR();
 
 		echo '<p>Installing <abbr title="Smart Lencioni Image Resizer">SLIR</abbr>&hellip;</p>';
 
