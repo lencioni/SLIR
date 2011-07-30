@@ -185,6 +185,15 @@ class SLIR
 	 */
 	final public function __construct()
 	{
+	}
+
+	/**
+	 * Processes the SLIR request from the parameters passed through the URL
+	 * 
+	 * @since 2.0
+	 */
+	public function processRequestFromURL()
+	{
 		// This helps prevent unnecessary warnings (which messes up images)
 		// on servers that are set to display E_STRICT errors.
 		$this->disableStrictErrorReporting();

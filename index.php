@@ -26,4 +26,5 @@
 // define('SLIR_CONFIG_FILENAME', 'slir-config-alternate.php');
 
 require_once 'core/slir.class.php';
-new SLIR();
+$slir	= new SLIR();
+$slir->processRequestFromURL();
