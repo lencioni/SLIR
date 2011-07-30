@@ -451,18 +451,16 @@ class SLIR
 	 * @since 2.0
 	 * @return void
 	 */
-	private function getConfig()
+	final public function getConfig()
 	{
-		require $this->configFilename();
+		require_once $this->getConfigPath();
 	}
 	
 	/**
-	 * Returns the configuration filename. Allows the developer to specify an alternate configuration file.
-	 *
 	 * @since 2.0
 	 * @return string
 	 */
-	final public function configFilename()
+	final public function getConfigPath()
 	{
 		if (defined('SLIR_CONFIG_FILENAME'))
 		{
@@ -470,7 +468,7 @@ class SLIR
 		}
 		else
 		{
-			return self::CONFIG_FILENAME;
+			return realpath(__DIR__ . '/../' . self::CONFIG_FILENAME);
 		}
 	}
 	
