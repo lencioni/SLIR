@@ -35,13 +35,6 @@ require_once 'slir.class.php';
  */
 class SLIRInstaller
 {
-
-	/**
-	 * @var string
-	 * @since 2.0
-	 */
-	const PAGE_TEMPLATE	= 'page.html';
-
 	/**
 	 * @var string
 	 * @since 2.0
@@ -82,6 +75,11 @@ class SLIRInstaller
 	 */
 	public function __construct()
 	{
+		echo $this->renderTemplate('header.html', array(
+			self::DEFAULT_PAGE_TITLE,
+			self::DEFAULT_CONTENT_TITLE,
+		));
+
 		if (!defined('__DIR__'))
 		{
 			define('__DIR__', dirname(__FILE__));
@@ -89,18 +87,11 @@ class SLIRInstaller
 
 		$this->slir			= new SLIR();
 
-		$vars	= array(
-			'pageTitle'		=> self::DEFAULT_PAGE_TITLE,
-			'contentTitle'	=> self::DEFAULT_CONTENT_TITLE,
-			'body'			=> '<p>Installing <abbr title="Smart Lencioni Image Resizer">SLIR</abbr>&hellip;</p>',
-		);
+		echo '<p>Installing <abbr title="Smart Lencioni Image Resizer">SLIR</abbr>&hellip;</p>';
 
-		$responses		= array();
+		echo $this->renderResponse($this->initializeConfig());
 
-		$responses[]	= $this->initializeConfig();
-		$vars['body']	.= sprintf('<div class="responses">%s</div>', $this->renderResponses($responses));
-		
-		echo $this->renderTemplate(self::PAGE_TEMPLATE, $vars);
+		echo $this->renderTemplate('footer.html', array());
 	}
 
 	/**
@@ -148,6 +139,21 @@ class SLIRInstaller
 	}
 
 	/**
+	 * @param SLIRInstallerResponse $response
+	 * @return string
+	 * @since 2.0
+	 */
+	public function renderResponse(SLIRInstallerResponse $response)
+	{
+		return $this->renderTemplate('response.html', array(
+			$response->getType(),
+			$response->getLabel(),
+			$response->getMessage(),
+			$response->getDescription(),
+		));
+	}
+
+	/**
 	 * @param array $responses
 	 * @return string
 	 * @since 2.0
@@ -157,12 +163,7 @@ class SLIRInstaller
 		$r	= '';
 		foreach ($responses as $response)
 		{
-			$r	.= $this->renderTemplate('response.html', array(
-					$response->getType(),
-					$response->getLabel(),
-					$response->getMessage(),
-					$response->getDescription(),
-				));
+			$r	.= $this->renderResponse($response);
 		}
 		return $r;
 	}
