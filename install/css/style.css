@@ -247,10 +247,9 @@ footer:hover {
 .Positive i {
 	color: green;
 }
-.Negative i {
+.Negative i, .Fatal i {
 	color: red;
 }
-
 
 
 
