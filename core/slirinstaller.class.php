@@ -94,6 +94,7 @@ class SLIRInstaller
 
 		$tasks	= array(
 			'initializeConfigFile',
+			'checkConfigEntropy',
 		);
 
 		echo '<div class="responses">';
@@ -302,6 +303,42 @@ class SLIRInstaller
 			$config,
 			$this->getSampleConfigPath(),
 		)));
+	}
+
+	/**
+	 * Checks the config file being used against the default configuration and determines if anything needs to be updated.
+	 * 
+	 * @since 2.0
+	 * @return SLIRInstallerResponse
+	 */
+	private function checkConfigEntropy()
+	{
+		$task	= 'Config Entropy';
+		$this->slir->getConfig();
+
+		$reflectDefaults	= new ReflectionClass('SLIRConfigDefaults');
+		$reflectConfig		= new ReflectionClass('SLIRConfig');
+
+		$defaultProperties	= $reflectDefaults->getStaticProperties();
+		$configProperties	= $reflectConfig->getStaticProperties();
+
+		$additions			= array_diff(array_keys($configProperties), array_keys($defaultProperties));
+
+		if (count($additions) === 0)
+		{
+			return new PositiveSLIRInstallerResponse($task, 'There are no settings in your config file that are not also found in the default config file.');
+		}
+		else
+		{
+			return new NegativeSLIRInstallerResponse($task, vsprintf('There %s in your config file that was not found in the default config file. %s most likely leftover from a previous version and should be addressed. Check the following %s in <code>%s</code> against what is found in <code>%s</code>: <code>$%s</code>', array(
+				$this->renderQuantity(count($additions), 'is %d setting', 'are %d settings'),
+				$this->renderQuantity(count($additions), 'This setting was', 'These settings were'),
+				$this->renderQuantity(count($additions), 'setting', 'settings'),
+				$this->getConfigPath(),
+				$this->getDefaultConfigPath(),
+				implode('</code>, <code>$', $additions),
+			)));
+		}
 	}
 }
 
