@@ -348,16 +348,10 @@ Example usage:
 		{
 			if (strlen($rawParam) > 1)
 			{
-				// The name of each parameter should be the first character of the
-				// parameter string
-				$name	= $rawParam[0];
-				
-				// The value of each parameter should be the remaining characters of
-				// the parameter string
-				$value	= substr($rawParam, 1);
-
-				$params[$name]	= $value;
+				// The name of each parameter should be the first character of the parameter string and the value of each parameter should be the remaining characters of the parameter string
+				$params[$rawParam[0]]	= substr($rawParam, 1);
 			}
+			
 			$rawParam	= strtok('-');
 		}
 
