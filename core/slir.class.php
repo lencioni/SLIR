@@ -447,24 +447,24 @@ class SLIR
 	 */
 	private function getConfig()
 	{
-		if (file_exists(self::configFilename()))
+		if (file_exists($this->configFilename()))
 		{
-			require self::configFilename();
+			require $this->configFilename();
 		}
 		else if (file_exists('slirconfig-sample.class.php'))
 		{
-			if (copy('slirconfig-sample.class.php', self::configFilename()))
+			if (copy('slirconfig-sample.class.php', $this->configFilename()))
 			{
-				require self::configFilename();
+				require $this->configFilename();
 			}
 			else
 			{
-				throw new RuntimeException('Could not load configuration file. Please copy "slirconfig-sample.class.php" to "' . self::configFilename() . '".');
+				throw new RuntimeException('Could not load configuration file. Please copy "slirconfig-sample.class.php" to "' . $this->configFilename() . '".');
 			}
 		}
 		else
 		{
-			throw new RuntimeException('Could not find "' . self::configFilename() . '" or "slirconfig-sample.class.php"');
+			throw new RuntimeException('Could not find "' . $this->configFilename() . '" or "slirconfig-sample.class.php"');
 		} // if
 	}
 	
