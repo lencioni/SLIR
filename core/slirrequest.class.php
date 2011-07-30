@@ -298,7 +298,7 @@ class SLIRRequest
 	{
 		if (!$this->isUsingQueryString()) // Using the mod_rewrite version
 		{
-			return $this->getParametersFromPath();
+			return $this->getParametersFromURL();
 		}
 		else // Using the query string version
 		{
@@ -307,20 +307,22 @@ class SLIRRequest
 	}
 
 	/**
-	 * For requests that are using the mod_rewrite syntax
+	 * Gets parameters from the URL
+	 * 
+	 * This is used for requests that are using the mod_rewrite syntax
 	 *
 	 * @since 2.0
 	 * @return array
 	 */
-	private function getParametersFromPath()
+	private function getParametersFromURL()
 	{
 		$params	= array();
 
 		// The parameters should be the first set of characters after the SLIR path
-		$request	= preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
-		$request	= explode('/', trim($request, '/'));
+		$request		= preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
+		$paramString	= strtok($request, '/');
 
-		if (count($request) < 2)
+		if ($paramString === FALSE || $paramString === $request)
 		{
 			throw new RuntimeException('Not enough parameters were given.
 
@@ -335,15 +337,14 @@ Available parameters:
 Example usage:
 /slir/w300-h300-c1.1/path/to/image.jpg');
 
-		} // if
+		}
 
+		// The image path should start right after the parameters
+		$params['i']	= substr($request, strlen($paramString) + 1); // +1 for the slash
+		
 		// The parameters are separated by hyphens
-		$rawParams	= array_filter(explode('-', array_shift($request)));
-
-		// The image path should be all of the remaining values in the array
-		$params['i']	= implode('/', $request);
-
-		foreach ($rawParams as $rawParam)
+		$rawParam		= strtok($paramString, '-');
+		while ($rawParam !== FALSE)
 		{
 			// The name of each parameter should be the first character of the
 			// parameter string
@@ -353,10 +354,11 @@ Example usage:
 			$value	= substr($rawParam, 1, strlen($rawParam) - 1);
 
 			$params[$name]	= $value;
-		} // foreach
+
+			$rawParam	= strtok('-');
+		}
 
 		$params	= array_filter($params);
-
 		return $params;
 	}
 	
