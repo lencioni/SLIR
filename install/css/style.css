@@ -244,10 +244,10 @@ footer:hover {
 	text-indent: -3em;
 	margin-left: 3em;
 }
-.Positive i {
+.Positive {
 	color: green;
 }
-.Negative i, .Fatal i {
+.Negative, .Fatal {
 	color: red;
 }
 

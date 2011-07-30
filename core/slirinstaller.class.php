@@ -93,17 +93,21 @@ class SLIRInstaller
 		echo '<p>Installing <abbr title="Smart Lencioni Image Resizer">SLIR</abbr>&hellip;</p>';
 
 		$tasks	= array(
-			'initializeConfigFile',
-			'checkConfigEntropy',
+			'Config File' 		=> 'initializeConfigFile',
+			'Config Entropy'	=> 'checkConfigEntropy',
 		);
 
 		echo '<div class="responses">';
-		foreach($tasks as $task)
+		foreach($tasks as $label => $function)
 		{
-			$response	= $this->$task();
-			echo $this->renderResponse($response);
+			echo "<p><strong>$label</strong>: ";
 			flush();
-			
+
+			$response	= $this->$function();
+			echo $this->renderResponse($response);
+			echo '</p>';
+			flush();
+
 			if ($this->responseIsFatal($response))
 			{
 				echo $this->renderFatalResponseReceivedMessage();
@@ -196,7 +200,6 @@ class SLIRInstaller
 	{
 		return $this->renderTemplate('response.html', array(
 			$response->getType(),
-			$response->getLabel(),
 			$response->getMessage(),
 			$response->getDescription(),
 		));
@@ -271,12 +274,11 @@ class SLIRInstaller
 	 */
 	private function initializeConfigFile()
 	{
-		$task	= 'Config File';
 		$config	= $this->getConfigPath();
 
 		if (file_exists($config))
 		{
-			return new PositiveSLIRInstallerResponse($task, vsprintf('Config file exists. Edit <code>%s</code> if you want to override any of the default settings found in <code>%s</code>.', array(
+			return new PositiveSLIRInstallerResponse(vsprintf('Config file exists. Edit <code>%s</code> if you want to override any of the default settings found in <code>%s</code>.', array(
 				$config,
 				$this->getDefaultConfigPath(),
 			)));
@@ -286,21 +288,21 @@ class SLIRInstaller
 		{
 			if (copy($this->getSampleConfigPath(), $config))
 			{
-				return new PositiveSLIRInstallerResponse($task, vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file if you want to override any of the default settings found in <code>%s</code>.', array(
+				return new PositiveSLIRInstallerResponse(vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file if you want to override any of the default settings found in <code>%s</code>.', array(
 					$config,
 					$this->getDefaultConfigPath(),
 				)));
 			}
 			else
 			{
-				return new FatalSLIRInstallerResponse($task, vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code> and then edit it if you want to override any of the default settings.', array(
+				return new FatalSLIRInstallerResponse(vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code> and then edit it if you want to override any of the default settings.', array(
 					$this->getSampleConfigPath(),
 					$config,
 				)));
 			}
 		}
 
-		return new FatalSLIRInstallerResponse($task, vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR and running the installer again.', array(
+		return new FatalSLIRInstallerResponse(vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR and running the installer again.', array(
 			$config,
 			$this->getSampleConfigPath(),
 		)));
@@ -314,7 +316,6 @@ class SLIRInstaller
 	 */
 	private function checkConfigEntropy()
 	{
-		$task	= 'Config Entropy';
 		$this->slir->getConfig();
 
 		$reflectDefaults	= new ReflectionClass('SLIRConfigDefaults');
@@ -327,11 +328,11 @@ class SLIRInstaller
 
 		if (count($additions) === 0)
 		{
-			return new PositiveSLIRInstallerResponse($task, 'There are no settings in your config file that are not also found in the default config file.');
+			return new PositiveSLIRInstallerResponse('There are no settings in your config file that are not also found in the default config file.');
 		}
 		else
 		{
-			return new NegativeSLIRInstallerResponse($task, vsprintf('There %s in your config file that was not found in the default config file. %s most likely leftover from a previous version and should be addressed. Check the following %s in <code>%s</code> against what is found in <code>%s</code>: <code>$%s</code>', array(
+			return new NegativeSLIRInstallerResponse(vsprintf('There %s in your config file that was not found in the default config file. %s most likely leftover from a previous version and should be addressed. Check the following %s in <code>%s</code> against what is found in <code>%s</code>: <code>$%s</code>', array(
 				$this->renderQuantity(count($additions), 'is %d setting', 'are %d settings'),
 				$this->renderQuantity(count($additions), 'This setting was', 'These settings were'),
 				$this->renderQuantity(count($additions), 'setting', 'settings'),
@@ -360,12 +361,6 @@ class SLIRInstallerResponse
 	 * @var string
 	 * @since 2.0
 	 */
-	protected $label	= '';
-
-	/**
-	 * @var string
-	 * @since 2.0
-	 */
 	protected $message	= 'Unknown';
 
 	/**
@@ -375,14 +370,12 @@ class SLIRInstallerResponse
 	protected $description	= '';
 
 	/**
-	 * @param string $label
 	 * @param string $description
 	 * @return void
 	 * @since 2.0
 	 */
-	public function __construct($label, $description = '')
+	public function __construct($description = '')
 	{
-		$this->label		= $label;
 		$this->description	= $description;
 	}
 
@@ -393,15 +386,6 @@ class SLIRInstallerResponse
 	public function getType()
 	{
 		return $this->type;
-	}
-
-	/**
-	 * @return string
-	 * @since 2.0
-	 */
-	public function getLabel()
-	{
-		return $this->label;
 	}
 
 	/**
