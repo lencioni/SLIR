@@ -133,15 +133,21 @@ class SLIR
 	 * @since 2.0
 	 * @var string
 	 */
-	 const CROP_CLASS_FACE		= 'face';
+	const CROP_CLASS_FACE		= 'face';
 
-	 /**
-	  * Setting for the garbage collector to sleep for a second after looking at this many files
-	  * 
-	  * @since 2.0
-	  * @var integer
-	  */
-	 const GARBAGE_COLLECTOR_BREATHE_EVERY	= 5000;
+	/**
+	 * Setting for the garbage collector to sleep for a second after looking at this many files
+	 * 
+	 * @since 2.0
+	 * @var integer
+	 */
+	const GARBAGE_COLLECTOR_BREATHE_EVERY	= 5000;
+
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
+	const CONFIG_FILEPATH			= '../slirconfig.class.php';
 
 	/**
 	 * Request object
@@ -464,7 +470,7 @@ class SLIR
 		}
 		else
 		{
-			return '../slirconfig.class.php';
+			return self::CONFIG_FILEPATH;
 		}
 	}
 	

@@ -35,10 +35,36 @@ require_once 'slir.class.php';
  */
 class SLIRInstaller
 {
+
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
 	const PAGE_TEMPLATE	= 'page.html';
 
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
 	const DEFAULT_PAGE_TITLE	= 'Install SLIR (Smart Lencioni Image Resizer)';
+
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
 	const DEFAULT_CONTENT_TITLE	= '<h1>Install <abbr title="Smart Lencioni Image Resizer">SLIR</abbr></h1>';
+
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
+	const SAMPLE_CONFIG_FILEPATH	= '../slirconfig-sample.class.php';
+
+	/**
+	 * @var string
+	 * @since 2.0
+	 */
+	const DEFAULT_CONFIG_FILEPATH	= 'slirconfigdefaults.class.php';
 
 	/**
 	 * @var SLIR
@@ -145,31 +171,29 @@ class SLIRInstaller
 	private function initializeConfig()
 	{
 		$task			= 'Config';
-		$sampleConfig	= '../slirconfig-sample.class.php';
 		$config			= $this->slir->configFilename();
-		$defaultConfig	= 'slirconfigdefaults.class.php';
 
 		if (file_exists($config))
 		{
 			return new PositiveSLIRInstallerResponse($task, vsprintf('Config file exists. Edit <code>%s</code> to override the default settings in <code>%s</code>.', array(
 				$this->resolveRelativePath($config),
-				$this->resolveRelativePath($defaultConfig),
+				$this->resolveRelativePath(self::DEFAULT_CONFIG_FILEPATH),
 			)));
 		}
 		
-		if (file_exists($sampleConfig))
+		if (file_exists(self::SAMPLE_CONFIG_FILEPATH))
 		{
-			if (copy($sampleConfig, $config))
+			if (copy(self::SAMPLE_CONFIG_FILEPATH, $config))
 			{
 				return new PositiveSLIRInstallerResponse($task, vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file to override the default settings in <code>%s</code>.', array(
 					$this->resolveRelativePath($config),
-					$this->resolveRelativePath($defaultConfig),
+					$this->resolveRelativePath(self::DEFAULT_CONFIG_FILEPATH),
 				)));
 			}
 			else
 			{
 				return new NegativeSLIRInstallerResponse($task,	vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code>.', array(
-					$this->resolveRelativePath($sampleConfig),
+					$this->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH),
 					$this->resolveRelativePath($config),
 				)));
 			}
@@ -177,7 +201,7 @@ class SLIRInstaller
 
 		return new NegativeSLIRInstallerResponse($task, vsprintf('Could not find <code>%s</code> or <code>%s</code>. Please try downloading the latest version of SLIR.', array(
 			$this->resolveRelativePath($config),
-			$this->resolveRelativePath($sampleConfig),
+			$this->resolveRelativePath(self::SAMPLE_CONFIG_FILEPATH),
 		)));
 	}
 }
