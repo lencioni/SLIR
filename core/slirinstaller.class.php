@@ -241,7 +241,7 @@ class SLIRInstaller
 	private function initializeConfigFile()
 	{
 		$task	= 'Config File';
-		$config	= '../' . $this->slir->configFilename();
+		$config	= $this->slir->getConfigPath();
 
 		if (file_exists($config))
 		{
