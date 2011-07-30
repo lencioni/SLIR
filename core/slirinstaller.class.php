@@ -92,7 +92,14 @@ class SLIRInstaller
 
 		echo '<p>Installing <abbr title="Smart Lencioni Image Resizer">SLIR</abbr>&hellip;</p>';
 
-		echo $this->renderResponse($this->initializeConfig());
+		$tasks	= array(
+			'initializeConfigFile',
+		);
+
+		foreach($tasks as $task)
+		{
+			echo $this->renderResponse($this->$task());
+		}
 
 		echo $this->renderTemplate('footer.html', array());
 	}
@@ -177,10 +184,10 @@ class SLIRInstaller
 	 * @return SLIRInstallerResponse
 	 * @since 2.0
 	 */
-	private function initializeConfig()
+	private function initializeConfigFile()
 	{
-		$task			= 'Config';
-		$config			= '../' . $this->slir->configFilename();
+		$task	= 'Config File';
+		$config	= '../' . $this->slir->configFilename();
 
 		if (file_exists($config))
 		{
