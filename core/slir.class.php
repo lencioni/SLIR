@@ -468,8 +468,25 @@ class SLIR
 		}
 		else
 		{
-			return realpath(__DIR__ . '/../' . self::CONFIG_FILENAME);
+			return $this->resolveRelativePath('../' . self::CONFIG_FILENAME);
 		}
+	}
+
+	/**
+	 * @param string $path
+	 * @return string
+	 * @since 2.0
+	 */
+	final public function resolveRelativePath($path)
+	{
+		$path	= __DIR__ . '/' . $path;
+		
+		while (strstr($path, '../'))
+		{
+			$path = preg_replace('/\w+\/\.\.\//', '', $path);
+		}
+
+		return $path;
 	}
 	
 	/**

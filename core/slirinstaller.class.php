@@ -159,23 +159,6 @@ class SLIRInstaller
 	}
 
 	/**
-	 * @param string $path
-	 * @return string
-	 * @since 2.0
-	 */
-	private function resolveRelativePath($path)
-	{
-		$path	= __DIR__ . '/' . $path;
-		
-		while (strstr($path, '../'))
-		{
-			$path = preg_replace('/\w+\/\.\.\//', '', $path);
-		}
-
-		return $path;
-	}
-
-	/**
 	 * Gets the contents of the template file and stores it in a variable to help prevent excessive disk reads.
 	 * 
 	 * @param string $filename
