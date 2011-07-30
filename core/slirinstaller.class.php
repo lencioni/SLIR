@@ -102,7 +102,8 @@ class SLIRInstaller
 		{
 			$response	= $this->$task();
 			echo $this->renderResponse($response);
-
+			flush();
+			
 			if ($this->responseIsFatal($response))
 			{
 				echo $this->renderFatalResponseReceivedMessage();
