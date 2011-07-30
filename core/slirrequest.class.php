@@ -346,19 +346,20 @@ Example usage:
 		$rawParam		= strtok($paramString, '-');
 		while ($rawParam !== FALSE)
 		{
-			// The name of each parameter should be the first character of the
-			// parameter string
-			$name	= $rawParam[0];
-			// The value of each parameter should be the remaining characters of
-			// the parameter string
-			$value	= substr($rawParam, 1, strlen($rawParam) - 1);
+			if (strlen($rawParam) > 1)
+			{
+				// The name of each parameter should be the first character of the
+				// parameter string
+				$name	= $rawParam[0];
+				// The value of each parameter should be the remaining characters of
+				// the parameter string
+				$value	= substr($rawParam, 1, strlen($rawParam) - 1);
 
-			$params[$name]	= $value;
-
+				$params[$name]	= $value;
+			}
 			$rawParam	= strtok('-');
 		}
 
-		$params	= array_filter($params);
 		return $params;
 	}
 	
