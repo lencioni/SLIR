@@ -23,16 +23,12 @@
  * @since 2.0
  * @package SLIR
  */
-
-/* $Id$ */
  
 /**
  * SLIR image class
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  */
 class SLIRImage

@@ -23,8 +23,6 @@
  * @since 2.0
  * @package SLIR
  */
-
-/* $Id$ */
  
 /**
  * Face detector class
@@ -37,8 +35,6 @@
  * @since 2.0
  * @author Liu Liu <ll2ef@virginia.edu>
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  */
 class SLIRFaceDetector

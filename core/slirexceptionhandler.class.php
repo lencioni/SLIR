@@ -24,15 +24,11 @@
  * @package SLIR
  */
 
-/* $Id$ */
-
 /**
  * Exception and error handler
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * date $Date$
- * @version $Revision$
  * @package SLIR
  */
 class SLIRExceptionHandler

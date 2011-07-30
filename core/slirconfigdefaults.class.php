@@ -22,16 +22,12 @@
  * @since 2.0
  * @package SLIR
  */
- 
-/* $Id$ */
 
 /**
  * SLIR Config Class
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  */
 class SLIRConfigDefaults

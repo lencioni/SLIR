@@ -22,8 +22,6 @@
  * @since 2.0
  * @package SLIR
  */
- 
-/* $Id$ */
 
 require_once 'core/slirconfigdefaults.class.php';
 
@@ -32,8 +30,6 @@ require_once 'core/slirconfigdefaults.class.php';
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  */
 class SLIRConfig extends SLIRConfigDefaults

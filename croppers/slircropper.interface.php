@@ -25,15 +25,11 @@
  * @subpackage Croppers
  */
 
-/* $Id$ */
- 
 /**
  * SLIR cropper interface
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  * @subpackage Croppers
  */

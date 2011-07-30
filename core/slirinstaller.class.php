@@ -22,18 +22,13 @@
  * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
- * date $Date$
- * @version $Revision$
  */
-
-/* $Id$ */
  
 /**
  * SLIR installer class
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * date $Date$
  * @version $Revision$
  * @package SLIR
  */

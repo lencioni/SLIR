@@ -22,11 +22,7 @@
  * License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
- * date $Date$
- * @version $Revision$
  */
- 
- /* $Id$ */
 
 // define('SLIR_CONFIG_FILENAME', 'slir-config-alternate.php');
 

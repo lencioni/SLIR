@@ -25,8 +25,6 @@
  * @subpackage Croppers
  */
 
-/* $Id$ */
-
 require_once 'centered.class.php';
 
 /**
@@ -36,8 +34,6 @@ require_once 'centered.class.php';
  * 
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  * @subpackage Croppers
  */

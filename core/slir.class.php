@@ -23,8 +23,6 @@
  * @since 2.0
  * @package SLIR
  */
- 
-/* $Id$ */
 
 /**
  * SLIR (Smart Lencioni Image Resizer)
@@ -86,8 +84,6 @@
  * alt="Don't forget your alt text" /></code>
  *
  * @author Joe Lencioni <joe@shiftingpixel.com>
- * $Date$
- * @version $Revision$
  * @package SLIR
  *
  * @uses PEL
