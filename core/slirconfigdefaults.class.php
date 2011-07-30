@@ -212,7 +212,7 @@ class SLIRConfigDefaults
 
 		if (self::$pathToSLIR === NULL)
 		{
-			self::$pathToSLIR	= self::$documentRoot . dirname($_SERVER['SCRIPT_NAME']);
+			self::$pathToSLIR	= realpath(__DIR__ . '/../');
 		}
 
 		if (self::$pathToCacheDir === NULL)
