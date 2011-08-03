@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright ? 2011, Joe Lencioni
+ * @copyright Copyright © 2011, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -39,12 +39,12 @@ class SLIRConfigDefaults
    *
    * For example, if your website was http://mysite.com and your document root was /var/www/, and your default image was at http://mysite.com/images/default.png, you would set $defaultImagePath = '/images/default.png';
    *
-   * If NULL, SLIR will throw an exception if the requested image cannot be found.
+   * If null, SLIR will throw an exception if the requested image cannot be found.
    *
    * @since 2.0
    * @var string
    */
-  public static $defaultImagePath = NULL;
+  public static $defaultImagePath = null;
 
   /**
    * Default quality setting to use if quality is not specified in the request. Ranges from 0 (worst quality, smaller file) to 100 (best quality, largest filesize).
@@ -60,7 +60,7 @@ class SLIRConfigDefaults
    * @since 2.0
    * @var boolean
    */
-  public static $defaultProgressiveJPEG = TRUE;
+  public static $defaultProgressiveJPEG = true;
 
   /**
    * How long (in seconds) the web browser should use its cached copy of the image
@@ -72,14 +72,14 @@ class SLIRConfigDefaults
   public static $browserCacheTTL  = 604800; // 7 days = 7 * 24 * 60 * 60
 
   /**
-   * If TRUE, enables the faster, symlink-based request cache as a first-line cache. If FALSE, the request cache is disabled.
+   * If true, enables the faster, symlink-based request cache as a first-line cache. If false, the request cache is disabled.
    *
    * The request cache seems to have issues on some Windows servers.
    *
    * @since 2.0
    * @var boolean
    */
-  public static $enableRequestCache = TRUE;
+  public static $enableRequestCache = true;
 
   /**
    * How much memory (in megabytes) SLIR is allowed to allocate for memory-intensive processes such as rendering and cropping.
@@ -104,12 +104,12 @@ class SLIRConfigDefaults
   public static $defaultCropper = SLIR::CROP_CLASS_CENTERED;
 
   /**
-   * If TRUE, SLIR will generate and output images from error messages. If FALSE, error messages will be plaintext.
+   * If true, SLIR will generate and output images from error messages. If false, error messages will be plaintext.
    *
    * @since 2.0
    * @var boolean
    */
-  public static $enableErrorImages  = TRUE;
+  public static $enableErrorImages  = true;
 
   /**
    * Absolute path to the web root (location of files when visiting http://example.com/) (no trailing slash).
@@ -121,7 +121,7 @@ class SLIRConfigDefaults
    * @since 2.0
    * @var string
    */
-  public static $documentRoot = NULL;
+  public static $documentRoot = null;
 
   /**
    * Absolute path to SLIR (no trailing slash) from the root directory on your server's filesystem.
@@ -133,7 +133,7 @@ class SLIRConfigDefaults
    * @since 2.0
    * @var string
    */
-  public static $pathToSLIR = NULL;
+  public static $pathToSLIR = null;
 
   /**
    * Absolute path to cache directory (no trailing slash). This directory must be world-readable, writable by the web server. Ideally, this directory should be located outside of the web tree for security reasons.
@@ -142,7 +142,7 @@ class SLIRConfigDefaults
    *
    * @var string
    */
-  public static $pathToCacheDir = NULL;
+  public static $pathToCacheDir = null;
 
   /**
    * Path to the error log file. Needs to be writable by the web server. Ideally, this should be located outside of the web tree.
@@ -152,15 +152,15 @@ class SLIRConfigDefaults
    * @since 2.0
    * @var string
    */
-  public static $pathToErrorLog = NULL;
+  public static $pathToErrorLog = null;
 
   /**
-   * If TRUE, forces SLIR to always use the query string for parameters instead of mod_rewrite.
+   * If true, forces SLIR to always use the query string for parameters instead of mod_rewrite.
    *
    * @since 2.0
    * @var boolean
    */
-  public static $forceQueryString = FALSE;
+  public static $forceQueryString = false;
 
   /**
    * In conjunction with $garbageCollectDivisor is used to manage probability that the garbage collection routine is started.
@@ -189,14 +189,14 @@ class SLIRConfigDefaults
   public static $garbageCollectFileCacheMaxLifetime = 604800; // 7 days = 7 * 24 * 60 * 60
 
   /**
-   * If TRUE, SLIR will copy EXIF information should from the source image to the rendered image.
+   * If true, SLIR will copy EXIF information should from the source image to the rendered image.
    *
    * This can be particularly useful (necessary?) if you use an embedded color profile.
    *
    * @since 2.0
    * @var boolean
    */
-  public static $copyEXIF = FALSE;
+  public static $copyEXIF = false;
 
   /**
    * Initialize variables that require some dynamic processing.
@@ -206,29 +206,25 @@ class SLIRConfigDefaults
    */
   public static function init()
   {
-    if (!defined('__DIR__'))
-    {
+    if (!defined('__DIR__')) {
       define('__DIR__', dirname(__FILE__));
     }
 
-    if (self::$documentRoot === NULL)
-    {
+    if (self::$documentRoot === null) {
       self::$documentRoot = rtrim(realpath($_SERVER['DOCUMENT_ROOT']), '/');
     }
 
-    if (self::$pathToSLIR === NULL)
-    {
+    if (self::$pathToSLIR === null) {
       self::$pathToSLIR = realpath(__DIR__ . '/../');
     }
 
-    if (self::$pathToCacheDir === NULL)
-    {
+    if (self::$pathToCacheDir === null) {
       self::$pathToCacheDir   = self::$pathToSLIR . '/cache';
     }
 
-    if (self::$pathToErrorLog === NULL)
-    {
+    if (self::$pathToErrorLog === null) {
       self::$pathToErrorLog = self::$pathToSLIR . '/slir-error-log';
     }
   }
+
 }

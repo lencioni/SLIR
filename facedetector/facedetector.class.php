@@ -52,9 +52,9 @@ class SLIRFaceDetector
    */
   protected function array_group($seq)
   {
-    $i    = NULL;
-    $j    = NULL;
-    $node = array(); // array_fill(0, count($seq), NULL);
+    $i    = null;
+    $j    = null;
+    $node = array(); // array_fill(0, count($seq), null);
 
     for ($i = 0; $i < count($seq); ++$i)
     {
@@ -106,7 +106,7 @@ class SLIRFaceDetector
             }
 
             // Compress path from node2 to the root:
-            $temp = NULL;
+            $temp = null;
             $node2  = $j;
 
             while ($node[$node2]['parent'] != -1)
@@ -129,7 +129,7 @@ class SLIRFaceDetector
       } // for
     } // for
 
-    $idx    = array(); //array_fill(0, count($seq), NULL);
+    $idx    = array(); //array_fill(0, count($seq), null);
     $class_idx  = 0;
 
     for ($i = 0; $i < count($seq); ++$i)
@@ -186,9 +186,9 @@ class SLIRFaceDetector
     $scale    = pow(2, 1 / ($interval + 1));
     $next   = $interval + 1;
     $scale_upto = floor(log(min($cascade['width'], $cascade['height'])) / log($scale));
-    $pyr    = array_fill(0, ($scale_upto + $next * 2) * 4, NULL);
+    $pyr    = array_fill(0, ($scale_upto + $next * 2) * 4, null);
     $pyr[0]   = $canvas;
-    $i = $j = $k = $x = $y = $q = NULL;
+    $i = $j = $k = $x = $y = $q = null;
 
     $baseWidth  = imagesx($pyr[0]);
     $baseHeight = imagesy($pyr[0]);
@@ -260,16 +260,16 @@ class SLIRFaceDetector
       for ($j = 0; $j < count($cascade['stage_classifier']); ++$j)
       {
         $orig_feature = $cascade['stage_classifier'][$j]['orig_feature'];
-        $feature    = array_fill(0, $cascade['stage_classifier'][$j]['count'], NULL);
+        $feature    = array_fill(0, $cascade['stage_classifier'][$j]['count'], null);
 
         for ($k = 0; $k < $cascade['stage_classifier'][$j]['count']; ++$k)
         {
           $feature[$k]  = array(
               'size'  => $orig_feature[$k]['size'],
-              'px'  => array_fill(0, $orig_feature[$k]['size'], NULL),
-              'pz'  => array_fill(0, $orig_feature[$k]['size'], NULL),
-              'nx'  => array_fill(0, $orig_feature[$k]['size'], NULL),
-              'nz'  => array_fill(0, $orig_feature[$k]['size'], NULL),
+              'px'  => array_fill(0, $orig_feature[$k]['size'], null),
+              'pz'  => array_fill(0, $orig_feature[$k]['size'], null),
+              'nx'  => array_fill(0, $orig_feature[$k]['size'], null),
+              'nz'  => array_fill(0, $orig_feature[$k]['size'], null),
             );
 
           for ($q = 0; $q < $orig_feature[$k]['size']; ++$q)
@@ -316,7 +316,7 @@ class SLIRFaceDetector
           for ($x = 0; $x < $qw; ++$x)
           {
             $sum  = 0;
-            $flag = TRUE;
+            $flag = true;
 
             for ($j = 0; $j < count($cascade['stage_classifier']); ++$j)
             {
@@ -327,7 +327,7 @@ class SLIRFaceDetector
               for ($k = 0; $k < $cascade['stage_classifier'][$j]['count']; ++$k)
               {
                 $feature_k  = $feature[$k];
-                $p    = NULL;
+                $p    = null;
 
                 $pos  = ($u8o[$feature_k['pz'][0]] + $feature_k['px'][0]) / 4;
 
@@ -340,7 +340,7 @@ class SLIRFaceDetector
                 $pmin = $colors[$feature_k['pz'][0]][$pos];
 
 
-                $n    = NULL;
+                $n    = null;
                 $pos  = ($u8o[$feature_k['nz'][0]] + $feature_k['nx'][0]) / 4;
 
                 if (!isset($colors[$feature_k['nz'][0]][$pos]))
@@ -357,12 +357,12 @@ class SLIRFaceDetector
                 }
                 else
                 {
-                  $f      = NULL;
-                  $shortcut = TRUE;
+                  $f      = null;
+                  $shortcut = true;
 
                   for ($f = 0; $f < $feature_k['size']; ++$f)
                   {
-                    if ($feature_k['pz'][$f] >= 0 && $feature_k['pz'][$f] !== NULL)
+                    if ($feature_k['pz'][$f] >= 0 && $feature_k['pz'][$f] !== null)
                     {
                       $pos  = ($u8o[$feature_k['pz'][$f]] + $feature_k['px'][$f]) / 4;
                       if (!isset($colors[$feature_k['pz'][$f]][$pos]))
@@ -512,7 +512,7 @@ class SLIRFaceDetector
       for ($i = 0; $i < count($seq2); ++$i)
       {
         $r1   = $seq2[$i];
-        $flag = TRUE;
+        $flag = true;
 
         for ($j = 0; $j < count($seq2); ++$j)
         {

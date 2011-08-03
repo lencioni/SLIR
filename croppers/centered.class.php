@@ -47,13 +47,10 @@ class SLIRCropperCentered implements SLIRCropper
    */
   private function shouldCropTopAndBottom(SLIRImage $image)
   {
-    if ($image->cropRatio() > $image->ratio())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($image->cropRatio() > $image->ratio()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -92,13 +89,10 @@ class SLIRCropperCentered implements SLIRCropper
       'y'     => 0,
     );
 
-    if ($this->shouldCropTopAndBottom($image))
-    {
+    if ($this->shouldCropTopAndBottom($image)) {
       // Image is too tall so we will crop the top and bottom
       $crop['y']  = $this->getCropY($image);
-    }
-    else
-    {
+    } else {
       // Image is too wide so we will crop off the left and right sides
       $crop['x']  = $this->getCropX($image);
     }

@@ -85,8 +85,7 @@ class SLIRInstaller
       self::DEFAULT_CONTENT_TITLE,
     ));
 
-    if (!defined('__DIR__'))
-    {
+    if (!defined('__DIR__')) {
       define('__DIR__', dirname(__FILE__));
     }
 
@@ -98,8 +97,7 @@ class SLIRInstaller
     );
 
     echo '<div class="responses">';
-    foreach($tasks as $label => $function)
-    {
+    foreach ($tasks as $label => $function) {
       echo "<p><strong>$label</strong>: ";
       flush();
 
@@ -108,8 +106,7 @@ class SLIRInstaller
       echo '</p>';
       flush();
 
-      if ($this->responseIsFatal($response))
-      {
+      if ($this->responseIsFatal($response)) {
         echo $this->renderFatalResponseReceivedMessage();
         break;
       }
@@ -173,8 +170,7 @@ class SLIRInstaller
    */
   private function getTemplate($filename)
   {
-    if (!isset($this->templateCache[$filename]))
-    {
+    if (!isset($this->templateCache[$filename])) {
       $this->templateCache[$filename] = file_get_contents("templates/$filename");
     }
     return $this->templateCache[$filename];
@@ -213,8 +209,7 @@ class SLIRInstaller
   public function renderResponses(array $responses)
   {
     $r  = '';
-    foreach ($responses as $response)
-    {
+    foreach ($responses as $response) {
       $r  .= $this->renderResponse($response);
     }
     return $r;
@@ -256,12 +251,9 @@ class SLIRInstaller
    */
   private function renderQuantity($number, $singularPattern = '%d thing', $pluralPattern = '%d things')
   {
-    if ($number === 1)
-    {
+    if ($number === 1) {
       return sprintf($singularPattern, $number);
-    }
-    else
-    {
+    } else {
       return sprintf($pluralPattern, $number);
     }
   }
@@ -276,25 +268,20 @@ class SLIRInstaller
   {
     $config = $this->getConfigPath();
 
-    if (file_exists($config))
-    {
+    if (file_exists($config)) {
       return new PositiveSLIRInstallerResponse(vsprintf('Config file exists. Edit <code>%s</code> if you want to override any of the default settings found in <code>%s</code>.', array(
         $config,
         $this->getDefaultConfigPath(),
       )));
     }
 
-    if (file_exists($this->getSampleConfigPath()))
-    {
-      if (copy($this->getSampleConfigPath(), $config))
-      {
+    if (file_exists($this->getSampleConfigPath())) {
+      if (copy($this->getSampleConfigPath(), $config)) {
         return new PositiveSLIRInstallerResponse(vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file if you want to override any of the default settings found in <code>%s</code>.', array(
           $config,
           $this->getDefaultConfigPath(),
         )));
-      }
-      else
-      {
+      } else {
         return new FatalSLIRInstallerResponse(vsprintf('Could not initialize configuration file. Please copy <code>%s</code> to <code>%s</code> and then edit it if you want to override any of the default settings.', array(
           $this->getSampleConfigPath(),
           $config,
@@ -326,12 +313,9 @@ class SLIRInstaller
 
     $additions      = array_diff(array_keys($configProperties), array_keys($defaultProperties));
 
-    if (count($additions) === 0)
-    {
+    if (count($additions) === 0) {
       return new PositiveSLIRInstallerResponse('There are no settings in your config file that are not also found in the default config file.');
-    }
-    else
-    {
+    } else {
       return new NegativeSLIRInstallerResponse(vsprintf('There %s in your config file that was not found in the default config file. %s most likely leftover from a previous version and should be addressed. Check the following %s in <code>%s</code> against what is found in <code>%s</code>: <code>$%s</code>', array(
         $this->renderQuantity(count($additions), 'is %d setting', 'are %d settings'),
         $this->renderQuantity(count($additions), 'This setting was', 'These settings were'),

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright ? 2011, Joe Lencioni
+ * @copyright Copyright © 2011, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -105,7 +105,7 @@ class SLIRRequest
    * @since 2.0
    * @var boolean
    */
-  private $isUsingDefaultImagePath  = FALSE;
+  private $isUsingDefaultImagePath  = false;
 
   /**
    * @since 2.0
@@ -115,23 +115,17 @@ class SLIRRequest
     $params = $this->getParameters();
 
     // Set image path first
-    if (isset($params['i']) && $params['i'] != '' && $params['i'] != '/')
-    {
+    if (isset($params['i']) && $params['i'] != '' && $params['i'] != '/') {
       $this->__set('i', $params['i']);
       unset($params['i']);
-    }
-    else if (SLIRConfig::$defaultImagePath !== NULL)
-    {
+    } else if (SLIRConfig::$defaultImagePath !== null) {
       $this->__set('i', SLIRConfig::$defaultImagePath);
-    }
-    else
-    {
+    } else {
       throw new RuntimeException('Source image was not specified.');
     } // if
 
     // Set the rest of the parameters
-    foreach($params as $name => $value)
-    {
+    foreach ($params as $name => $value) {
       $this->__set($name, $value);
     } // foreach
   }
@@ -149,37 +143,37 @@ class SLIRRequest
       case 'imagePath':
       case 'path':
         $this->setPath($value);
-      break;
+          break;
 
       case 'w':
       case 'width':
         $this->setWidth($value);
-      break;
+          break;
 
       case 'h':
       case 'height':
         $this->setHeight($value);
-      break;
+          break;
 
       case 'q':
       case 'quality':
         $this->setQuality($value);
-      break;
+          break;
 
       case 'p':
       case 'progressive':
         $this->setProgressive($value);
-      break;
+          break;
 
       case 'b';
       case 'backgroundFillColor':
         $this->setBackgroundFillColor($value);
-      break;
+          break;
 
       case 'c':
       case 'cropRatio':
         $this->setCrop($value);
-      break;
+          break;
     } // switch
   }
 
@@ -217,8 +211,7 @@ class SLIRRequest
   private function setQuality($value)
   {
     $this->quality  = $value;
-    if ($this->quality < 0 || $this->quality > 100)
-    {
+    if ($this->quality < 0 || $this->quality > 100) {
       throw new RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
     }
   }
@@ -240,17 +233,14 @@ class SLIRRequest
   {
     $this->background = preg_replace('/[^0-9a-fA-F]/', '', $value);
 
-    if(strlen($this->background) == 3)
-    {
+    if (strlen($this->background) == 3) {
       $this->background = $this->background[0]
         .$this->background[0]
         .$this->background[1]
         .$this->background[1]
         .$this->background[2]
         .$this->background[2];
-    }
-    else if (strlen($this->background) != 6)
-    {
+    } else if (strlen($this->background) != 6) {
       throw new RuntimeException('Background fill color must be in hexadecimal format, longhand or shorthand: ' . $this->background);
     } // if
   }
@@ -263,10 +253,8 @@ class SLIRRequest
   {
     $delimiters     = preg_quote(self::CROP_RATIO_DELIMITERS);
     $ratio        = preg_split("/[$delimiters]/", (string) urldecode($value));
-    if (count($ratio) >= 2)
-    {
-      if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
-      {
+    if (count($ratio) >= 2) {
+      if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0) {
         throw new RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
       }
 
@@ -277,13 +265,10 @@ class SLIRRequest
       );
 
       // If there was a third part, that is the cropper being specified
-      if (count($ratio) >= 3)
-      {
+      if (count($ratio) >= 3) {
         $this->cropper  = (string) $ratio[2];
       }
-    }
-    else
-    {
+    } else {
       throw new RuntimeException('Crop ratio must be in width:height format: ' . (string) $value);
     } // if
   }
@@ -296,12 +281,11 @@ class SLIRRequest
    */
   private function getParameters()
   {
-    if (!$this->isUsingQueryString()) // Using the mod_rewrite version
-    {
+    if (!$this->isUsingQueryString()) {
+      // Using the mod_rewrite version
       return $this->getParametersFromURL();
-    }
-    else // Using the query string version
-    {
+    } else {
+      // Using the query string version
       return $_GET;
     }
   }
@@ -322,8 +306,7 @@ class SLIRRequest
     $request    = preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
     $paramString  = strtok($request, '/');
 
-    if ($paramString === FALSE || $paramString === $request)
-    {
+    if ($paramString === false || $paramString === $request) {
       throw new RuntimeException('Not enough parameters were given.
 
 Available parameters:
@@ -344,10 +327,8 @@ Example usage:
 
     // The parameters are separated by hyphens
     $rawParam   = strtok($paramString, '-');
-    while ($rawParam !== FALSE)
-    {
-      if (strlen($rawParam) > 1)
-      {
+    while ($rawParam !== false) {
+      if (strlen($rawParam) > 1) {
         // The name of each parameter should be the first character of the parameter string and the value of each parameter should be the remaining characters of the parameter string
         $params[$rawParam[0]] = substr($rawParam, 1);
       }
@@ -367,17 +348,12 @@ Example usage:
    */
   private function isUsingQueryString()
   {
-    if (SLIRConfig::$forceQueryString === TRUE)
-    {
-      return TRUE;
-    }
-    else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET))))
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (SLIRConfig::$forceQueryString === true) {
+      return true;
+    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET)))) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -401,20 +377,15 @@ Example usage:
     $this->path = $this->localizePath((string) urldecode($path));
 
     // Make sure the image path is secure
-    if (!$this->isPathSecure())
-    {
+    if (!$this->isPathSecure()) {
       throw new RuntimeException('Image path may not contain ":", "..", "<", or ">"');
     }
     // Make sure the image file exists
-    else if (!$this->pathExists())
-    {
-      if (SLIRConfig::$defaultImagePath !== NULL && !$this->isUsingDefaultImagePath())
-      {
-        $this->isUsingDefaultImagePath  = TRUE;
+    else if (!$this->pathExists()) {
+      if (SLIRConfig::$defaultImagePath !== null && !$this->isUsingDefaultImagePath()) {
+        $this->isUsingDefaultImagePath  = true;
         return $this->setPath(SLIRConfig::$defaultImagePath);
-      }
-      else
-      {
+      } else {
         throw new RuntimeException('Image does not exist: ' . $this->fullPath());
       }
     }
@@ -461,13 +432,10 @@ Example usage:
    */
   private function isPathSecure()
   {
-    if (strpos(dirname($this->path), ':') || preg_match('/(?:\.\.|<|>)/', $this->path))
-    {
-      return FALSE;
-    }
-    else
-    {
-      return TRUE;
+    if (strpos(dirname($this->path), ':') || preg_match('/(?:\.\.|<|>)/', $this->path)) {
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -497,13 +465,10 @@ Example usage:
    */
   final public function isBackground()
   {
-    if ($this->background !== NULL)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->background !== null) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -513,13 +478,10 @@ Example usage:
    */
   final public function isQuality()
   {
-    if ($this->quality !== NULL)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->quality !== null) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -529,13 +491,10 @@ Example usage:
    */
   final public function isCropping()
   {
-    if ($this->cropRatio['width'] !== NULL && $this->cropRatio['height'] !== NULL)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->cropRatio['width'] !== null && $this->cropRatio['height'] !== null) {
+      return true;
+    } else {
+      return false;
     }
   }
 

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright ? 2011, Joe Lencioni
+ * @copyright Copyright © 2011, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -182,7 +182,7 @@ class SLIR
    * @since 2.0
    * @var boolean
    */
-  private $isCacheInitialized = FALSE;
+  private $isCacheInitialized = false;
 
   /**
    * The magic starts here
@@ -220,8 +220,7 @@ class SLIR
     $this->request  = new SLIRRequest();
 
     // Check the cache based on the request URI
-    if ($this->shouldUseRequestCache() && $this->isRequestCached())
-    {
+    if ($this->shouldUseRequestCache() && $this->isRequestCached()) {
       $this->serveRequestCachedImage();
     }
 
@@ -230,8 +229,7 @@ class SLIR
     $this->setParameters();
 
     // See if there is anything we actually need to do
-    if ($this->isSourceImageDesired())
-    {
+    if ($this->isSourceImageDesired()) {
       $this->serveSourceImage();
     }
 
@@ -239,8 +237,7 @@ class SLIR
     $this->setRenderedProperties();
 
     // Check the cache based on the properties of the rendered image
-    if (!$this->isRenderedCached() || !$this->serveRenderedCachedImage())
-    {
+    if (!$this->isRenderedCached() || !$this->serveRenderedCachedImage()) {
       // Image is not cached in any way, so we need to render the image,
       // cache it, and serve it up to the client
       $this->render();
@@ -259,13 +256,10 @@ class SLIR
     // The request cache can't be used if the request is falling back to the
     // default image path because it will prevent the actual image from being
     // shown if it eventually ends up on the server
-    if (SLIRConfig::$enableRequestCache === TRUE && !$this->request->isUsingDefaultImagePath())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (SLIRConfig::$enableRequestCache === true && !$this->request->isUsingDefaultImagePath()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -288,12 +282,11 @@ class SLIR
    */
   final public function escapeOutputBuffering()
   {
-    while ($level = ob_get_level())
-    {
+    while ($level = ob_get_level()) {
       ob_end_clean();
 
-      if ($level == ob_get_level()) // On some setups, ob_get_level() will return a 1 instead of a 0 when there are no more buffers
-      {
+      if ($level == ob_get_level()) {
+        // On some setups, ob_get_level() will return a 1 instead of a 0 when there are no more buffers
         return;
       }
     }
@@ -307,13 +300,10 @@ class SLIR
    */
   private function garbageCollectionShouldRun()
   {
-    if (rand(1, SLIRConfig::$garbageCollectDivisor) <= SLIRConfig::$garbageCollectProbability)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (rand(1, SLIRConfig::$garbageCollectDivisor) <= SLIRConfig::$garbageCollectProbability) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -325,8 +315,7 @@ class SLIR
    */
   private function initializeGarbageCollection()
   {
-    if ($this->garbageCollectionShouldRun())
-    {
+    if ($this->garbageCollectionShouldRun()) {
       // Register this as a shutdown function so the additional processing time
       // will not affect the speed of the request
       register_shutdown_function(array($this, 'collectGarbage'));
@@ -340,25 +329,20 @@ class SLIR
    *
    * @param string $path Directory to delete stale files from
    */
-  private function deleteStaleFilesFromDirectory($path, $useAccessedTime = TRUE)
+  private function deleteStaleFilesFromDirectory($path, $useAccessedTime = true)
   {
     $now  = time();
     $dir  = new DirectoryIterator($path);
 
-    if ($useAccessedTime === TRUE)
-    {
+    if ($useAccessedTime === true) {
       $function = 'getATime';
-    }
-    else
-    {
+    } else {
       $function = 'getCTime';
     }
 
-    foreach ($dir as $file)
-    {
+    foreach ($dir as $file) {
       // Every x files, stop for a second to help let other things on the server happen
-      if ($file->key() % self::GARBAGE_COLLECTOR_BREATHE_EVERY == 0)
-      {
+      if ($file->key() % self::GARBAGE_COLLECTOR_BREATHE_EVERY == 0) {
         sleep(1);
       }
 
@@ -366,8 +350,7 @@ class SLIR
       // been deleted, so we need to delete the link.
       // Otherwise, if the file is older than the max lifetime specified in the config, it is
       // stale and should be deleted.
-      if (!$file->isDot() && (($file->isLink() && !$file->isReadable()) || ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime))
-      {
+      if (!$file->isDot() && (($file->isLink() && !$file->isReadable()) || ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)) {
         unlink($file->getPathName());
       }
     }
@@ -382,13 +365,11 @@ class SLIR
    */
   private function garbageCollectorIsRunning()
   {
-    if (file_exists(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') > time() - 86400) // If the file is more than 1 day old, something probably went wrong and we should run again anyway
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (file_exists(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') > time() - 86400) {
+      // If the file is more than 1 day old, something probably went wrong and we should run again anyway
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -428,18 +409,17 @@ class SLIR
     // "PHP Fatal error:  Exception thrown without a stack frame in Unknown on line
     // 0" from showing up in the error log.
     try {
-      if ($this->garbageCollectorIsRunning())
-      {
+      if ($this->garbageCollectorIsRunning()) {
         return;
       }
 
       $this->startGarbageCollection();
-      $this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), FALSE);
+      $this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), false);
       $this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
       $this->finishGarbageCollection();
     } catch (Exception $e) {
       error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
-      error_log('Exception trace stack: ' . print_r($e->getTrace(), TRUE));
+      error_log('Exception trace stack: ' . print_r($e->getTrace(), true));
     }
   }
 
@@ -462,12 +442,9 @@ class SLIR
    */
   final public function getConfigPath()
   {
-    if (defined('SLIR_CONFIG_FILENAME'))
-    {
+    if (defined('SLIR_CONFIG_FILENAME')) {
       return SLIR_CONFIG_FILENAME;
-    }
-    else
-    {
+    } else {
       return $this->resolveRelativePath('../' . self::CONFIG_FILENAME);
     }
   }
@@ -481,8 +458,7 @@ class SLIR
   {
     $path = __DIR__ . '/' . $path;
 
-    while (strstr($path, '../'))
-    {
+    while (strstr($path, '../')) {
       $path = preg_replace('/\w+\/\.\.\//', '', $path);
     }
 
@@ -503,13 +479,11 @@ class SLIR
     // If either a max width or max height are not specified or larger than
     // the source image we default to the dimension of the source image so
     // they do not become constraints on our resized image.
-    if (!$this->request->width || $this->request->width > $this->source->width)
-    {
+    if (!$this->request->width || $this->request->width > $this->source->width) {
       $this->request->width = $this->source->width;
     }
 
-    if (!$this->request->height ||  $this->request->height > $this->source->height)
-    {
+    if (!$this->request->height ||  $this->request->height > $this->source->height) {
       $this->request->height  = $this->source->height;
     }
   }
@@ -552,7 +526,7 @@ class SLIR
     $this->rendered->background($this->isBackgroundFillOn());
 
     $this->copySourceToRendered();
-    $this->rendered->setPath($this->source->path, FALSE);
+    $this->rendered->setPath($this->source->path, false);
     $this->source->destroyImage();
 
     $this->rendered->crop($this->isBackgroundFillOn());
@@ -570,32 +544,30 @@ class SLIR
   private function copySourceToRendered()
   {
     // Resample the original image into the resized canvas we set up earlier
-    if ($this->source->width != $this->rendered->width || $this->source->height != $this->rendered->height)
-    {
-      ImageCopyResampled(
-        $this->rendered->image,
-        $this->source->image,
-        0,
-        0,
-        0,
-        0,
-        $this->rendered->width,
-        $this->rendered->height,
-        $this->source->width,
-        $this->source->height
+    if ($this->source->width != $this->rendered->width || $this->source->height != $this->rendered->height) {
+      imagecopyresampled(
+          $this->rendered->image,
+          $this->source->image,
+          0,
+          0,
+          0,
+          0,
+          $this->rendered->width,
+          $this->rendered->height,
+          $this->source->width,
+          $this->source->height
       );
-    }
-    else // No resizing is needed, so make a clean copy
-    {
-      ImageCopy(
-        $this->rendered->image,
-        $this->source->image,
-        0,
-        0,
-        0,
-        0,
-        $this->source->width,
-        $this->source->height
+    } else {
+      // No resizing is needed, so make a clean copy
+      imagecopy(
+          $this->rendered->image,
+          $this->source->image,
+          0,
+          0,
+          0,
+          0,
+          $this->source->width,
+          $this->source->height
       );
     } // if
   }
@@ -654,8 +626,7 @@ class SLIR
     // Program version
     $iptc['2#070']  = array(SLIR::VERSION);
 
-    foreach($iptc as $tag => $iptcData)
-    {
+    foreach ($iptc as $tag => $iptcData) {
       $tag  = substr($tag, 2);
       $data .= $this->makeIPTCTag(2, $tag, $iptcData[0]);
     }
@@ -668,17 +639,14 @@ class SLIR
    * @since 2.0
    * @author Thies C. Arntzen
    */
-  final function makeIPTCTag($rec, $data, $value)
+  private function makeIPTCTag($rec, $data, $value)
   {
     $length = strlen($value);
     $retval = chr(0x1C) . chr($rec) . chr($data);
 
-    if ($length < 0x8000)
-    {
+    if ($length < 0x8000) {
       $retval .= chr($length >> 8) .  chr($length & 0xFF);
-    }
-    else
-    {
+    } else {
       $retval .= chr(0x80) .
              chr(0x04) .
              chr(($length >> 24) & 0xFF) .
@@ -701,18 +669,10 @@ class SLIR
    */
   private function isSourceImageDesired()
   {
-    if ($this->isWidthDifferent()
-      || $this->isHeightDifferent()
-      || $this->isBackgroundFillOn()
-      || $this->isQualityOn()
-      || $this->isCroppingNeeded()
-      )
-    {
-      return FALSE;
-    }
-    else
-    {
-      return TRUE;
+    if ($this->isWidthDifferent() || $this->isHeightDifferent() || $this->isBackgroundFillOn() || $this->isQualityOn() || $this->isCroppingNeeded()) {
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -724,13 +684,10 @@ class SLIR
    */
   private function isWidthDifferent()
   {
-    if ($this->request->width !== NULL && $this->request->width < $this->source->width)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->request->width !== null && $this->request->width < $this->source->width) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -742,13 +699,10 @@ class SLIR
    */
   private function isHeightDifferent()
   {
-    if ($this->request->height !== NULL && $this->request->height < $this->source->height)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->request->height !== null && $this->request->height < $this->source->height) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -760,13 +714,10 @@ class SLIR
    */
   private function isBackgroundFillOn()
   {
-    if ($this->request->isBackground() && $this->source->isAbleToHaveTransparency())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->request->isBackground() && $this->source->isAbleToHaveTransparency()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -789,13 +740,10 @@ class SLIR
    */
   private function isCroppingNeeded()
   {
-    if ($this->request->isCropping() && $this->request->cropRatio['ratio'] != $this->source->ratio())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->request->isCropping() && $this->request->cropRatio['ratio'] != $this->source->ratio()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -836,19 +784,15 @@ class SLIR
     of the image without cropping. These must both be less than or equal to
     maxWidth and maxHeight.
     */
-    if ($this->isCroppingNeeded())
-    {
+    if ($this->isCroppingNeeded()) {
       // Determine the dimensions of the source image after cropping and
       // before resizing
 
-      if ($this->request->cropRatio['ratio'] > $this->source->ratio())
-      {
+      if ($this->request->cropRatio['ratio'] > $this->source->ratio()) {
         // Image is too tall so we will crop the top and bottom
         $this->source->cropHeight = $this->source->width / $this->request->cropRatio['ratio'];
         $this->source->cropWidth  = $this->source->width;
-      }
-      else
-      {
+      } else {
         // Image is too wide so we will crop off the left and right sides
         $this->source->cropWidth  = $this->source->height * $this->request->cropRatio['ratio'];
         $this->source->cropHeight = $this->source->height;
@@ -858,34 +802,28 @@ class SLIR
       $this->rendered->cropper  = $this->source->cropper;
     } // if
 
-    if ($this->shouldResizeBasedOnWidth())
-    {
+    if ($this->shouldResizeBasedOnWidth()) {
       $resizeFactor = $this->resizeWidthFactor();
       $this->rendered->height = round($resizeFactor * $this->source->height);
       $this->rendered->width  = round($resizeFactor * $this->source->width);
 
       // Determine dimensions after cropping
-      if ($this->isCroppingNeeded())
-      {
+      if ($this->isCroppingNeeded()) {
         $this->rendered->cropHeight = round($resizeFactor * $this->source->cropHeight);
         $this->rendered->cropWidth  = round($resizeFactor * $this->source->cropWidth);
       } // if
-    }
-    else if ($this->shouldResizeBasedOnHeight())
-    {
+    } else if ($this->shouldResizeBasedOnHeight()) {
       $resizeFactor = $this->resizeHeightFactor();
       $this->rendered->width  = round($resizeFactor * $this->source->width);
       $this->rendered->height = round($resizeFactor * $this->source->height);
 
       // Determine dimensions after cropping
-      if ($this->isCroppingNeeded())
-      {
+      if ($this->isCroppingNeeded()) {
         $this->rendered->cropHeight = round($resizeFactor * $this->source->cropHeight);
         $this->rendered->cropWidth  = round($resizeFactor * $this->source->cropWidth);
       } // if
-    }
-    else if ($this->isCroppingNeeded()) // No resizing is needed but we still need to crop
-    {
+    } else if ($this->isCroppingNeeded()) {
+      // No resizing is needed but we still need to crop
       $ratio  = ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
         ? $this->resizeUncroppedWidthFactor() : $this->resizeUncroppedHeightFactor();
 
@@ -897,36 +835,28 @@ class SLIR
     } // if
 
     // Determine the quality of the output image
-    $this->rendered->quality    = ($this->request->quality !== NULL)
+    $this->rendered->quality    = ($this->request->quality !== null)
       ? $this->request->quality : SLIRConfig::$defaultQuality;
 
     // Set up the appropriate image handling parameters based on the original
     // image's mime type
     // @todo some of this code should be moved to the SLIRImage class
     $this->rendered->mime       = $this->source->mime;
-    if ($this->source->isJPEG())
-    {
-      $this->rendered->progressive  = ($this->request->progressive !== NULL)
+    if ($this->source->isJPEG()) {
+      $this->rendered->progressive  = ($this->request->progressive !== null)
         ? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
-      $this->rendered->background   = NULL;
-    }
-    else if ($this->source->isPNG())
-    {
-      $this->rendered->progressive  = FALSE;
-    }
-    else if ($this->source->isGIF() || $this->source->isBMP())
-    {
+      $this->rendered->background   = null;
+    } else if ($this->source->isPNG()) {
+      $this->rendered->progressive  = false;
+    } else if ($this->source->isGIF() || $this->source->isBMP()) {
       // We convert GIFs and BMPs to PNGs
       $this->rendered->mime     = 'image/png';
-      $this->rendered->progressive  = FALSE;
-    }
-    else
-    {
+      $this->rendered->progressive  = false;
+    } else {
       throw new RuntimeException("Unable to determine type of source image ({$this->source->mime})");
     } // if
 
-    if ($this->isBackgroundFillOn())
-    {
+    if ($this->isBackgroundFillOn()) {
       $this->rendered->background = $this->request->background;
     }
   }
@@ -939,13 +869,10 @@ class SLIR
    */
   private function shouldResizeBasedOnWidth()
   {
-    if (floor($this->resizeWidthFactor() * $this->source->height) <= $this->request->height)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (floor($this->resizeWidthFactor() * $this->source->height) <= $this->request->height) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -956,13 +883,10 @@ class SLIR
    */
   private function shouldResizeBasedOnHeight()
   {
-    if (floor($this->resizeHeightFactor() * $this->source->width) <= $this->request->width)
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (floor($this->resizeHeightFactor() * $this->source->width) <= $this->request->width) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -972,12 +896,9 @@ class SLIR
    */
   private function resizeWidthFactor()
   {
-    if ($this->source->cropWidth !== NULL)
-    {
+    if ($this->source->cropWidth !== null) {
       return $this->resizeCroppedWidthFactor();
-    }
-    else
-    {
+    } else {
       return $this->resizeUncroppedWidthFactor();
     }
   }
@@ -1006,12 +927,9 @@ class SLIR
    */
   private function resizeHeightFactor()
   {
-    if ($this->source->cropHeight !== NULL)
-    {
+    if ($this->source->cropHeight !== null) {
       return $this->resizeCroppedHeightFactor();
-    }
-    else
-    {
+    } else {
       return $this->resizeUncroppedHeightFactor();
     }
   }
@@ -1065,27 +983,22 @@ class SLIR
    */
   private function isCached($cacheFilePath)
   {
-    if (!file_exists($cacheFilePath))
-    {
-      return FALSE;
+    if (!file_exists($cacheFilePath)) {
+      return false;
     }
 
     $cacheModified  = filemtime($cacheFilePath);
 
-    if (!$cacheModified)
-    {
-      return FALSE;
+    if (!$cacheModified) {
+      return false;
     }
 
     $imageModified  = filectime($this->request->fullPath());
 
-    if ($imageModified >= $cacheModified)
-    {
-      return FALSE;
-    }
-    else
-    {
-      return TRUE;
+    if ($imageModified >= $cacheModified) {
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -1131,12 +1044,9 @@ class SLIR
    */
   private function requestURI()
   {
-    if (SLIRConfig::$forceQueryString === TRUE)
-    {
+    if (SLIRConfig::$forceQueryString === true) {
       return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($_GET);
-    }
-    else
-    {
+    } else {
       return $_SERVER['REQUEST_URI'];
     }
   }
@@ -1170,13 +1080,10 @@ class SLIR
   {
     $this->cacheRendered();
 
-    if ($this->shouldUseRequestCache())
-    {
-      return $this->cacheRequest($this->rendered->data, TRUE);
-    }
-    else
-    {
-      return TRUE;
+    if ($this->shouldUseRequestCache()) {
+      return $this->cacheRequest($this->rendered->data, true);
+    } else {
+      return true;
     }
   }
 
@@ -1189,12 +1096,12 @@ class SLIR
   private function cacheRendered()
   {
     $this->rendered->data = $this->cacheFile(
-      $this->renderedCacheFilePath(),
-      $this->rendered->data,
-      TRUE
+        $this->renderedCacheFilePath(),
+        $this->rendered->data,
+        true
     );
 
-    return TRUE;
+    return true;
   }
 
   /**
@@ -1205,13 +1112,13 @@ class SLIR
    * @param boolean $copyEXIF
    * @return string
    */
-  private function cacheRequest($imageData, $copyEXIF = TRUE)
+  private function cacheRequest($imageData, $copyEXIF = true)
   {
     return $this->cacheFile(
-      $this->requestCacheFilePath(),
-      $imageData,
-      $copyEXIF,
-      $this->renderedCacheFilePath()
+        $this->requestCacheFilePath(),
+        $imageData,
+        $copyEXIF,
+        $this->renderedCacheFilePath()
     );
   }
 
@@ -1225,28 +1132,24 @@ class SLIR
    * @param string $symlinkToPath
    * @return string|boolean
    */
-  private function cacheFile($cacheFilePath, $imageData, $copyEXIF = TRUE, $symlinkToPath = NULL)
+  private function cacheFile($cacheFilePath, $imageData, $copyEXIF = true, $symlinkToPath = null)
   {
     $this->initializeCache();
 
     // Try to create just a symlink to minimize disk space
-    if ($symlinkToPath && function_exists('symlink') && (file_exists($cacheFilePath) || symlink($symlinkToPath, $cacheFilePath)))
-    {
-      return TRUE;
+    if ($symlinkToPath && function_exists('symlink') && (file_exists($cacheFilePath) || symlink($symlinkToPath, $cacheFilePath))) {
+      return true;
     }
 
     // Create the file
-    if (!file_put_contents($cacheFilePath, $imageData))
-    {
-      return FALSE;
+    if (!file_put_contents($cacheFilePath, $imageData)) {
+      return false;
     }
 
-    if (SLIRConfig::$copyEXIF == TRUE && $copyEXIF && $this->source->isJPEG())
-    {
+    if (SLIRConfig::$copyEXIF == true && $copyEXIF && $this->source->isJPEG()) {
       // Copy IPTC data
-      if (isset($this->source->iptc) && !$this->copyIPTC($cacheFilePath))
-      {
-        return FALSE;
+      if (isset($this->source->iptc) && !$this->copyIPTC($cacheFilePath)) {
+        return false;
       }
 
       // Copy EXIF data
@@ -1262,7 +1165,7 @@ class SLIR
    * @since 2.0
    * @uses PEL
    * @param string $cacheFilePath
-   * @return mixed string contents of image on success, FALSE on failure
+   * @return mixed string contents of image on success, false on failure
    */
   private function copyEXIF($cacheFilePath)
   {
@@ -1272,14 +1175,12 @@ class SLIR
     $jpeg   = new PelJpeg($this->source->fullPath());
     $exif   = $jpeg->getExif();
 
-    if ($exif)
-    {
+    if ($exif) {
       $jpeg   = new PelJpeg($cacheFilePath);
       $jpeg->setExif($exif);
       $imageData  = $jpeg->getBytes();
-      if (!file_put_contents($cacheFilePath, $imageData))
-      {
-        return FALSE;
+      if (!file_put_contents($cacheFilePath, $imageData)) {
+        return false;
       }
 
       return $imageData;
@@ -1296,17 +1197,16 @@ class SLIR
    */
   private function initializeCache()
   {
-    if ($this->isCacheInitialized)
-    {
-      return TRUE;
+    if ($this->isCacheInitialized) {
+      return true;
     }
 
     $this->initializeDirectory(SLIRConfig::$pathToCacheDir);
-    $this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/rendered', FALSE);
-    $this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/request', FALSE);
+    $this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/rendered', false);
+    $this->initializeDirectory(SLIRConfig::$pathToCacheDir . '/request', false);
 
-    $this->isCacheInitialized = TRUE;
-    return TRUE;
+    $this->isCacheInitialized = true;
+    return true;
   }
 
   /**
@@ -1315,33 +1215,29 @@ class SLIR
    * @param boolean $verifyReadWriteability
    * @return boolean
    */
-  private function initializeDirectory($path, $verifyReadWriteability = TRUE, $test = FALSE)
+  private function initializeDirectory($path, $verifyReadWriteability = true, $test = false)
   {
-    if (!file_exists($path))
-    {
-      if (!@mkdir($path, 0755, TRUE))
-      {
+    if (!file_exists($path)) {
+      if (!@mkdir($path, 0755, true)) {
         header('HTTP/1.1 500 Internal Server Error');
         throw new RuntimeException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
       }
     }
 
-    if (!$verifyReadWriteability)
-      return TRUE;
+    if (!$verifyReadWriteability) {
+      return true;
+    }
 
     // Make sure we can read and write the cache directory
-    if (!is_readable($path))
-    {
+    if (!is_readable($path)) {
       header('HTTP/1.1 500 Internal Server Error');
       throw new RuntimeException("Directory ($path) is not readable");
-    }
-    else if (!is_writable($path))
-    {
+    } else if (!is_writable($path)) {
       header('HTTP/1.1 500 Internal Server Error');
       throw new RuntimeException("Directory ($path) is not writable");
     }
 
-    return TRUE;
+    return true;
   }
 
   /**
@@ -1353,12 +1249,12 @@ class SLIR
   private function serveSourceImage()
   {
     $this->serveFile(
-      $this->source->fullPath(),
-      NULL,
-      NULL,
-      NULL,
-      $this->source->mime,
-      'source'
+        $this->source->fullPath(),
+        null,
+        null,
+        null,
+        $this->source->mime,
+        'source'
     );
 
     exit();
@@ -1399,19 +1295,18 @@ class SLIR
   {
     // Serve the image
     $this->serveFile(
-      $cacheFilePath,
-      NULL,
-      NULL,
-      NULL,
-      NULL,
-      "$cacheType cache"
+        $cacheFilePath,
+        null,
+        null,
+        null,
+        null,
+        "$cacheType cache"
     );
 
     // If we are serving from the rendered cache, create a symlink in the
     // request cache to the rendered file
-    if ($cacheType != 'request')
-    {
-      $this->cacheRequest(file_get_contents($cacheFilePath), FALSE);
+    if ($cacheType != 'request') {
+      $this->cacheRequest(file_get_contents($cacheFilePath), false);
     }
 
     exit();
@@ -1443,12 +1338,12 @@ class SLIR
 
     // Serve the file
     $this->serveFile(
-      NULL,
-      $this->rendered->data,
-      gmdate('U'),
-      $this->rendered->fileSize(),
-      $this->rendered->mime,
-      'rendered'
+        null,
+        $this->rendered->data,
+        gmdate('U'),
+        $this->rendered->fileSize(),
+        $this->rendered->mime,
+        'rendered'
     );
 
     // Clean up memory
@@ -1465,45 +1360,36 @@ class SLIR
    * @param string $data Data of file to serve
    * @param integer $lastModified Timestamp of when the file was last modified
    * @param string $mimeType
-   * @param string $SLIRheader
+   * @param string $slirHeader
    * @return void
    */
-  private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $SLIRHeader)
+  private function serveFile($imagePath, $data, $lastModified, $length, $mimeType, $slirHeader)
   {
-    if ($imagePath !== NULL)
-    {
-      if ($lastModified === NULL)
-      {
+    if ($imagePath !== null) {
+      if ($lastModified === null) {
         $lastModified = filemtime($imagePath);
       }
-      if ($length === NULL)
-      {
+      if ($length === null) {
         $length     = filesize($imagePath);
       }
-      if ($mimeType === NULL)
-      {
+      if ($mimeType === null) {
         $mimeType   = $this->mimeType($imagePath);
       }
-    }
-    else if ($length === NULL)
-    {
+    } else if ($length === null) {
       $length   = strlen($data);
     } // if
 
     // Serve the headers
     $this->serveHeaders(
-      $this->lastModified($lastModified),
-      $mimeType,
-      $length,
-      $SLIRHeader
+        $this->lastModified($lastModified),
+        $mimeType,
+        $length,
+        $slirHeader
     );
 
-    if ($data === NULL)
-    {
+    if ($data === null) {
       readfile($imagePath);
-    }
-    else
-    {
+    } else {
       echo $data;
     }
   }
@@ -1515,10 +1401,10 @@ class SLIR
    * @param string $lastModified Time when file was last modified in 'D, d M Y H:i:s' format
    * @param string $mimeType
    * @param integer $fileSize
-   * @param string $SLIRHeader
+   * @param string $slirHeader
    * @return void
    */
-  private function serveHeaders($lastModified, $mimeType, $fileSize, $SLIRHeader)
+  private function serveHeaders($lastModified, $mimeType, $fileSize, $slirHeader)
   {
     header("Last-Modified: $lastModified");
     header("Content-Type: $mimeType");
@@ -1526,7 +1412,7 @@ class SLIR
 
     // Lets us easily know whether the image was rendered from scratch,
     // from the cache, or served directly from the source image
-    header("X-Content-SLIR: $SLIRHeader");
+    header("X-Content-SLIR: $slirHeader");
 
     // Keep in browser cache how long?
     header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL)));
@@ -1570,10 +1456,9 @@ class SLIR
   {
     $ifModifiedSince = (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) ?
       stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
-      FALSE;
+      false;
 
-    if (!$ifModifiedSince || $ifModifiedSince != $lastModified)
-    {
+    if (!$ifModifiedSince || $ifModifiedSince != $lastModified) {
       return;
     }
 

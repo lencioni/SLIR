@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright ? 2011, Joe Lencioni
+ * @copyright Copyright © 2011, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -78,13 +78,13 @@ class SLIRExceptionHandler
     $request  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] : '';
 
     $message  = vsprintf("\n[%s] [%s %s] %s\n\nREFERRER: %s\n\nREQUEST: %s\n\n%s", array(
-      @gmdate('D M d H:i:s Y'),
-      $_SERVER['REMOTE_ADDR'],
-      $userAgent,
-      $e->getMessage(),
-      $referrer,
-      $request,
-      $e->getTraceAsString(),
+        @gmdate('D M d H:i:s Y'),
+        $_SERVER['REMOTE_ADDR'],
+        $userAgent,
+        $e->getMessage(),
+        $referrer,
+        $request,
+        $e->getTraceAsString(),
     ));
 
     return @error_log($message, 3, SLIRConfig::$pathToErrorLog);
@@ -103,18 +103,16 @@ class SLIRExceptionHandler
 
     // determine width
     $characters = 0;
-    foreach($text as $line)
-    {
-      if (($temp = strlen($line)) > $characters)
-      {
+    foreach ($text as $line) {
+      if (($temp = strlen($line)) > $characters) {
         $characters = $temp;
       }
     } // foreach
 
     // set up the image
     $image  = imagecreatetruecolor(
-      $characters * self::CHAR_WIDTH,
-      count($text) * self::LINE_HEIGHT
+        $characters * self::CHAR_WIDTH,
+        count($text) * self::LINE_HEIGHT
     );
     $white  = imagecolorallocate($image, 255, 255, 255);
     imagefill($image, 0, 0, $white);
@@ -124,15 +122,14 @@ class SLIRExceptionHandler
 
     // write the text to the image
     $i  = 0;
-    foreach($text as $line)
-    {
+    foreach ($text as $line) {
       imagestring(
-        $image,
-        self::TEXT_SIZE,
-        0,
-        $i * self::LINE_HEIGHT,
-        $line,
-        $textColor
+          $image,
+          self::TEXT_SIZE,
+          0,
+          $i * self::LINE_HEIGHT,
+          $line,
+          $textColor
       );
       ++$i;
     }
@@ -166,12 +163,9 @@ class SLIRExceptionHandler
    */
   public static function handleException(Exception $e)
   {
-    if (SLIRConfig::$enableErrorImages === TRUE)
-    {
+    if (SLIRConfig::$enableErrorImages === true) {
       self::errorImage($e);
-    }
-    else
-    {
+    } else {
       self::errorText($e);
     }
   }
@@ -188,10 +182,9 @@ class SLIRExceptionHandler
    * @param integer $lineno Line number the error was raised at,
    * @param array $context Points to the active symbol table at the point the error occurred
    */
-  public static function handleError($severity, $message, $filename = NULL, $lineno = NULL, $context = array())
+  public static function handleError($severity, $message, $filename = null, $lineno = null, $context = array())
   {
-    if (!(error_reporting() & $severity))
-    {
+    if (!(error_reporting() & $severity)) {
       // This error code is not included in error_reporting
       return;
     }

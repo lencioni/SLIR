@@ -47,13 +47,10 @@ class SLIRCropperFace implements SLIRCropper
    */
   private function shouldCropTopAndBottom(SLIRImage $image)
   {
-    if ($image->cropRatio() > $image->ratio())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($image->cropRatio() > $image->ratio()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -67,16 +64,14 @@ class SLIRCropperFace implements SLIRCropper
   private function getCrop(SLIRImage $image)
   {
     // This is way too slow to not have apc caching face detection data for us
-    if (!function_exists('apc_fetch'))
-    {
-      return NULL;
+    if (!function_exists('apc_fetch')) {
+      return null;
     }
 
     $key    = 'slirface_' . md5($image->path);
-    $cached   = (function_exists('apc_fetch')) ? apc_fetch($key) : FALSE;
+    $cached   = (function_exists('apc_fetch')) ? apc_fetch($key) : false;
 
-    if ($cached === FALSE)
-    {
+    if ($cached === false) {
       require_once '../facedetector/facedetector.class.php';
       $detector = new SLIRFaceDetector();
 
@@ -86,15 +81,12 @@ class SLIRCropperFace implements SLIRCropper
       $smallerA = pow(80, 2);
       $ratio    = sqrt($smallerA) / sqrt($a);
 
-      if ($ratio < 1)
-      {
+      if ($ratio < 1) {
         $smallerW = $image->width * $ratio;
         $smallerH = $image->height * $ratio;
         $smaller  = imagecreatetruecolor($smallerW, $smallerH);
         imagecopyresampled($smaller, $image->image, 0, 0, 0, 0, $smallerW, $smallerH, $image->width, $image->height);
-      }
-      else
-      {
+      } else {
         $smaller  = $image->image;
         $smallerW = $image->width;
       }
@@ -106,34 +98,28 @@ class SLIRCropperFace implements SLIRCropper
       // grayscale if the size is small. but why?
 
       // load up our detection data
-      $cascade  = json_decode(file_get_contents(SLIR_DOCUMENT_ROOT . SLIR_DIR . '/facedetector/face.json'), TRUE);
+      $cascade  = json_decode(file_get_contents(SLIR_DOCUMENT_ROOT . SLIR_DIR . '/facedetector/face.json'), true);
 
       // detect faces
       $faces      = $detector->detect_objects($smaller, $cascade, 5, 1);
-      if (function_exists('apc_store'))
-      {
+      if (function_exists('apc_store')) {
         apc_store($key, array('width' => $smallerW, 'faces' => $faces));
       }
-    }
-    else // Face detection data was cached
-    {
+    } else {
+      // Face detection data was cached
       $faces  = $cached['faces'];
       $ratio  = $cached['width'] / $image->width;
     }
 
-    if (count($faces) > 0)
-    {
+    if (count($faces) > 0) {
       $confidenceThreshold  = 10;
 
-      if ($this->shouldCropTopAndBottom($image))
-      {
+      if ($this->shouldCropTopAndBottom($image)) {
 
         /* // this outlines the faces in red
         $color = imagecolorallocate($image->image, 255, 0, 0); //red
-        foreach($faces as $face)
-        {
-          if ($face['confidence'] > $confidenceThreshold)
-          {
+        foreach ($faces as $face) {
+          if ($face['confidence'] > $confidenceThreshold) {
             $face['x']    /= $ratio;
             $face['y']    /= $ratio;
             $face['height'] /= $ratio;
@@ -148,71 +134,57 @@ class SLIRCropperFace implements SLIRCropper
         */
 
         // @todo extract this into its own function (and generalize it for top/bottom cropping as well as left/right cropping)
-        $highest  = NULL;
-        $lowest   = NULL;
-        foreach($faces as $face)
-        {
-          if ($face['confidence'] > $confidenceThreshold)
-          {
+        $highest  = null;
+        $lowest   = null;
+        foreach ($faces as $face) {
+          if ($face['confidence'] > $confidenceThreshold) {
             $face['x']    /= $ratio;
             $face['y']    /= $ratio;
             $face['height'] /= $ratio;
             $face['width']  /= $ratio;
 
-            if ($highest === NULL || $face['y'] < $highest)
-            {
+            if ($highest === null || $face['y'] < $highest) {
               $highest  = $face['y'];
             }
-            if ($lowest === NULL || $face['y'] + $face['height'] > $lowest)
-            {
+            if ($lowest === null || $face['y'] + $face['height'] > $lowest) {
               $lowest   = $face['y'] + $face['height'];
             }
           }
 
-          if ($highest !== NULL && $lowest !== NULL)
-          {
+          if ($highest !== null && $lowest !== null) {
             $midpoint   = $highest + (($lowest - $highest) / 2);
             return min($image->height - $image->cropHeight, max(0, $midpoint - ($image->cropHeight / 2)));
           }
         }
 
-      }
-      else
-      {
-        $leftest  = NULL;
-        $rightest = NULL;
-        foreach($faces as $face)
-        {
-          if ($face['confidence'] > $confidenceThreshold)
-          {
+      } else {
+        $leftest  = null;
+        $rightest = null;
+        foreach ($faces as $face) {
+          if ($face['confidence'] > $confidenceThreshold) {
             $face['x']    /= $ratio;
             $face['y']    /= $ratio;
             $face['height'] /= $ratio;
             $face['width']  /= $ratio;
 
-            if ($leftest === NULL || $face['x'] < $leftest)
-            {
+            if ($leftest === null || $face['x'] < $leftest) {
               $leftest  = $face['x'];
             }
-            if ($rightest === NULL || $face['x'] + $face['width'] > $rightest)
-            {
+            if ($rightest === null || $face['x'] + $face['width'] > $rightest) {
               $rightest = $face['x'] + $face['width'];
             }
           }
 
 
-          if ($leftest !== NULL && $rightest !== NULL)
-          {
+          if ($leftest !== null && $rightest !== null) {
             $midpoint   = $leftest + (($rightest - $leftest) / 2);
             return min($image->width - $image->cropWidth, max(0, $midpoint - ($image->cropWidth / 2)));
           }
         }
       }
-    }
-    else
-    {
+    } else {
       // @todo fallback to another cropper
-      return NULL;
+      return null;
     }
   }
 }

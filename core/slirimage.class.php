@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright ? 2011, Joe Lencioni
+ * @copyright Copyright © 2011, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -163,7 +163,7 @@ class SLIRImage
     {
       case 'path':
         $this->setPath($value);
-      break;
+          break;
 
       case 'image':
       case 'mime':
@@ -177,14 +177,13 @@ class SLIRImage
       case 'progressive':
       case 'background':
         return $this->$name = $value;
-      break;
+          break;
 
       default:
-        if (property_exists($this, $name))
-        {
+        if (property_exists($this, $name)) {
           $this->$name  = $value;
         }
-      break;
+          break;
     } // switch
   }
 
@@ -196,12 +195,11 @@ class SLIRImage
     switch($name)
     {
       case 'data':
-        if ($this->data === NULL)
-        {
+        if ($this->data === null) {
           $this->data = $this->getData();
         }
         return $this->data;
-      break;
+          break;
 
       case 'image':
       case 'mime':
@@ -215,14 +213,13 @@ class SLIRImage
       case 'progressive':
       case 'background':
         return $this->$name;
-      break;
+          break;
 
       default:
-        if (property_exists($this, $name))
-        {
+        if (property_exists($this, $name)) {
           return $this->$name;
         }
-      break;
+          break;
     }
   }
 
@@ -231,18 +228,16 @@ class SLIRImage
    * @param boolean $loadImage
    * @since 2.0
    */
-  public function setPath($path, $loadImage = TRUE)
+  public function setPath($path, $loadImage = true)
   {
     $this->path = $path;
 
-    if ($loadImage === TRUE)
-    {
+    if ($loadImage === true) {
       // Set the image info (width, height, mime type, etc.)
       $this->setImageInfoFromFile();
 
       // Make sure the file is actually an image
-      if (!$this->isImage())
-      {
+      if (!$this->isImage()) {
         header('HTTP/1.1 400 Bad Request');
         throw new RuntimeException('Requested file is not an accepted image type: ' . $this->fullPath());
       } // if
@@ -264,12 +259,9 @@ class SLIRImage
    */
   final public function cropRatio()
   {
-    if ($this->cropHeight != 0)
-    {
+    if ($this->cropHeight != 0) {
       return $this->cropWidth / $this->cropHeight;
-    }
-    else
-    {
+    } else {
       return 0;
     }
   }
@@ -300,13 +292,10 @@ class SLIRImage
    */
   final public function isImage()
   {
-    if (substr($this->mime, 0, 6) == 'image/')
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (substr($this->mime, 0, 6) == 'image/') {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -318,8 +307,7 @@ class SLIRImage
   final public function isOfType($type = 'JPEG')
   {
     $method = "is$type";
-    if (method_exists($this, $method) && isset($imageArray['mime']))
-    {
+    if (method_exists($this, $method) && isset($imageArray['mime'])) {
       return $this->$method();
     }
   }
@@ -330,13 +318,10 @@ class SLIRImage
    */
   final public function isJPEG()
   {
-    if (isset($this->mimeTypes['jpeg'][$this->mime]))
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (isset($this->mimeTypes['jpeg'][$this->mime])) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -346,25 +331,19 @@ class SLIRImage
    */
   final public function isGIF()
   {
-    if (isset($this->mimeTypes['gif'][$this->mime]))
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (isset($this->mimeTypes['gif'][$this->mime])) {
+      return true;
+    } else {
+      return false;
     }
   }
 
   final public function isBMP()
   {
-    if (isset($this->mimeTypes['bmp'][$this->mime]))
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (isset($this->mimeTypes['bmp'][$this->mime])) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -374,13 +353,10 @@ class SLIRImage
    */
   final public function isPNG()
   {
-    if (isset($this->mimeTypes['png'][$this->mime]))
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if (isset($this->mimeTypes['png'][$this->mime])) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -390,13 +366,10 @@ class SLIRImage
    */
   final public function isAbleToHaveTransparency()
   {
-    if ($this->isPNG() || $this->isGIF())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->isPNG() || $this->isGIF()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -406,15 +379,11 @@ class SLIRImage
    */
   private function isCroppingNeeded()
   {
-    if ($this->cropWidth !== NULL && $this->cropHeight != NULL
-      && ($this->cropWidth < $this->width || $this->cropHeight < $this->height)
-    )
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->cropWidth !== null && $this->cropHeight != null && ($this->cropWidth < $this->width || $this->cropHeight < $this->height)
+    ) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -424,13 +393,10 @@ class SLIRImage
    */
   private function isSharpeningDesired()
   {
-    if ($this->isJPEG())
-    {
-      return TRUE;
-    }
-    else
-    {
-      return FALSE;
+    if ($this->isJPEG()) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -445,8 +411,7 @@ class SLIRImage
     $this->mime   = $info['mime'];
     $this->width  = $info['width'];
     $this->height = $info['height'];
-    if (isset($info['iptc']))
-    {
+    if (isset($info['iptc'])) {
       $this->iptc   = $info['iptc'];
     }
   }
@@ -461,8 +426,7 @@ class SLIRImage
   {
     $info = getimagesize($this->fullPath(), $extraInfo);
 
-    if ($info == FALSE)
-    {
+    if ($info == false) {
       header('HTTP/1.1 400 Bad Request');
       throw new RuntimeException('getimagesize failed (source file may not be an image): ' . $this->fullPath());
     }
@@ -471,8 +435,7 @@ class SLIRImage
     $info['height'] =& $info[1];
 
     // IPTC
-    if(is_array($extraInfo) && isset($extraInfo['APP13']))
-    {
+    if (is_array($extraInfo) && isset($extraInfo['APP13'])) {
       $info['iptc'] = iptcparse($extraInfo['APP13']);
     }
 
@@ -494,8 +457,8 @@ class SLIRImage
    * @return resource
    * @link http://us.php.net/manual/en/function.imagecreatefromwbmp.php#86214
    */
-  public function ImageCreateFromBmp($path)
-    {
+  public function imagecreatefrombmp($path)
+  {
     // Load the image into a string
     $read = file_get_contents($path);
 
@@ -505,8 +468,7 @@ class SLIRImage
 
     // Process the header
     // Structure: http://www.fastgraph.com/help/bmp_header_format.html
-    if (substr($header, 0, 4) == '424d')
-    {
+    if (substr($header, 0, 4) == '424d') {
       // Get the width 4 bytes
       $width  = hexdec($header[38] . $header[39] . $header[36] . $header[37]);
 
@@ -527,45 +489,41 @@ class SLIRImage
     // Calculate if padding at the end-line is needed
     // Divided by two to keep overview.
     // 1 byte = 2 HEX-chars
-    $body_size    = (strlen($body) / 2);
-    $header_size  = ($width * $height);
+    $bodySize    = (strlen($body) / 2);
+    $headerSize  = ($width * $height);
 
     // Use end-line padding? Only when needed
-    $usePadding = ($body_size > ($header_size * 3) + 4);
+    $usePadding = ($bodySize > ($headerSize * 3) + 4);
 
     // Using a for-loop with index-calculation instaid of str_split to avoid large memory consumption
     // Calculate the next DWORD-position in the body
-    for ($i = 0; $i < $body_size; $i += 3)
-    {
+    for ($i = 0; $i < $bodySize; $i += 3) {
         // Calculate line-ending and padding
-        if ($x >= $width)
-        {
-        // If padding needed, ignore image-padding
-        // Shift i to the ending of the current 32-bit-block
-        if ($usePadding)
-        {
-          $i += $width % 4;
+        if ($x >= $width) {
+          // If padding needed, ignore image-padding
+          // Shift i to the ending of the current 32-bit-block
+          if ($usePadding) {
+            $i += $width % 4;
+          }
+
+          // Reset horizontal position
+          $x  = 0;
+
+          // Raise the height-position (bottom-up)
+          ++$y;
+
+          // Reached the image-height? Break the for-loop
+          if ($y > $height) {
+            break;
+          }
         }
-
-        // Reset horizontal position
-        $x  = 0;
-
-        // Raise the height-position (bottom-up)
-        ++$y;
-
-        // Reached the image-height? Break the for-loop
-        if ($y > $height)
-        {
-          break;
-        }
-      }
 
       // Calculation of the RGB-pixel (defined as BGR in image-data)
-      // Define $i_pos as absolute position in the body
-      $i_pos  = $i * 2;
-      $r    = hexdec($body[$i_pos + 4] . $body[$i_pos + 5]);
-      $g    = hexdec($body[$i_pos + 2] . $body[$i_pos + 3]);
-      $b    = hexdec($body[$i_pos] . $body[$i_pos + 1]);
+      // Define $iPos as absolute position in the body
+      $iPos = $i * 2;
+      $r    = hexdec($body[$iPos + 4] . $body[$iPos + 5]);
+      $g    = hexdec($body[$iPos + 2] . $body[$iPos + 3]);
+      $b    = hexdec($body[$iPos] . $body[$iPos + 1]);
 
       // Calculate and draw the pixel
       $color  = imagecolorallocate($image, $r, $g, $b);
@@ -580,7 +538,7 @@ class SLIRImage
 
     // Return image-object
     return $image;
-    }
+  }
 
   /**
    * @since 2.0
@@ -588,29 +546,19 @@ class SLIRImage
    */
   final public function createImageFromFile()
   {
-    try
-    {
-      if ($this->isJPEG())
-      {
-        $this->image  = ImageCreateFromJpeg($this->fullPath());
+    try {
+      if ($this->isJPEG()) {
+        $this->image  = imagecreatefromjpeg($this->fullPath());
+      } else if ($this->isGIF()) {
+        $this->image  = imagecreatefromgif($this->fullPath());
+      } else if ($this->isPNG()) {
+        $this->image  = imagecreatefrompng($this->fullPath());
+      } else if ($this->isBMP()) {
+        $this->image  = $this->imagecreatefrombmp($this->fullPath());
       }
-      else if ($this->isGIF())
-      {
-        $this->image  = ImageCreateFromGif($this->fullPath());
-      }
-      else if ($this->isPNG())
-      {
-        $this->image  = ImageCreateFromPng($this->fullPath());
-      }
-      else if ($this->isBMP())
-      {
-        $this->image  = $this->ImageCreateFromBmp($this->fullPath());
-      }
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
       // Try an alternate catch-all method
-      $this->image  = ImageCreateFromString(file_get_contents($this->fullPath()));
+      $this->image  = imagecreatefromstring(file_get_contents($this->fullPath()));
     }
   }
 
@@ -622,25 +570,20 @@ class SLIRImage
    * @since 2.0
    * @return void
    */
-  final public function background($isBackgroundFillOn, $image = NULL)
+  final public function background($isBackgroundFillOn, $image = null)
   {
-    if (!$this->isAbleToHaveTransparency())
-    {
+    if (!$this->isAbleToHaveTransparency()) {
       return;
     }
 
-    if ($image === NULL)
-    {
+    if ($image === null) {
       $image  = $this->image;
     }
 
-    if (!$isBackgroundFillOn)
-    {
+    if (!$isBackgroundFillOn) {
       // If this is a GIF or a PNG, we need to set up transparency
       $this->transparency($image);
-    }
-    else
-    {
+    } else {
       // Fill the background with the specified color for matting purposes
       $this->fillBackground($image);
     } // if
@@ -652,8 +595,8 @@ class SLIRImage
    */
   private function transparency($image)
   {
-    imagealphablending($image, FALSE);
-    imagesavealpha($image, TRUE);
+    imagealphablending($image, false);
+    imagesavealpha($image, true);
   }
 
   /**
@@ -663,10 +606,10 @@ class SLIRImage
   private function fillBackground($image)
   {
     $background = imagecolorallocate(
-      $image,
-      hexdec($this->background[0].$this->background[1]),
-      hexdec($this->background[2].$this->background[3]),
-      hexdec($this->background[4].$this->background[5])
+        $image,
+        hexdec($this->background[0].$this->background[1]),
+        hexdec($this->background[2].$this->background[3]),
+        hexdec($this->background[4].$this->background[5])
     );
 
     imagefilledrectangle($image, 0, 0, $this->width, $this->height, $background);
@@ -678,8 +621,7 @@ class SLIRImage
    */
   final public function interlace()
   {
-    if ($this->progressive)
-    {
+    if ($this->progressive) {
       imageinterlace($this->image, 1);
     }
   }
@@ -690,12 +632,9 @@ class SLIRImage
    */
   private function getWidth()
   {
-    if ($this->cropWidth === NULL)
-    {
+    if ($this->cropWidth === null) {
       return $this->width;
-    }
-    else
-    {
+    } else {
       return $this->cropWidth;
     }
   }
@@ -706,12 +645,9 @@ class SLIRImage
    */
   private function getHeight()
   {
-    if ($this->cropHeight === NULL)
-    {
+    if ($this->cropHeight === null) {
       return $this->height;
-    }
-    else
-    {
+    } else {
       return $this->cropHeight;
     }
   }
@@ -722,12 +658,9 @@ class SLIRImage
    */
   private function getQuality()
   {
-    if ($this->isJPEG())
-    {
+    if ($this->isJPEG()) {
       return $this->quality;
-    }
-    else if ($this->isPNG() || $this->isGIF())
-    {
+    } else if ($this->isPNG() || $this->isGIF()) {
       // We convert GIF to PNG, and PNG needs a compression level of 0 (no compression) through 9
       return round(10 - ($this->quality / 10));
     }
@@ -737,40 +670,35 @@ class SLIRImage
    * Determines if the image can be converted to a palette image
    *
    * @since 2.0
-   * @return array colors in image, otherwise FALSE if image is not palette
+   * @return array colors in image, otherwise false if image is not palette
    */
   private function isPalette()
   {
     $colors = array();
 
     // Loop over all of the pixels in the image, counting the colors and checking their alpha channels
-    for ($x = 0, $width = $this->getWidth(); $x < $width; ++$x)
-    {
-      for ($y = 0, $height = $this->getHeight(); $y < $height; ++$y)
-      {
-        $color      = ImageColorAt($this->image, $x, $y);
+    for ($x = 0, $width = $this->getWidth(); $x < $width; ++$x) {
+      for ($y = 0, $height = $this->getHeight(); $y < $height; ++$y) {
+        $color      = imagecolorat($this->image, $x, $y);
 
-        if (isset($colors[$color]))
-        {
+        if (isset($colors[$color])) {
           // This color has already been checked, move on to the next pixel
           continue;
         }
 
-        $colors[$color] = TRUE;
+        $colors[$color] = true;
 
-        if (count($colors) > 256)
-        {
+        if (count($colors) > 256) {
           // Too many colors to convert to a palette image without losing quality
-          return FALSE;
+          return false;
         }
 
         // Get the alpha channel of the color
         $alpha  = ($color & 0x7F000000) >> 24;
 
         // What is the threshold for visibility in an alpha channel? (out of 127)
-        if ($alpha > 1 && $alpha < 126)
-        {
-          return FALSE;
+        if ($alpha > 1 && $alpha < 126) {
+          return false;
         }
       }
     }
@@ -785,8 +713,8 @@ class SLIRImage
    */
   private function trueColorToPalette($dither, $ncolors)
   {
-    $palette  = ImageCreate($this->getWidth(), $this->getHeight());
-    ImageCopy($palette, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
+    $palette  = imagecreate($this->getWidth(), $this->getHeight());
+    imagecopy($palette, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
     $this->image  = $palette;
     $this->mime   = 'image/png';
 
@@ -807,9 +735,8 @@ class SLIRImage
   final public function optimize()
   {
     $colors = $this->isPalette();
-    if ($colors !== FALSE)
-    {
-      $this->trueColorToPalette(FALSE, count($colors));
+    if ($colors !== false) {
+      $this->trueColorToPalette(false, count($colors));
     }
   }
 
@@ -820,18 +747,13 @@ class SLIRImage
    * @param string $className Name of the cropper class name to get
    * @return string
    */
-  private function getCropperClassName($className = NULL)
+  private function getCropperClassName($className = null)
   {
-    if ($className !== NULL)
-    {
+    if ($className !== null) {
       return $className;
-    }
-    else if ($this->cropper !== NULL)
-    {
+    } else if ($this->cropper !== null) {
       return $this->cropper;
-    }
-    else
-    {
+    } else {
       return SLIRConfig::$defaultCropper;
     }
   }
@@ -843,14 +765,13 @@ class SLIRImage
    * @param string $className Name of the cropper class to get
    * @return SLIRCropper
    */
-  final public function getCropperClass($className = NULL)
+  final public function getCropperClass($className = null)
   {
     $cropClass  = strtolower($this->getCropperClassName($className));
     $fileName = SLIRConfig::$pathToSLIR . "/croppers/$cropClass.class.php";
     $class    = 'SLIRCropper' . ucfirst($cropClass);
 
-    if (!file_exists($fileName))
-    {
+    if (!file_exists($fileName)) {
       throw new RuntimeException('The requested cropper could not be found: ' . $fileName);
     }
 
@@ -869,9 +790,8 @@ class SLIRImage
    */
   final public function crop($isBackgroundFillOn)
   {
-    if (!$this->isCroppingNeeded())
-    {
-      return TRUE;
+    if (!$this->isCroppingNeeded()) {
+      return true;
     }
 
     $cropper  = $this->getCropperClass();
@@ -892,22 +812,22 @@ class SLIRImage
   {
     // Set up a blank canvas for our cropped image (destination)
     $cropped  = imagecreatetruecolor(
-            $this->cropWidth,
-            $this->cropHeight
-            );
+        $this->cropWidth,
+        $this->cropHeight
+    );
 
     $this->background($isBackgroundFillOn, $cropped);
 
     // Copy rendered image to cropped image
-    ImageCopy(
-      $cropped,
-      $this->image,
-      0,
-      0,
-      $leftOffset,
-      $topOffset,
-      $this->width,
-      $this->height
+    imagecopy(
+        $cropped,
+        $this->image,
+        0,
+        0,
+        $leftOffset,
+        $topOffset,
+        $this->width,
+        $this->height
     );
 
     // Replace pre-cropped image with cropped image
@@ -915,7 +835,7 @@ class SLIRImage
     $this->image  = $cropped;
     unset($cropped);
 
-    return TRUE;
+    return true;
   }
 
   /**
@@ -926,13 +846,12 @@ class SLIRImage
    */
   final public function sharpen($sharpness)
   {
-    if ($this->isSharpeningDesired())
-    {
+    if ($this->isSharpeningDesired()) {
       imageconvolution(
-        $this->image,
-        $this->sharpenMatrix($sharpness),
-        $sharpness,
-        0
+          $this->image,
+          $this->sharpenMatrix($sharpness),
+          $sharpness,
+          0
       );
     }
   }
@@ -977,10 +896,9 @@ class SLIRImage
    */
   private function getData()
   {
-    ob_start(NULL);
-      if (!$this->output())
-      {
-        return FALSE;
+    ob_start(null);
+      if (!$this->output()) {
+        return false;
       }
       $data = ob_get_contents();
     ob_end_clean();
@@ -992,23 +910,16 @@ class SLIRImage
    * @since 2.0
    * @return boolean
    */
-  private function output($filename = NULL)
+  private function output($filename = null)
   {
-    if ($this->isJPEG())
-    {
-      return ImageJpeg($this->image, $filename, $this->getQuality());
-    }
-    else if ($this->isPNG())
-    {
-      return ImagePng($this->image, $filename, $this->getQuality());
-    }
-    else if ($this->isGIF())
-    {
-      return ImageGif($this->image, $filename, $this->getQuality());
-    }
-    else
-    {
-      return FALSE;
+    if ($this->isJPEG()) {
+      return imagejpeg($this->image, $filename, $this->getQuality());
+    } else if ($this->isPNG()) {
+      return imagepng($this->image, $filename, $this->getQuality());
+    } else if ($this->isGIF()) {
+      return imagegif($this->image, $filename, $this->getQuality());
+    } else {
+      return false;
     }
   }
 
