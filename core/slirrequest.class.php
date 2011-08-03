@@ -1,23 +1,23 @@
 <?php
 /**
  * Class definition file for SLIRRequest
- * 
+ *
  * This file is part of SLIR (Smart Lencioni Image Resizer).
- * 
+ *
  * SLIR is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * SLIR is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * @copyright Copyright © 2011, Joe Lencioni
+ *
+ * @copyright Copyright ? 2011, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -25,7 +25,7 @@
 
 /**
  * SLIR request class
- * 
+ *
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
  * @package SLIR
@@ -33,298 +33,298 @@
 class SLIRRequest
 {
 
-	const CROP_RATIO_DELIMITERS	= ':.x';
-	
-	/**
-	 * Path to image
-	 *
-	 * @since 2.0
-	 * @var string
-	 */
-	private $path;
-	
-	/**
-	 * Maximum width for resized image, in pixels
-	 *
-	 * @since 2.0
-	 * @var integer
-	 */
-	private $width;
+  const CROP_RATIO_DELIMITERS = ':.x';
 
-	/**
-	 * Maximum height for resized image, in pixels
-	 *
-	 * @since 2.0
-	 * @var integer
-	 */
-	private $height;
+  /**
+   * Path to image
+   *
+   * @since 2.0
+   * @var string
+   */
+  private $path;
 
-	/**
-	 * Ratio of width:height to crop image to.
-	 *
-	 * For example, if a square shape is desired, the crop ratio should be "1:1"
-	 * or if a long rectangle is desired, the crop ratio could be "4:1". Stored
-	 * as an associative array with keys being 'width' and 'height'.
-	 *
-	 * @since 2.0
-	 * @var array
-	 */
-	private $cropRatio;
+  /**
+   * Maximum width for resized image, in pixels
+   *
+   * @since 2.0
+   * @var integer
+   */
+  private $width;
 
-	/**
-	 * Name of the cropper to use, e.g. 'centered' or 'smart'
-	 * 
-	 * @since 2.0
-	 * @var string
-	 */
-	private $cropper;
-	
-	/**
-	 * Quality of rendered image
-	 * 
-	 * @since 2.0
-	 * @var integer
-	 */
-	private $quality;
-	
-	/**
-	 * Whether or not progressive JPEG output is turned on
-	 * @var boolean
-	 * @since 2.0
-	 */
-	private $progressive;
-	
-	/**
-	 * Color to fill background of transparent PNGs and GIFs
-	 * @var string
-	 * @since 2.0
-	 */
-	private $background;
+  /**
+   * Maximum height for resized image, in pixels
+   *
+   * @since 2.0
+   * @var integer
+   */
+  private $height;
 
-	/**
-	 * @since 2.0
-	 * @var boolean
-	 */
-	private $isUsingDefaultImagePath	= FALSE;
-	
-	/**
-	 * @since 2.0
-	 */
-	final public function __construct()
-	{
-		$params	= $this->getParameters();
+  /**
+   * Ratio of width:height to crop image to.
+   *
+   * For example, if a square shape is desired, the crop ratio should be "1:1"
+   * or if a long rectangle is desired, the crop ratio could be "4:1". Stored
+   * as an associative array with keys being 'width' and 'height'.
+   *
+   * @since 2.0
+   * @var array
+   */
+  private $cropRatio;
 
-		// Set image path first
-		if (isset($params['i']) && $params['i'] != '' && $params['i'] != '/')
-		{
-			$this->__set('i', $params['i']);
-			unset($params['i']);
-		}
-		else if (SLIRConfig::$defaultImagePath !== NULL)
-		{
-			$this->__set('i', SLIRConfig::$defaultImagePath);
-		}
-		else
-		{
-			throw new RuntimeException('Source image was not specified.');
-		} // if
+  /**
+   * Name of the cropper to use, e.g. 'centered' or 'smart'
+   *
+   * @since 2.0
+   * @var string
+   */
+  private $cropper;
 
-		// Set the rest of the parameters
-		foreach($params as $name => $value)
-		{
-			$this->__set($name, $value);
-		} // foreach
-	}
-	
-	/**
-	 * @since 2.0
-	 * @return void
-	 */
-	final public function __set($name, $value)
-	{
-		switch($name)
-		{
-			case 'i':
-			case 'image':
-			case 'imagePath':
-			case 'path':
-				$this->setPath($value);
-			break;
-			
-			case 'w':
-			case 'width':
-				$this->setWidth($value);
-			break;
+  /**
+   * Quality of rendered image
+   *
+   * @since 2.0
+   * @var integer
+   */
+  private $quality;
 
-			case 'h':
-			case 'height':
-				$this->setHeight($value);
-			break;
-			
-			case 'q':
-			case 'quality':
-				$this->setQuality($value);
-			break;
-			
-			case 'p':
-			case 'progressive':
-				$this->setProgressive($value);
-			break;
-			
-			case 'b';
-			case 'backgroundFillColor':
-				$this->setBackgroundFillColor($value);
-			break;
-			
-			case 'c':
-			case 'cropRatio':
-				$this->setCrop($value);
-			break;
-		} // switch
-	}
+  /**
+   * Whether or not progressive JPEG output is turned on
+   * @var boolean
+   * @since 2.0
+   */
+  private $progressive;
 
-	/**
-	 * @since 2.0
-	 * @return mixed
-	 */
-	final public function __get($name)
-	{
-		return $this->$name;
-	}
+  /**
+   * Color to fill background of transparent PNGs and GIFs
+   * @var string
+   * @since 2.0
+   */
+  private $background;
 
-	/**
-	 * @since 2.0
-	 * @return void
-	 */
-	private function setWidth($value)
-	{
-		$this->width	= (int) $value;
-	}
+  /**
+   * @since 2.0
+   * @var boolean
+   */
+  private $isUsingDefaultImagePath  = FALSE;
 
-	/**
-	 * @since 2.0
-	 * @return void
-	 */
-	private function setHeight($value)
-	{
-		$this->height	= (int) $value;
-	}
+  /**
+   * @since 2.0
+   */
+  final public function __construct()
+  {
+    $params = $this->getParameters();
 
-	/**
-	 * @since 2.0
-	 * @return void
-	 */
-	private function setQuality($value)
-	{
-		$this->quality	= $value;
-		if ($this->quality < 0 || $this->quality > 100)
-		{
-			throw new RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
-		}
-	}
+    // Set image path first
+    if (isset($params['i']) && $params['i'] != '' && $params['i'] != '/')
+    {
+      $this->__set('i', $params['i']);
+      unset($params['i']);
+    }
+    else if (SLIRConfig::$defaultImagePath !== NULL)
+    {
+      $this->__set('i', SLIRConfig::$defaultImagePath);
+    }
+    else
+    {
+      throw new RuntimeException('Source image was not specified.');
+    } // if
 
-	/**
-	 * @param string $value
-	 * @return void
-	 */
-	private function setProgressive($value)
-	{
-		$this->progressive	= (bool) $value;
-	}
+    // Set the rest of the parameters
+    foreach($params as $name => $value)
+    {
+      $this->__set($name, $value);
+    } // foreach
+  }
 
-	/**
-	 * @param string $value
-	 * @return void
-	 */
-	private function setBackgroundFillColor($value)
-	{
-		$this->background	= preg_replace('/[^0-9a-fA-F]/', '', $value);
+  /**
+   * @since 2.0
+   * @return void
+   */
+  final public function __set($name, $value)
+  {
+    switch($name)
+    {
+      case 'i':
+      case 'image':
+      case 'imagePath':
+      case 'path':
+        $this->setPath($value);
+      break;
 
-		if(strlen($this->background) == 3)
-		{
-			$this->background = $this->background[0]
-				.$this->background[0]
-				.$this->background[1]
-				.$this->background[1]
-				.$this->background[2]
-				.$this->background[2];
-		}
-		else if (strlen($this->background) != 6)
-		{
-			throw new RuntimeException('Background fill color must be in hexadecimal format, longhand or shorthand: ' . $this->background);
-		} // if
-	}
+      case 'w':
+      case 'width':
+        $this->setWidth($value);
+      break;
 
-	/**
-	 * @param string $value
-	 * @return void
-	 */
-	private function setCrop($value)
-	{
-		$delimiters			= preg_quote(self::CROP_RATIO_DELIMITERS);
-		$ratio				= preg_split("/[$delimiters]/", (string) urldecode($value));
-		if (count($ratio) >= 2)
-		{
-			if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
-			{
-				throw new RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
-			}
-			
-			$this->cropRatio	= array(
-				'width'		=> (float) $ratio[0],
-				'height'	=> (float) $ratio[1],
-				'ratio'		=> (float) $ratio[0] / (float) $ratio[1]
-			);
+      case 'h':
+      case 'height':
+        $this->setHeight($value);
+      break;
 
-			// If there was a third part, that is the cropper being specified
-			if (count($ratio) >= 3)
-			{
-				$this->cropper	= (string) $ratio[2];
-			}
-		}
-		else
-		{
-			throw new RuntimeException('Crop ratio must be in width:height format: ' . (string) $value);
-		} // if
-	}
-	
-	/**
-	 * Determines the parameters to use for resizing
-	 *
-	 * @since 2.0
-	 * @return array
-	 */
-	private function getParameters()
-	{
-		if (!$this->isUsingQueryString()) // Using the mod_rewrite version
-		{
-			return $this->getParametersFromURL();
-		}
-		else // Using the query string version
-		{
-			return $_GET;
-		}
-	}
+      case 'q':
+      case 'quality':
+        $this->setQuality($value);
+      break;
 
-	/**
-	 * Gets parameters from the URL
-	 * 
-	 * This is used for requests that are using the mod_rewrite syntax
-	 *
-	 * @since 2.0
-	 * @return array
-	 */
-	private function getParametersFromURL()
-	{
-		$params	= array();
+      case 'p':
+      case 'progressive':
+        $this->setProgressive($value);
+      break;
 
-		// The parameters should be the first set of characters after the SLIR path
-		$request		= preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
-		$paramString	= strtok($request, '/');
+      case 'b';
+      case 'backgroundFillColor':
+        $this->setBackgroundFillColor($value);
+      break;
 
-		if ($paramString === FALSE || $paramString === $request)
-		{
-			throw new RuntimeException('Not enough parameters were given.
+      case 'c':
+      case 'cropRatio':
+        $this->setCrop($value);
+      break;
+    } // switch
+  }
+
+  /**
+   * @since 2.0
+   * @return mixed
+   */
+  final public function __get($name)
+  {
+    return $this->$name;
+  }
+
+  /**
+   * @since 2.0
+   * @return void
+   */
+  private function setWidth($value)
+  {
+    $this->width  = (int) $value;
+  }
+
+  /**
+   * @since 2.0
+   * @return void
+   */
+  private function setHeight($value)
+  {
+    $this->height = (int) $value;
+  }
+
+  /**
+   * @since 2.0
+   * @return void
+   */
+  private function setQuality($value)
+  {
+    $this->quality  = $value;
+    if ($this->quality < 0 || $this->quality > 100)
+    {
+      throw new RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
+    }
+  }
+
+  /**
+   * @param string $value
+   * @return void
+   */
+  private function setProgressive($value)
+  {
+    $this->progressive  = (bool) $value;
+  }
+
+  /**
+   * @param string $value
+   * @return void
+   */
+  private function setBackgroundFillColor($value)
+  {
+    $this->background = preg_replace('/[^0-9a-fA-F]/', '', $value);
+
+    if(strlen($this->background) == 3)
+    {
+      $this->background = $this->background[0]
+        .$this->background[0]
+        .$this->background[1]
+        .$this->background[1]
+        .$this->background[2]
+        .$this->background[2];
+    }
+    else if (strlen($this->background) != 6)
+    {
+      throw new RuntimeException('Background fill color must be in hexadecimal format, longhand or shorthand: ' . $this->background);
+    } // if
+  }
+
+  /**
+   * @param string $value
+   * @return void
+   */
+  private function setCrop($value)
+  {
+    $delimiters     = preg_quote(self::CROP_RATIO_DELIMITERS);
+    $ratio        = preg_split("/[$delimiters]/", (string) urldecode($value));
+    if (count($ratio) >= 2)
+    {
+      if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0)
+      {
+        throw new RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
+      }
+
+      $this->cropRatio  = array(
+        'width'   => (float) $ratio[0],
+        'height'  => (float) $ratio[1],
+        'ratio'   => (float) $ratio[0] / (float) $ratio[1]
+      );
+
+      // If there was a third part, that is the cropper being specified
+      if (count($ratio) >= 3)
+      {
+        $this->cropper  = (string) $ratio[2];
+      }
+    }
+    else
+    {
+      throw new RuntimeException('Crop ratio must be in width:height format: ' . (string) $value);
+    } // if
+  }
+
+  /**
+   * Determines the parameters to use for resizing
+   *
+   * @since 2.0
+   * @return array
+   */
+  private function getParameters()
+  {
+    if (!$this->isUsingQueryString()) // Using the mod_rewrite version
+    {
+      return $this->getParametersFromURL();
+    }
+    else // Using the query string version
+    {
+      return $_GET;
+    }
+  }
+
+  /**
+   * Gets parameters from the URL
+   *
+   * This is used for requests that are using the mod_rewrite syntax
+   *
+   * @since 2.0
+   * @return array
+   */
+  private function getParametersFromURL()
+  {
+    $params = array();
+
+    // The parameters should be the first set of characters after the SLIR path
+    $request    = preg_replace('`.*?' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '`', '', (string) $_SERVER['REQUEST_URI']);
+    $paramString  = strtok($request, '/');
+
+    if ($paramString === FALSE || $paramString === $request)
+    {
+      throw new RuntimeException('Not enough parameters were given.
 
 Available parameters:
  w = Maximum width
@@ -337,206 +337,206 @@ Available parameters:
 Example usage:
 /slir/w300-h300-c1.1/path/to/image.jpg');
 
-		}
+    }
 
-		// The image path should start right after the parameters
-		$params['i']	= substr($request, strlen($paramString) + 1); // +1 for the slash
-		
-		// The parameters are separated by hyphens
-		$rawParam		= strtok($paramString, '-');
-		while ($rawParam !== FALSE)
-		{
-			if (strlen($rawParam) > 1)
-			{
-				// The name of each parameter should be the first character of the parameter string and the value of each parameter should be the remaining characters of the parameter string
-				$params[$rawParam[0]]	= substr($rawParam, 1);
-			}
+    // The image path should start right after the parameters
+    $params['i']  = substr($request, strlen($paramString) + 1); // +1 for the slash
 
-			$rawParam	= strtok('-');
-		}
+    // The parameters are separated by hyphens
+    $rawParam   = strtok($paramString, '-');
+    while ($rawParam !== FALSE)
+    {
+      if (strlen($rawParam) > 1)
+      {
+        // The name of each parameter should be the first character of the parameter string and the value of each parameter should be the remaining characters of the parameter string
+        $params[$rawParam[0]] = substr($rawParam, 1);
+      }
 
-		return $params;
-	}
-	
-	/**
-	 * Determines if the request is using the mod_rewrite version or the query
-	 * string version
-	 *
-	 * @since 2.0
-	 * @return boolean
-	 */
-	private function isUsingQueryString()
-	{
-		if (SLIRConfig::$forceQueryString === TRUE)
-		{
-			return TRUE;
-		}
-		else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET))))
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
+      $rawParam = strtok('-');
+    }
 
-	/**
-	 * Checks if the default image path set in the config is being used for this request
-	 * 
-	 * @since 2.0
-	 * @return boolean
-	 */
-	public function isUsingDefaultImagePath()
-	{
-		return $this->isUsingDefaultImagePath;
-	}
-	
-	/**
-	 * @since 2.0
-	 * @param string $path
-	 */
-	private function setPath($path)
-	{
-		$this->path	= $this->localizePath((string) urldecode($path));
-		
-		// Make sure the image path is secure
-		if (!$this->isPathSecure())
-		{
-			throw new RuntimeException('Image path may not contain ":", "..", "<", or ">"');
-		}
-		// Make sure the image file exists
-		else if (!$this->pathExists())
-		{
-			if (SLIRConfig::$defaultImagePath !== NULL && !$this->isUsingDefaultImagePath())
-			{
-				$this->isUsingDefaultImagePath	= TRUE;
-				return $this->setPath(SLIRConfig::$defaultImagePath);
-			}
-			else
-			{
-				throw new RuntimeException('Image does not exist: ' . $this->fullPath());
-			}
-		}
-	}
-	
-	/**
-	 * Strips the domain and query string from the path if either is there
-	 * @since 2.0
-	 * @return string
-	 */
-	private function localizePath($path)
-	{
-		return '/' . trim($this->stripQueryString($this->stripProtocolAndDomain($path)), '/');
-	}
-	
-	/**
-	 * Strips the protocol and domain from the path if it is there
-	 * @since 2.0
-	 * @return string
-	 */
-	private function stripProtocolAndDomain($path)
-	{
-		return preg_replace('/^[^:]+:\/\/[^\/]+/i', '', $path);
-	}
-	
-	/**
-	 * Strips the query string from the path if it is there
-	 * @since 2.0
-	 * @return string
-	 */
-	private function stripQueryString($path)
-	{
-		return preg_replace('/\?.*+/', '', $path);
-	}
-	
-	/**
-	 * Checks to see if the path is secure
-	 *
-	 * For security, directories may not contain ':' and images may not contain
-	 * '..', '<', or '>'.
-	 *
-	 * @since 2.0
-	 * @return boolean
-	 */
-	private function isPathSecure()
-	{
-		if (strpos(dirname($this->path), ':') || preg_match('/(?:\.\.|<|>)/', $this->path))
-		{
-			return FALSE;
-		}
-		else
-		{
-			return TRUE;
-		}
-	}
-	
-	/**
-	 * Determines if the path exists
-	 *
-	 * @since 2.0
-	 * @return boolean
-	 */
-	private function pathExists()
-	{
-		return is_file($this->fullPath());
-	}
-	
-	/**
-	 * @return string
-	 * @since 2.0
-	 */
-	final public function fullPath()
-	{
-		return SLIRConfig::$documentRoot . $this->path;
-	}
-	
-	/**
-	 * @since 2.0
-	 * @return boolean
-	 */
-	final public function isBackground()
-	{
-		if ($this->background !== NULL)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	/**
-	 * @since 2.0
-	 * @return boolean
-	 */
-	final public function isQuality()
-	{
-		if ($this->quality !== NULL)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
-	/**
-	 * @since 2.0
-	 * @return boolean
-	 */
-	final public function isCropping()
-	{
-		if ($this->cropRatio['width'] !== NULL && $this->cropRatio['height'] !== NULL)
-		{
-			return TRUE;
-		}
-		else
-		{
-			return FALSE;
-		}
-	}
-	
+    return $params;
+  }
+
+  /**
+   * Determines if the request is using the mod_rewrite version or the query
+   * string version
+   *
+   * @since 2.0
+   * @return boolean
+   */
+  private function isUsingQueryString()
+  {
+    if (SLIRConfig::$forceQueryString === TRUE)
+    {
+      return TRUE;
+    }
+    else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET))))
+    {
+      return TRUE;
+    }
+    else
+    {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Checks if the default image path set in the config is being used for this request
+   *
+   * @since 2.0
+   * @return boolean
+   */
+  public function isUsingDefaultImagePath()
+  {
+    return $this->isUsingDefaultImagePath;
+  }
+
+  /**
+   * @since 2.0
+   * @param string $path
+   */
+  private function setPath($path)
+  {
+    $this->path = $this->localizePath((string) urldecode($path));
+
+    // Make sure the image path is secure
+    if (!$this->isPathSecure())
+    {
+      throw new RuntimeException('Image path may not contain ":", "..", "<", or ">"');
+    }
+    // Make sure the image file exists
+    else if (!$this->pathExists())
+    {
+      if (SLIRConfig::$defaultImagePath !== NULL && !$this->isUsingDefaultImagePath())
+      {
+        $this->isUsingDefaultImagePath  = TRUE;
+        return $this->setPath(SLIRConfig::$defaultImagePath);
+      }
+      else
+      {
+        throw new RuntimeException('Image does not exist: ' . $this->fullPath());
+      }
+    }
+  }
+
+  /**
+   * Strips the domain and query string from the path if either is there
+   * @since 2.0
+   * @return string
+   */
+  private function localizePath($path)
+  {
+    return '/' . trim($this->stripQueryString($this->stripProtocolAndDomain($path)), '/');
+  }
+
+  /**
+   * Strips the protocol and domain from the path if it is there
+   * @since 2.0
+   * @return string
+   */
+  private function stripProtocolAndDomain($path)
+  {
+    return preg_replace('/^[^:]+:\/\/[^\/]+/i', '', $path);
+  }
+
+  /**
+   * Strips the query string from the path if it is there
+   * @since 2.0
+   * @return string
+   */
+  private function stripQueryString($path)
+  {
+    return preg_replace('/\?.*+/', '', $path);
+  }
+
+  /**
+   * Checks to see if the path is secure
+   *
+   * For security, directories may not contain ':' and images may not contain
+   * '..', '<', or '>'.
+   *
+   * @since 2.0
+   * @return boolean
+   */
+  private function isPathSecure()
+  {
+    if (strpos(dirname($this->path), ':') || preg_match('/(?:\.\.|<|>)/', $this->path))
+    {
+      return FALSE;
+    }
+    else
+    {
+      return TRUE;
+    }
+  }
+
+  /**
+   * Determines if the path exists
+   *
+   * @since 2.0
+   * @return boolean
+   */
+  private function pathExists()
+  {
+    return is_file($this->fullPath());
+  }
+
+  /**
+   * @return string
+   * @since 2.0
+   */
+  final public function fullPath()
+  {
+    return SLIRConfig::$documentRoot . $this->path;
+  }
+
+  /**
+   * @since 2.0
+   * @return boolean
+   */
+  final public function isBackground()
+  {
+    if ($this->background !== NULL)
+    {
+      return TRUE;
+    }
+    else
+    {
+      return FALSE;
+    }
+  }
+
+  /**
+   * @since 2.0
+   * @return boolean
+   */
+  final public function isQuality()
+  {
+    if ($this->quality !== NULL)
+    {
+      return TRUE;
+    }
+    else
+    {
+      return FALSE;
+    }
+  }
+
+  /**
+   * @since 2.0
+   * @return boolean
+   */
+  final public function isCropping()
+  {
+    if ($this->cropRatio['width'] !== NULL && $this->cropRatio['height'] !== NULL)
+    {
+      return TRUE;
+    }
+    else
+    {
+      return FALSE;
+    }
+  }
+
 }

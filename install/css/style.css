@@ -105,7 +105,7 @@ pre {
 
 textarea { overflow: auto; } /* www.sitepoint.com/blogs/2010/08/20/ie-remove-textarea-scrollbars/ */
 
-.ie6 legend, .ie7 legend { margin-left: -7px; } 
+.ie6 legend, .ie7 legend { margin-left: -7px; }
 
 /* Align checkboxes, radios, text inputs with their label by: Thierry Koblentz tjkdesign.com/ez-css/css/base.css  */
 input[type="radio"] { vertical-align: text-bottom; }
@@ -169,86 +169,86 @@ a:hover { color: #036; }
  */
 
 body {
-	background-color: #def;
+  background-color: #def;
 }
 p {
-	margin: 1em 0;
+  margin: 1em 0;
 }
 p:first-child {
-	margin-top: 0;
+  margin-top: 0;
 }
 p:last-child {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 #container, footer {
-	max-width: 65em;
+  max-width: 65em;
 }
 header, #main {
-	margin: 1em;
+  margin: 1em;
 }
 header {
-	font-family: Georgia, serif;
-	font-style: italic;
-	background-color: rgba(0, 0, 0, .04);
-	padding: 1em;
-	-webkit-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
-	-moz-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
-	-ms-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
-	-o-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
-	box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
+  font-family: Georgia, serif;
+  font-style: italic;
+  background-color: rgba(0, 0, 0, .04);
+  padding: 1em;
+  -webkit-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
+  -moz-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
+  -ms-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
+  -o-box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
+  box-shadow: inset 0 0 6em rgba(0, 0, 0, .08);
 }
 header h1 {
-	font-size: 3.6em;
-	font-weight: normal;
+  font-size: 3.6em;
+  font-weight: normal;
 }
 #main {
-	padding: 1em;
-	background-color: rgba(255, 255, 255, .4);
-	-webkit-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
-		inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
-	-moz-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
-		inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
-	-ms-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
-		inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
-	-o-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
-		inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
-	box-shadow: 0 0 1em rgba(0, 0, 0, .07),
-		inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
+  padding: 1em;
+  background-color: rgba(255, 255, 255, .4);
+  -webkit-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
+    inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
+  -moz-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
+    inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
+  -ms-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
+    inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
+  -o-box-shadow: 0 0 1em rgba(0, 0, 0, .07),
+    inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
+  box-shadow: 0 0 1em rgba(0, 0, 0, .07),
+    inset 0 0 1.5em .5em rgba(255, 255, 255, .4);
 }
 #content {
-	font-size: 1.2em;
+  font-size: 1.2em;
 }
 footer {
-	position: fixed;
-	bottom: 1em;
-	left: 1em;
-	background-color: rgba(0, 0, 0, .07);
-	padding: 1em;
-	opacity: .3;
-	-webkit-transition: opacity 0.3s ease-in-out;  /* Saf3.2+, Chrome */
-	-moz-transition: opacity 0.3s ease-in-out;  /* FF4+ */
-	-ms-transition: opacity 0.3s ease-in-out;  /* IE10? */
-	-o-transition: opacity 0.3s ease-in-out;  /* Opera 10.5+ */
-	transition: opacity 0.3s ease-in-out;
-	-webkit-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
-	-moz-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
-	-ms-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
-	-o-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
-	box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
+  background-color: rgba(0, 0, 0, .07);
+  padding: 1em;
+  opacity: .3;
+  -webkit-transition: opacity 0.3s ease-in-out;  /* Saf3.2+, Chrome */
+  -moz-transition: opacity 0.3s ease-in-out;  /* FF4+ */
+  -ms-transition: opacity 0.3s ease-in-out;  /* IE10? */
+  -o-transition: opacity 0.3s ease-in-out;  /* Opera 10.5+ */
+  transition: opacity 0.3s ease-in-out;
+  -webkit-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
+  -moz-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
+  -ms-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
+  -o-box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
+  box-shadow: .3em .3em .5em rgba(0, 0, 0, .15);
 }
 footer:hover {
-	opacity: 1;
+  opacity: 1;
 }
 
 .responses p {
-	text-indent: -3em;
-	margin-left: 3em;
+  text-indent: -3em;
+  margin-left: 3em;
 }
 .Positive {
-	color: green;
+  color: green;
 }
 .Negative, .Fatal {
-	color: red;
+  color: red;
 }
 
 
