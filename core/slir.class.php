@@ -130,12 +130,6 @@ class SLIR
   const CROP_CLASS_SMART    = 'smart';
 
   /**
-   * @since 2.0
-   * @var string
-   */
-  const CROP_CLASS_FACE   = 'face';
-
-  /**
    * Setting for the garbage collector to sleep for a second after looking at this many files
    *
    * @since 2.0

@@ -96,7 +96,6 @@ class SLIRConfigDefaults
    * SLIR::CROP_CLASS_CENTERED
    * SLIR::CROP_CLASS_TOP_CENTERED
    * SLIR::CROP_CLASS_SMART
-   * SLIR::CROP_CLASS_FACE (not finished--does not work)
    *
    * @since 2.0
    * @var string
