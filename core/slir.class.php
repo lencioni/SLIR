@@ -607,9 +607,9 @@ class SLIR
   private function calculateASharpnessFactor($sourceArea, $destinationArea)
   {
     $final  = sqrt($destinationArea) * (750.0 / sqrt($sourceArea));
-    $a    = 52;
-    $b    = -0.27810650887573124;
-    $c    = .00047337278106508946;
+    $a      = 52;
+    $b      = -0.27810650887573124;
+    $c      = .00047337278106508946;
 
     $result = $a + $b * $final + $c * $final * $final;
 
@@ -657,11 +657,11 @@ class SLIR
       $retval .= chr($length >> 8) .  chr($length & 0xFF);
     } else {
       $retval .= chr(0x80) .
-             chr(0x04) .
-             chr(($length >> 24) & 0xFF) .
-             chr(($length >> 16) & 0xFF) .
-             chr(($length >> 8) & 0xFF) .
-             chr($length & 0xFF);
+       chr(0x04) .
+       chr(($length >> 24) & 0xFF) .
+       chr(($length >> 16) & 0xFF) .
+       chr(($length >> 8) & 0xFF) .
+       chr($length & 0xFF);
     }
 
     return $retval . $value;
@@ -767,7 +767,7 @@ class SLIR
     $this->rendered = new SLIRImage();
 
     // Set default properties of the rendered image
-    $this->rendered->path = $this->source->path;
+    $this->rendered->path   = $this->source->path;
     $this->rendered->width  = $this->source->width;
     $this->rendered->height = $this->source->height;
 
@@ -807,7 +807,7 @@ class SLIR
         $this->source->cropHeight = $this->source->height;
       } // if
 
-      $this->source->cropper  = $this->request->cropper;
+      $this->source->cropper    = $this->request->cropper;
       $this->rendered->cropper  = $this->source->cropper;
     } // if
 
@@ -1488,4 +1488,4 @@ class SLIR
 // a frog jumps
 // the sound of water
 
-// ?Matsuo Basho
+// —Matsuo Basho

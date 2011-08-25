@@ -131,18 +131,18 @@ class SLIRImage
   private $mimeTypes  = array(
       'jpeg'  => array(
         'image/jpeg'  => 1,
-        ),
+      ),
       'gif' => array(
         'image/gif'   => 1,
-        ),
+      ),
       'png' => array(
         'image/png'   => 1,
         'image/x-png' => 1,
-        ),
+      ),
       'bmp' => array(
-        'image/bmp'     => 1,
+        'image/bmp'       => 1,
         'image/x-ms-bmp'  => 1,
-        )
+      ),
     );
 
   /**
@@ -793,8 +793,8 @@ class SLIRImage
   final public function getCropperClass($className = null)
   {
     $cropClass  = strtolower($this->getCropperClassName($className));
-    $fileName = SLIRConfig::$pathToSLIR . "/croppers/$cropClass.class.php";
-    $class    = 'SLIRCropper' . ucfirst($cropClass);
+    $fileName   = SLIRConfig::$pathToSLIR . "/croppers/$cropClass.class.php";
+    $class      = 'SLIRCropper' . ucfirst($cropClass);
 
     if (!file_exists($fileName)) {
       throw new RuntimeException('The requested cropper could not be found: ' . $fileName);
@@ -902,16 +902,16 @@ class SLIRImage
   final public function cacheParameters()
   {
     return array(
-      'path'      => $this->fullPath(),
-      'width'     => $this->width,
-      'height'    => $this->height,
+      'path'        => $this->fullPath(),
+      'width'       => $this->width,
+      'height'      => $this->height,
       'cropWidth'   => $this->cropWidth,
       'cropHeight'  => $this->cropHeight,
-      'iptc'      => $this->iptc,
-      'quality'   => $this->getQuality(),
+      'iptc'        => $this->iptc,
+      'quality'     => $this->getQuality(),
       'progressive' => $this->progressive,
       'background'  => $this->background,
-      'cropper'   => $this->getCropperClassName(),
+      'cropper'     => $this->getCropperClassName(),
     );
   }
 

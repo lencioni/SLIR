@@ -460,10 +460,10 @@ class SLIRCropperSmart implements SLIRCropper
     $b  = ($int & 0xFF) * $a;
 
     return array(
-        self::RGB_RED => $r,
-        self::RGB_GREEN => $g,
-        self::RGB_BLUE  => $b,
-      );
+      self::RGB_RED   => $r,
+      self::RGB_GREEN => $g,
+      self::RGB_BLUE  => $b,
+    );
   }
 
   /**
@@ -502,10 +502,10 @@ class SLIRCropperSmart implements SLIRCropper
 
     //Observer. = 2°, Illuminant = D65
     return array(
-        self::XYZ_X => $r * 0.4124 + $g * 0.3576 + $b * 0.1805,
-        self::XYZ_Y => $r * 0.2126 + $g * 0.7152 + $b * 0.0722,
-        self::XYZ_Z => $r * 0.0193 + $g * 0.1192 + $b * 0.9505,
-      );
+      self::XYZ_X => $r * 0.4124 + $g * 0.3576 + $b * 0.1805,
+      self::XYZ_Y => $r * 0.2126 + $g * 0.7152 + $b * 0.0722,
+      self::XYZ_Z => $r * 0.0193 + $g * 0.1192 + $b * 0.9505,
+    );
   }
 
   /**
@@ -515,10 +515,10 @@ class SLIRCropperSmart implements SLIRCropper
   {
     if ($xyz[self::XYZ_Y] == 0) {
       return array(
-          self::LAB_L => 0,
-          self::LAB_A => 0,
-          self::LAB_B => 0,
-        );
+        self::LAB_L => 0,
+        self::LAB_A => 0,
+        self::LAB_B => 0,
+      );
     }
 
     return array(
