@@ -153,6 +153,31 @@ class SLIRImage
   }
 
   /**
+   * Destruct method. Clean up memory.
+   *
+   * @return void
+   * @since 2.0
+   */
+  final public function __destruct()
+  {
+    unset(
+        $this->path,
+        $this->data,
+        $this->image,
+        $this->mime,
+        $this->width,
+        $this->height,
+        $this->cropWidth,
+        $this->cropHeight,
+        $this->cropper,
+        $this->iptc,
+        $this->quality,
+        $this->progressive,
+        $this->background
+    );
+  }
+
+  /**
    * @param string $name
    * @param mixed $value
    * @since 2.0

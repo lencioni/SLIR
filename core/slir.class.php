@@ -188,6 +188,21 @@ class SLIR
   }
 
   /**
+   * Destructor method. Try to clean up memory a little.
+   *
+   * @return void
+   * @since 2.0
+   */
+  final public function __destruct()
+  {
+    unset(
+        $this->request,
+        $this->source,
+        $this->rendered
+    );
+  }
+
+  /**
    * Processes the SLIR request from the parameters passed through the URL
    *
    * @since 2.0

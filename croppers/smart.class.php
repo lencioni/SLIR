@@ -61,6 +61,17 @@ class SLIRCropperSmart implements SLIRCropper
   private $colors;
 
   /**
+   * Destruct method. Try to clean up memory a little.
+   *
+   * @return void
+   * @since 2.0
+   */
+  public function __destruct()
+  {
+    unset($this->colors);
+  }
+
+  /**
    * @param integer $size
    * @return array|SplFixedArray
    */
@@ -102,12 +113,12 @@ class SLIRCropperSmart implements SLIRCropper
     // @todo Change this method to resize image, determine offset, and then extrapolate the actual offset based on the image size difference. Then we can cache the offset in APC (all just like we are doing for face detection)
 
     if ($this->shouldCropTopAndBottom($image)) {
-      $length       = $image->cropHeight;
-      $lengthB      = $image->cropWidth;
+      $length           = $image->cropHeight;
+      $lengthB          = $image->cropWidth;
       $originalLength   = $image->height;
     } else {
-      $length       = $image->cropWidth;
-      $lengthB      = $image->cropHeight;
+      $length           = $image->cropWidth;
+      $lengthB          = $image->cropHeight;
       $originalLength   = $image->width;
     }
 
@@ -158,8 +169,8 @@ class SLIRCropperSmart implements SLIRCropper
     }
 
     $tolerance  = 0.5;
-    $upperTol = 1 + $tolerance;
-    $lowerTol = 1 / $upperTol;
+    $upperTol   = 1 + $tolerance;
+    $lowerTol   = 1 / $upperTol;
 
     // Fight the near and far rows. The stronger will remain standing.
     $returningChampion  = null;
@@ -236,7 +247,7 @@ class SLIRCropperSmart implements SLIRCropper
   private function rowInterestingness(SLIRImage $image, $row, $pixelStep, $originalLength)
   {
     $interestingness  = 0;
-    $max        = 0;
+    $max              = 0;
 
     if ($this->shouldCropTopAndBottom($image)) {
       for ($totalPixels = 0; $totalPixels < $image->width; $totalPixels += $pixelStep) {
@@ -246,7 +257,7 @@ class SLIRCropperSmart implements SLIRCropper
         // content toward the center, so we give it a little extra push away from the edge
         //$i          += min($row, $originalLength - $row, $originalLength * .04);
 
-        $max        = max($i, $max);
+        $max              = max($i, $max);
         $interestingness  += $i;
       }
     } else {
@@ -257,7 +268,7 @@ class SLIRCropperSmart implements SLIRCropper
         // content toward the center, so we give it a little extra push away from the edge
         //$i          += min($row, $originalLength - $row, $originalLength * .04);
 
-        $max        = max($i, $max);
+        $max              = max($i, $max);
         $interestingness  += $i;
       }
     }

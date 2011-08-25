@@ -131,6 +131,27 @@ class SLIRRequest
   }
 
   /**
+   * Destructor method. Try to clean up memory.
+   *
+   * @return void
+   * @since 2.0
+   */
+  final public function __destruct()
+  {
+    unset(
+        $this->path,
+        $this->width,
+        $this->height,
+        $this->cropRatio,
+        $this->cropper,
+        $this->quality,
+        $this->progressive,
+        $this->background,
+        $this->isUsingDefaultImagePath
+    );
+  }
+
+  /**
    * @since 2.0
    * @return void
    */
