@@ -427,8 +427,8 @@ class SLIR
       $this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
       $this->finishGarbageCollection();
     } catch (Exception $e) {
-      error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
-      error_log('Exception trace stack: ' . print_r($e->getTrace(), true));
+      error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()), 3, SLIRConfig::$pathToErrorLog);
+      error_log('Exception trace stack: ' . print_r($e->getTrace(), true), 3, SLIRConfig::$pathToErrorLog);
     }
   }
 
