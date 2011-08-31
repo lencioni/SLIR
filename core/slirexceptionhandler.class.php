@@ -168,6 +168,8 @@ class SLIRExceptionHandler
     } else {
       self::errorText($e);
     }
+
+    self::log($e);
   }
 
   /**
