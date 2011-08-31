@@ -390,6 +390,7 @@ class SLIR
    */
   private function startGarbageCollection()
   {
+    error_log('Garbage collection started', 3, SLIRConfig::$pathToErrorLog);
     touch(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
   }
 
@@ -402,6 +403,7 @@ class SLIR
   private function finishGarbageCollection()
   {
     unlink(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
+    error_log('Garbage collection completed', 3, SLIRConfig::$pathToErrorLog);
   }
 
   /**
