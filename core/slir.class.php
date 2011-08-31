@@ -390,7 +390,7 @@ class SLIR
    */
   private function startGarbageCollection()
   {
-    error_log('Garbage collection started', 3, SLIRConfig::$pathToErrorLog);
+    error_log(sprintf("\n[%s] Garbage collection started", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
     touch(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
   }
 
@@ -403,7 +403,7 @@ class SLIR
   private function finishGarbageCollection()
   {
     unlink(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
-    error_log('Garbage collection completed', 3, SLIRConfig::$pathToErrorLog);
+    error_log(sprintf("\n[%s] Garbage collection completed", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
   }
 
   /**
@@ -429,8 +429,8 @@ class SLIR
       $this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
       $this->finishGarbageCollection();
     } catch (Exception $e) {
-      error_log(sprintf('%s thrown within the SLIR garbage collector. Message: %s in %s on line %d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()), 3, SLIRConfig::$pathToErrorLog);
-      error_log('Exception trace stack: ' . print_r($e->getTrace(), true), 3, SLIRConfig::$pathToErrorLog);
+      error_log(sprintf("\n[%s] %s thrown within the SLIR garbage collector. Message: %s in %s on line %d", @gmdate('D M d H:i:s Y'), get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()), 3, SLIRConfig::$pathToErrorLog);
+      error_log("\nException trace stack: " . print_r($e->getTrace(), true), 3, SLIRConfig::$pathToErrorLog);
     }
   }
 
