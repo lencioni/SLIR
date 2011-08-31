@@ -94,6 +94,7 @@ class SLIRInstaller
     $tasks  = array(
       'Config File'     => 'initializeConfigFile',
       'Config Entropy'  => 'checkConfigEntropy',
+      'Error Log'       => 'initializeErrorLog',
     );
 
     echo '<div class="responses">';
@@ -309,7 +310,7 @@ class SLIRInstaller
     $reflectConfig    = new ReflectionClass('SLIRConfig');
 
     $defaultProperties  = $reflectDefaults->getStaticProperties();
-    $configProperties = $reflectConfig->getStaticProperties();
+    $configProperties   = $reflectConfig->getStaticProperties();
 
     $additions      = array_diff(array_keys($configProperties), array_keys($defaultProperties));
 
@@ -324,6 +325,32 @@ class SLIRInstaller
         $this->getDefaultConfigPath(),
         implode('</code>, <code>$', $additions),
       )));
+    }
+  }
+
+  /**
+   * Checks to see if the SLIR error log exists and is writable.
+   *
+   * @since 2.0
+   * @return SLIRInstallerResponse
+   */
+  private function initializeErrorLog()
+  {
+    if (!file_exists(SLIRConfig::$pathToErrorLog)) {
+      // Error log does not exist, try creating it
+      if (file_put_contents(SLIRConfig::$pathToErrorLog, '') === false) {
+        // Error log was unable to be created
+        return new NegativeSLIRInstallerResponse(sprintf('Error log does not exist and could not be created at <code>%s</code>. Please create this file and make sure the web server has permission to write to it. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
+      } else {
+        // Everything worked well
+        return new PositiveSLIRInstallerResponse(sprintf('Error log successfully created at <code>%s</code>. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
+      }
+    } else if (!is_writable(SLIRConfig::$pathToErrorLog)) {
+      // Error log exists, but is not writable
+      return new NegativeSLIRInstallerResponse(sprintf('Error log exists at <code>%s</code> but is not writable. Please make sure the web server has permission to write to this file. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.'));
+    } else {
+      // Everything is good
+      return new PositiveSLIRInstallerResponse(sprintf('Error log exists at <code>%s</code> and is writable by the web server. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
     }
   }
 }
