@@ -1037,7 +1037,7 @@ class SLIR
    */
   private function renderedCacheFilename()
   {
-    return '/' . md5($this->request->fullPath() . serialize($this->rendered->cacheParameters()));
+    return '/' . hash('md4', $this->request->fullPath() . serialize($this->rendered->cacheParameters()));
   }
 
   /**
@@ -1046,7 +1046,7 @@ class SLIR
    */
   private function requestCacheFilename()
   {
-    return '/' . md5($_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIRConfig::$defaultCropper);
+    return '/' . hash('md4', $_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIRConfig::$defaultCropper);
   }
 
   /**
