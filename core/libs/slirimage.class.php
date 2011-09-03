@@ -12,6 +12,11 @@ abstract class SLIRImage
   protected $originalPath;
 
   /**
+   * @var integer quality to render image at
+   */
+  protected $quality;
+
+  /**
    * @var string background color in hex
    */
   protected $background;
@@ -20,6 +25,11 @@ abstract class SLIRImage
    * @var float amount to sharpen
    */
   protected $sharpeningFactor;
+
+  /**
+   * @var boolean $progressive
+   */
+  protected $progressive;
 
   /**
    * @var array information about the image
@@ -70,6 +80,30 @@ abstract class SLIRImage
         $this->originalPath,
         $this->info
     );
+  }
+
+  /**
+   * Gets a hash that represents the properties of the image.
+   * 
+   * Used for caching.
+   * 
+   * @param $infosToInclude
+   * @return string
+   * @since 2.0
+   */
+  public function getHash(array $infosToInclude = array())
+  {
+    $infos  = array(
+      $this->getOriginalPath(),
+      $this->getBackground(),
+      $this->getSharpeningFactor(),
+      $this->getProgressive(),
+      $this->getInfo(),
+    );
+
+    $infos = array_merge($infos, $infosToInclude);
+
+    return hash('md4', serialize($infos));
   }
 
   /**
@@ -126,6 +160,25 @@ abstract class SLIRImage
   }
 
   /**
+   * @return integer
+   * @since 2.0
+   */
+  public function getQuality()
+  {
+    return $this->quality;
+  }
+
+  /**
+   * @param integer $quality
+   * @return SLIRImageLibrary
+   */
+  public function setQuality($quality)
+  {
+    $this->quality = $quality;
+    return $this;
+  }
+
+  /**
    * @return string
    * @since 2.0
    */
@@ -144,13 +197,32 @@ abstract class SLIRImage
     return $this;
   }
 
+    /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getProgressive()
+  {
+    return $this->progressive;
+  }
+
+  /**
+   * @param boolean $progressive
+   * @return SLIRImageLibrary
+   */
+  public function setProgressive($progressive)
+  {
+    $this->progressive = $progressive;
+    return $this;
+  }
+
   /**
    * Sets the sharpening factor of the image
-   * @param string $sharpeningFactor
+   * @param float $sharpeningFactor
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  final public function sharpeningFactor($sharpeningFactor)
+  final public function setSharpeningFactor($sharpeningFactor)
   {
     $this->sharpeningFactor = $sharpeningFactor;
     return $this;
@@ -158,7 +230,7 @@ abstract class SLIRImage
 
   /**
    * Gets the sharpening factor of the image
-   * @return string
+   * @return float
    * @since 2.0
    */
   final public function getSharpeningFactor()
@@ -336,21 +408,23 @@ abstract class SLIRImage
   /**
    * @since 2.0
    * @param integer $width
-   * @return integer
+   * @return SLIRImage
    */
   final public function setWidth($width)
   {
-    return $this->info['width'] = $width;
+    $this->info['width'] = $width;
+    return $this;
   }
 
   /**
    * @since 2.0
    * @param integer $height
-   * @return integer
+   * @return SLIRImage
    */
   final public function setHeight($height)
   {
-    return $this->info['height'] = $height;
+    $this->info['height'] = $height;
+    return $this;
   }
 
   /**
@@ -361,6 +435,18 @@ abstract class SLIRImage
   public function getMimeType()
   {
     return (string) $this->getInfo('mime');
+  }
+
+  /**
+   * Sets the MIME type of the image
+   * @param string $mime
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function setMimeType($mime)
+  {
+    $this->info['mime'] = $mime;
+    return $this;
   }
 
   /**
@@ -411,14 +497,22 @@ abstract class SLIRImage
 
   /**
    * @since 2.0
+   * @return SLIRImage
+   */
+  public function optimize()
+  {
+    // @todo
+    return $this;
+  }
+
+  /**
+   * @since 2.0
    */
   public function applyTransformations()
   {
-    $this->crop();
-    $this->sharpen();
-    if ($this->isProgressive()) {
-      $this->interlace();
-    }
-    $this->optimize();
+    $this->crop()
+      ->sharpen()
+      ->interlace()
+      ->optimize();
   }
 }

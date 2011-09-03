@@ -71,6 +71,25 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   }
 
   /**
+   * Gets a hash that represents the properties of the image.
+   * 
+   * Used for caching.
+   * 
+   * @param $infosToInclude
+   * @return string
+   * @since 2.0
+   */
+  public function getHash(array $infosToInclude = array())
+  {
+    $infos  = array(
+    );
+
+    $infos = array_merge($infos, $infosToInclude);
+
+    return parent::getHash($infos);
+  }
+
+  /**
    * @return resource
    * @since 2.0
    */
@@ -330,13 +349,14 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 
   /**
    * Turns interlacing on or off
-   * @param boolean $interlace
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function interlace($interlace)
+  public function interlace()
   {
-    imageinterlace($this->getImage(), $interlace);
+    if ($this->getProgressive() === true) {
+      imageinterlace($this->getImage(), $interlace);
+    }
     return $this;
   }
 
@@ -443,17 +463,16 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 
   /**
    * Sharpens the image
-   * @param integer $sharpness
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function sharpen($sharpness)
+  public function sharpen()
   {
     if ($this->isSharpeningDesired()) {
       imageconvolution(
           $this->getImage(),
-          $this->sharpenMatrix($sharpness),
-          $sharpness,
+          $this->sharpenMatrix($this->getSharpeningFactor()),
+          $this->getSharpeningFactor(),
           0
       );
     }

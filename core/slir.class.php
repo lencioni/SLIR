@@ -436,14 +436,10 @@ class SLIR
   private function render()
   {
     $this->allocateMemory();
-
-    // @todo
-    // $this->rendered->setBackground($this->getBackground());
-
     $this->copySourceToRendered();
-    $this->rendered->setOriginalPath($this->source->getPath(), false);
-    $this->rendered->setSharpeningFactor($this->calculateSharpnessFactor());
     $this->source->destroy();
+    // var_dump($this->rendered);
+    // exit();
     $this->rendered->applyTransformations();
   }
 
@@ -720,6 +716,12 @@ class SLIR
       $this->rendered->setCropHeight(round($ratio * $this->source->getCropHeight()));
     } // if
 
+    $this->rendered->setSharpeningFactor($this->calculateSharpnessFactor())
+      ->setBackground($this->getBackground())
+      ->setQuality($this->getQuality())
+      ->setProgressive($this->getProgressive())
+      ->setMimeType($this->getMimeType());
+
     // Set up the appropriate image handling parameters based on the original
     // image's mime type
     // @todo some of this code should be moved to the SLIRImage class
@@ -756,6 +758,37 @@ class SLIR
       return $this->request->quality;
     } else {
       return SLIRConfig::$defaultQuality;
+    }
+  }
+
+  /**
+   * Determine whether the rendered image should be progressive or not
+   * @return boolean
+   * @since 2.0
+   */
+  private function getProgressive()
+  {
+    if ($this->source->isJPEG()) {
+      return ($this->request->progressive !== null)
+        ? $this->request->progressive
+        : SLIRConfig::$defaultProgressiveJPEG;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Get the mime type that we want to render as
+   * @return string
+   * @since 2.0
+   */
+  private function getMimeType()
+  {
+    if ($this->source->isGIF() || $this->source->isBMP()) {
+      // We convert GIFs and BMPs to PNGs
+      return 'image/png';
+    } else {
+      return $this->source->getMimeType();
     }
   }
 
@@ -937,7 +970,7 @@ class SLIR
    */
   private function renderedCacheFilename()
   {
-    return '/' . hash('md4', $this->request->fullPath() . serialize($this->rendered->getInfo()));
+    return '/' . $this->rendered->getHash();
   }
 
   /**
@@ -992,7 +1025,7 @@ class SLIR
     $this->cacheRendered();
 
     if ($this->shouldUseRequestCache()) {
-      return $this->cacheRequest($this->rendered->data, true);
+      return $this->cacheRequest($this->rendered->getData(), true);
     } else {
       return true;
     }
@@ -1006,9 +1039,9 @@ class SLIR
    */
   private function cacheRendered()
   {
-    $this->rendered->data = $this->cacheFile(
+    $this->cacheFile(
         $this->renderedCacheFilePath(),
-        $this->rendered->data,
+        $this->rendered->getData(),
         true
     );
 

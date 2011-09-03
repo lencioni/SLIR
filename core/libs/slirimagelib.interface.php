@@ -49,6 +49,17 @@ interface SLIRImageLibrary
   public function copy(SLIRImageLibrary $destination);
 
   /**
+   * Gets a hash that represents the properties of the image.
+   * 
+   * Used for caching.
+   * 
+   * @param array $infosToInclude
+   * @return string
+   * @since 2.0
+   */
+  public function getHash(array $infosToInclude = array());
+
+  /**
    * Sets the path of the file
    * @param string $path
    * @return SLIRImageLibrary
@@ -186,6 +197,18 @@ interface SLIRImageLibrary
   public function create();
 
   /**
+   * @return integer
+   * @since 2.0
+   */
+  public function getQuality();
+
+  /**
+   * @param integer $quality
+   * @return SLIRImageLibrary
+   */
+  public function setQuality($quality);
+
+  /**
    * @return string
    * @since 2.0
    */
@@ -223,12 +246,23 @@ interface SLIRImageLibrary
   public function fill($color);
 
   /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getProgressive();
+
+  /**
+   * @param boolean $progressive
+   * @return SLIRImageLibrary
+   */
+  public function setProgressive($progressive);
+
+  /**
    * Turns interlacing on or off
-   * @param boolean $interlace
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function interlace($interlace);
+  public function interlace();
 
   /**
    * Performs the actual cropping of the image
@@ -242,12 +276,23 @@ interface SLIRImageLibrary
   public function crop();
 
   /**
+   * @return float
+   * @since 2.0
+   */
+  public function getSharpeningFactor();
+
+  /**
+   * @param float $sharpeningFactor
+   * @return SLIRImageLibrary
+   */
+  public function setSharpeningFactor($sharpeningFactor);
+
+  /**
    * Sharpens the image
-   * @param integer $sharpness
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function sharpen($sharpness);
+  public function sharpen();
 
   /**
    * Outputs the image to the client
@@ -262,7 +307,7 @@ interface SLIRImageLibrary
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function save($path);
+  public function save();
 
   /**
    * Destroys the image resource
