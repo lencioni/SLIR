@@ -405,12 +405,17 @@ class SLIR
    * Removes the file that signifies that the garbage collector is currently running.
    *
    * @since 2.0
+   * @param boolean $successful
    * @return void
    */
-  private function finishGarbageCollection()
+  private function finishGarbageCollection($successful = true)
   {
+    // Delete the file that tells SLIR that the garbage collector is running
     unlink(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
-    error_log(sprintf("\n[%s] Garbage collection completed", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
+
+    if ($successful) {
+      error_log(sprintf("\n[%s] Garbage collection completed", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
+    }
   }
 
   /**
@@ -438,6 +443,7 @@ class SLIR
     } catch (Exception $e) {
       error_log(sprintf("\n[%s] %s thrown within the SLIR garbage collector. Message: %s in %s on line %d", @gmdate('D M d H:i:s Y'), get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()), 3, SLIRConfig::$pathToErrorLog);
       error_log("\nException trace stack: " . print_r($e->getTrace(), true), 3, SLIRConfig::$pathToErrorLog);
+      $this->finishGarbageCollection(false);
     }
   }
 
