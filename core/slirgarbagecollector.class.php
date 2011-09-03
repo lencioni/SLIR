@@ -104,6 +104,8 @@ class SLIRGarbageCollector
         unlink($file->getPathName());
       }
     }
+
+    unset($dir);
   }
 
   /**
