@@ -49,13 +49,6 @@ interface SLIRImageLibrary
   public function copy(SLIRImageLibrary $destination);
 
   /**
-   * Gets width, height, and iptc information from the image
-   * @return array with keys of width, height, and iptc
-   * @since 2.0
-   */
-  protected function getInfo();
-
-  /**
    * Gets the width of the image
    * @return integer
    * @since 2.0

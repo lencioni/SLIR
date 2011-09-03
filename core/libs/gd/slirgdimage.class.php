@@ -265,7 +265,7 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
    * @return array with keys of width, height, and iptc
    * @since 2.0
    */
-  protected function getInfo()
+  private function getInfo()
   {
     if ($this->info === null) {
       if ($this->getPath() === null) {
