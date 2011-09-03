@@ -273,7 +273,7 @@ class SLIR
   }
 
   /**
-   * Disables E_STRICT error reporting
+   * Disables E_STRICT and E_NOTICE error reporting
    *
    * @since 2.0
    * @return integer
