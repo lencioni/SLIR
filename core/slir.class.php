@@ -391,6 +391,13 @@ class SLIR
   private function startGarbageCollection()
   {
     error_log(sprintf("\n[%s] Garbage collection started", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
+
+    // Shut down the connection so the user can go about his or her business
+    header("Connection: close");
+    ignore_user_abort(true);
+    flush();
+
+    // Create the file that tells SLIR that the garbage collector is currently running and doesn't need to run again right now.
     touch(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
   }
 
