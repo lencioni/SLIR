@@ -211,8 +211,8 @@ class SLIR
 
     $this->getConfig();
 
-    // Set up our exception and error handler after the request cache to help keep
-    // everything humming along nicely
+    // Set up our exception and error handler after the request cache to
+    // help keep everything humming along nicely
     require 'slirexceptionhandler.class.php';
 
     $this->initializeGarbageCollection();
