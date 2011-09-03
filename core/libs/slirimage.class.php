@@ -17,6 +17,11 @@ abstract class SLIRImage
   protected $background;
 
   /**
+   * @var float amount to sharpen
+   */
+  protected $sharpeningFactor;
+
+  /**
    * @var array information about the image
    */
   protected $info;
@@ -137,6 +142,28 @@ abstract class SLIRImage
   {
     $this->background = $color;
     return $this;
+  }
+
+  /**
+   * Sets the sharpening factor of the image
+   * @param string $sharpeningFactor
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  final public function sharpeningFactor($sharpeningFactor)
+  {
+    $this->sharpeningFactor = $sharpeningFactor;
+    return $this;
+  }
+
+  /**
+   * Gets the sharpening factor of the image
+   * @return string
+   * @since 2.0
+   */
+  final public function getSharpeningFactor()
+  {
+    return $this->sharpeningFactor;
   }
 
   /**
@@ -380,5 +407,18 @@ abstract class SLIRImage
     } else {
       return false;
     }
+  }
+
+  /**
+   * @since 2.0
+   */
+  public function applyTransformations()
+  {
+    $this->crop();
+    $this->sharpen();
+    if ($this->isProgressive()) {
+      $this->interlace();
+    }
+    $this->optimize();
   }
 }

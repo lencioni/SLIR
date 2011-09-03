@@ -437,20 +437,14 @@ class SLIR
   {
     $this->allocateMemory();
 
-    // Allows some funky JPEGs to work instead of breaking everything
-    ini_set('gd.jpeg_ignore_warning', '1');
-
     // @todo
     // $this->rendered->setBackground($this->getBackground());
 
     $this->copySourceToRendered();
     $this->rendered->setOriginalPath($this->source->getPath(), false);
+    $this->rendered->setSharpeningFactor($this->calculateSharpnessFactor());
     $this->source->destroy();
-
-    $this->rendered->crop();
-    $this->rendered->sharpen($this->calculateSharpnessFactor());
-    $this->rendered->interlace();
-    $this->rendered->optimize();
+    $this->rendered->applyTransformations();
   }
 
   /**

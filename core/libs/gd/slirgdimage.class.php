@@ -336,7 +336,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   public function interlace($interlace)
   {
-    imageinterlace($this->getImage, true);
+    imageinterlace($this->getImage(), $interlace);
     return $this;
   }
 
@@ -496,16 +496,28 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   public function output()
   {
-    return $this->save(null);
+    $this->render(null);
+    return $this;
   }
 
   /**
    * Saves the image to disk
    * @param string $filename
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function save()
+  {
+    $this->render($this->getFullPath());
+    return $this;
+  }
+
+  /**
+   * @param string $path
    * @return boolean
    * @since 2.0
    */
-  public function save($path)
+  private function render($path)
   {
     if ($this->isJPEG()) {
       return imagejpeg($this->image, $path, $this->getQuality());
@@ -526,6 +538,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   public function destroy()
   {
     if ($this->image !== null) {
+      var_dump($this->image);
       imagedestroy($this->image);
     }
     return $this;

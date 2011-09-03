@@ -270,4 +270,11 @@ interface SLIRImageLibrary
    * @since 2.0
    */
   public function destroy();
+
+  /**
+   * Resizes, crops, sharpens, fills background, etc.
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function applyTransformations();
 }
