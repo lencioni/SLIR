@@ -38,7 +38,7 @@ interface SLIRImageLibrary
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function resample(SLIRImageLibrary $destination, $width, $height);
+  public function resample(SLIRImageLibrary $destination);
 
   /**
    * Copies the image into the destination image without reszing
@@ -48,6 +48,36 @@ interface SLIRImageLibrary
    */
   public function copy(SLIRImageLibrary $destination);
 
+  /**
+   * Sets the path of the file
+   * @param string $path
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function setPath($path);
+
+  /**
+   * Gets the path of the file
+   * @return string
+   * @since 2.0
+   */
+  public function getPath();
+
+  /**
+   * Sets the path of the original file
+   * @param string $path
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function setOriginalPath($path);
+
+  /**
+   * Gets the path of the original file
+   * @return string
+   * @since 2.0
+   */
+  public function getOriginalPath();
+  
   /**
    * Gets the width of the image
    * @return integer
@@ -63,10 +93,71 @@ interface SLIRImageLibrary
   public function getHeight();
 
   /**
+   * Sets the width of the image
+   * @param integer $width
+   * @return integer
+   * @since 2.0
+   */
+  public function setWidth($width);
+
+  /**
+   * Sets the height of the image
+   * @param integer $height
+   * @return integer
+   * @since 2.0
+   */
+  public function setHeight($height);
+
+  /**
+   * Gets the width of the cropped image
+   * @return integer
+   * @since 2.0
+   */
+  public function getCropWidth();
+
+  /**
+   * Gets the height of the cropped image
+   * @return integer
+   * @since 2.0
+   */
+  public function getCropHeight();
+
+  /**
+   * Sets the width of the cropped image
+   * @param integer $width
+   * @return integer
+   * @since 2.0
+   */
+  public function setCropWidth($width);
+
+  /**
+   * Sets the height of the cropped image
+   * @param integer $height
+   * @return integer
+   * @since 2.0
+   */
+  public function setCropHeight($height);
+
+  /**
    * @return integer
    * @since 2.0
    */
   public function getArea();
+
+  /**
+   * Gets info about the image
+   * @param string $info
+   * @return mixed
+   * @since 2.0
+   */
+  public function getInfo($info = null);
+
+  /**
+   * Gets the width / height
+   * @return float
+   * @since 2.0
+   */
+  public function getRatio();
 
   /**
    * Gets the MIME type of the image
@@ -76,12 +167,35 @@ interface SLIRImageLibrary
   public function getMimeType();
 
   /**
+   * @return string raw image data
+   * @since 2.0
+   */
+  public function getData();
+
+  /**
+   * @return integer size of image data
+   */
+  public function getDatasize();
+
+  /**
    * Creates a new, blank image
    * @param integer $width
    * @param integer $height
    * @return SLIRImageLibrary
    */
-  public function create($width, $height);
+  public function create();
+
+  /**
+   * @return string
+   * @since 2.0
+   */
+  public function getBackground();
+
+  /**
+   * @param string $color in hex
+   * @return SLIRImageLibrary
+   */
+  public function setBackground($color);
 
   /**
    * Turns on transparency for image if no background fill color is
@@ -125,7 +239,7 @@ interface SLIRImageLibrary
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function crop($cropWidth, $cropHeight, $fill = null);
+  public function crop();
 
   /**
    * Sharpens the image

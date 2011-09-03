@@ -23,21 +23,16 @@
  * @package SLIR
  */
 
- require_once '../slirimagelib.interface.php';
- require_once '../slirimagelib.class.php';
+ require_once dirname(__FILE__) . '/../slirimagelib.interface.php';
+ require_once dirname(__FILE__) . '/../slirimage.class.php';
 
 /**
  * Class for working with the GD image library
  * @package SLIR
  * @since 2.0
  */
-class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
+class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 {
-
-  /**
-   * @var string Path to image
-   */
-  private $path;
 
   /**
    * @var resource GD image resource
@@ -45,9 +40,9 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
   private $image;
 
   /**
-   * @var array Information about the image (width, height, iptc)
+   * @var string $data
    */
-  private $info;
+  private $data;
 
   /**
    * @param string $path
@@ -59,9 +54,6 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
     // Allows some funky JPEGs to work instead of breaking everything
     ini_set('gd.jpeg_ignore_warning', '1');
 
-    if ($path !== null) {
-      $this->path = $path;
-    }
     return parent::__construct($path);
   }
 
@@ -73,38 +65,34 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
   {
     $this->destroy();
     unset(
-      $this->path,
-      $this->image,
-      $this->info
+        $this->image
     );
     return parent::__destruct();
   }
 
   /**
-   * @param integer $fallbackWidth
-   * @param integer $fallbackHeight
    * @return resource
    * @since 2.0
    */
-  public function getImage($fallbackWidth = null, $fallbackHeight = null)
+  private function getImage()
   {
     if ($this->image === null) {
       if ($this->getPath() === null) {
-        $this->create($fallbackWidth, $fallbackHeight);
+        $this->create();
       } else {
         try {
           if ($this->isJPEG()) {
-            $this->image  = imagecreatefromjpeg($this->getPath());
+            $this->image  = imagecreatefromjpeg($this->getFullPath());
           } else if ($this->isGIF()) {
-            $this->image  = imagecreatefromgif($this->getPath());
+            $this->image  = imagecreatefromgif($this->getFullPath());
           } else if ($this->isPNG()) {
-            $this->image  = imagecreatefrompng($this->getPath());
+            $this->image  = imagecreatefrompng($this->getFullPath());
           } else if ($this->isBMP()) {
-            $this->image  = $this->imagecreatefrombmp($this->getPath());
+            $this->image  = $this->imagecreatefrombmp($this->getFullPath());
           }
         } catch (Exception $e) {
           // Try an alternate catch-all method
-          $this->image  = imagecreatefromstring(file_get_contents($this->getPath()));
+          $this->image  = imagecreatefromstring(file_get_contents($this->getFullPath()));
         }
 
         $this->info = null;
@@ -204,23 +192,12 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
   }
 
   /**
-   * @return string
-   * @since 2.0
-   */
-  public function getPath()
-  {
-    return $this->path;
-  }
-
-  /**
    * Resamples the image into the destination image
    * @param SLIRGDImage $destination
-   * @param integer $width
-   * @param integer $height
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function resample(SLIRGDImage $destination, $width, $height)
+  public function resample(SLIRImageLibrary $destination)
   {
     imagecopyresampled(
         $destination->getImage(),
@@ -244,7 +221,7 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function copy(SLIRGDImage $destination)
+  public function copy(SLIRImageLibrary $destination)
   {
     imagecopy(
         $destination->getImage(),
@@ -262,10 +239,11 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
 
   /**
    * Gets width, height, and iptc information from the image
-   * @return array with keys of width, height, and iptc
+   * @param string $info
+   * @return mixed
    * @since 2.0
    */
-  private function getInfo()
+  public function getInfo($info = null)
   {
     if ($this->info === null) {
       if ($this->getPath() === null) {
@@ -279,7 +257,7 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
         }
       } else {
         // There is a path, so get the info from the file
-        $this->info = getimagesize($this->getPath(), $extraInfo);
+        $this->info = getimagesize($this->getFullPath(), $extraInfo);
 
         if ($this->info === false) {
           header('HTTP/1.1 400 Bad Request');
@@ -296,55 +274,25 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
       }
     }
 
-    return $this->info;
-  }
-
-  /**
-   * Gets the width of the image
-   * @return integer
-   * @since 2.0
-   */
-  public function getWidth()
-  {
-    $info = $this->getInfo();
-    return (integer) $info['width'];
-  }
-
-  /**
-   * Gets the height of the image
-   * @return integer
-   * @since 2.0
-   */
-  public function getHeight()
-  {
-    $info = $this->getInfo();
-    return (integer) $info['height'];
-  }
-
-  /**
-   * Gets the MIME type of the image
-   * @return string
-   * @since 2.0
-   */
-  public function getMimeType()
-  {
-    $info = $this->getInfo();
-    return $info['mime'];
+    if ($info === null) {
+      return $this->info;
+    } else {
+      if (isset($this->info[$info])) {
+        return $this->info[$info];
+      } else {
+        return null;
+      }
+    }
   }
 
   /**
    * Creates a new, blank image
-   * @param integer $width
-   * @param integer $height
    * @return SLIRImageLibrary
    */
-  public function create($width, $height)
+  public function create()
   {
-    $this->image  = imagecreatetruecolor($width, $height);
-    $this->info   = array(
-      'width'   => $width,
-      'height'  => $height,
-    );
+    $this->image  = imagecreatetruecolor($this->getWidth(), $this->getHeight());
+
     return $this;
   }
 
@@ -435,18 +383,15 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
   /**
    * Performs the actual cropping of the image
    *
-   * @param integer $cropWidth
-   * @param integer $cropHeight
-   * @param string $fill color in hex
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function crop($cropWidth, $cropHeight, $fill = null)
+  public function crop()
   {
-    if ($this->croppingIsNeeded($cropWidth, $cropHeight)) {
+    if ($this->croppingIsNeeded()) {
       $cropper  = $this->getCropperClass();
       $offset   = $cropper->getCrop($this);
-      $this->cropImage($cropWidth, $cropHeight, $offset['x'], $offset['y'], $fill);
+      $this->cropImage($offset['x'], $offset['y']);
     }
 
     return $this;
@@ -456,22 +401,22 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
    * Performs the actual cropping of the image
    *
    * @since 2.0
-   * @param integer $width Width of cropped image
-   * @param integer $height Height of cropped image
    * @param integer $leftOffset Number of pixels from the left side of the image to crop in
    * @param integer $topOffset Number of pixels from the top side of the image to crop in
    * @param string $fill color in hex
    * @return boolean
    */
-  private function cropImage($width, $height, $leftOffset, $topOffset, $fill = null)
+  private function cropImage($leftOffset, $topOffset)
   {
     $cropped = new get_class();
 
-    $cropped->background($fill);
+    $cropped->setWidth($this->getCropWidth())
+      ->setHeight($this->getCropHeight())
+      ->setBackground($this->getBackground());
 
     // Copy rendered image to cropped image
     imagecopy(
-        $cropped->getImage($width, $height),
+        $cropped->getImage(),
         $this->getImage(),
         0,
         0,
@@ -531,6 +476,20 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
   }
 
   /**
+   * @return string
+   */
+  public function getData()
+  {
+    if ($this->data === null) {
+      ob_start();
+      $this->output();
+      $this->data = ob_get_clean();
+    }
+    
+    return $this->data;
+  }
+
+  /**
    * Outputs the image
    * @return SLIRImageLibrary
    * @since 2.0
@@ -566,7 +525,9 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
    */
   public function destroy()
   {
-    imagedestroy($this->getImage());
+    if ($this->image !== null) {
+      imagedestroy($this->image);
+    }
     return $this;
   }
 }

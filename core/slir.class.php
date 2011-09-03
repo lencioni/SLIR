@@ -162,6 +162,9 @@ class SLIR
    */
   private $rendered;
 
+  private $renderedWidth;
+  private $renderedHeight;
+
   /**
    * Whether or not the cache has already been initialized
    *
@@ -225,7 +228,7 @@ class SLIR
       $this->serveRequestCachedImage();
     }
 
-    require 'slirimage.class.php';
+    require 'libs/gd/slirgdimage.class.php';
     // Set all parameters for resizing
     $this->setParameters();
 
@@ -391,18 +394,17 @@ class SLIR
    */
   private function setParameters()
   {
-    $this->source   = new SLIRImage();
-    $this->source->path = $this->request->path;
+    $this->source   = new SLIRGDImage($this->request->path);
 
     // If either a max width or max height are not specified or larger than
     // the source image we default to the dimension of the source image so
     // they do not become constraints on our resized image.
-    if (!$this->request->width || $this->request->width > $this->source->width) {
-      $this->request->width = $this->source->width;
+    if (!$this->request->width || $this->request->width > $this->source->getWidth()) {
+      $this->request->width = $this->source->getWidth();
     }
 
-    if (!$this->request->height ||  $this->request->height > $this->source->height) {
-      $this->request->height  = $this->source->height;
+    if (!$this->request->height ||  $this->request->height > $this->source->getHeight()) {
+      $this->request->height  = $this->source->getHeight();
     }
   }
 
@@ -438,16 +440,14 @@ class SLIR
     // Allows some funky JPEGs to work instead of breaking everything
     ini_set('gd.jpeg_ignore_warning', '1');
 
-    $this->source->createImageFromFile();
-
-    $this->rendered->createBlankImage();
-    $this->rendered->background($this->isBackgroundFillOn());
+    // @todo
+    // $this->rendered->setBackground($this->getBackground());
 
     $this->copySourceToRendered();
-    $this->rendered->setPath($this->source->path, false);
-    $this->source->destroyImage();
+    $this->rendered->setOriginalPath($this->source->getPath(), false);
+    $this->source->destroy();
 
-    $this->rendered->crop($this->isBackgroundFillOn());
+    $this->rendered->crop();
     $this->rendered->sharpen($this->calculateSharpnessFactor());
     $this->rendered->interlace();
     $this->rendered->optimize();
@@ -462,31 +462,11 @@ class SLIR
   private function copySourceToRendered()
   {
     // Resample the original image into the resized canvas we set up earlier
-    if ($this->source->width != $this->rendered->width || $this->source->height != $this->rendered->height) {
-      imagecopyresampled(
-          $this->rendered->image,
-          $this->source->image,
-          0,
-          0,
-          0,
-          0,
-          $this->rendered->width,
-          $this->rendered->height,
-          $this->source->width,
-          $this->source->height
-      );
+    if ($this->source->getWidth() !== $this->rendered->getWidth() || $this->source->getHeight() != $this->rendered->getHeight()) {
+      $this->source->resample($this->rendered);
     } else {
       // No resizing is needed, so make a clean copy
-      imagecopy(
-          $this->rendered->image,
-          $this->source->image,
-          0,
-          0,
-          0,
-          0,
-          $this->source->width,
-          $this->source->height
-      );
+      $this->source->copy($this->rendered);
     } // if
   }
 
@@ -498,7 +478,7 @@ class SLIR
    */
   private function calculateSharpnessFactor()
   {
-    return $this->calculateASharpnessFactor($this->source->area(), $this->rendered->area());
+    return $this->calculateASharpnessFactor($this->source->getArea(), $this->rendered->getArea());
   }
 
   /**
@@ -602,7 +582,7 @@ class SLIR
    */
   private function isWidthDifferent()
   {
-    if ($this->request->width !== null && $this->request->width < $this->source->width) {
+    if ($this->request->width !== null && $this->request->width < $this->source->getWidth()) {
       return true;
     } else {
       return false;
@@ -617,7 +597,7 @@ class SLIR
    */
   private function isHeightDifferent()
   {
-    if ($this->request->height !== null && $this->request->height < $this->source->height) {
+    if ($this->request->height !== null && $this->request->height < $this->source->getHeight()) {
       return true;
     } else {
       return false;
@@ -673,12 +653,8 @@ class SLIR
    */
   private function setRenderedProperties()
   {
-    $this->rendered = new SLIRImage();
-
-    // Set default properties of the rendered image
-    $this->rendered->path   = $this->source->path;
-    $this->rendered->width  = $this->source->width;
-    $this->rendered->height = $this->source->height;
+    $this->rendered = new SLIRGDImage();
+    $this->rendered->setOriginalPath($this->source->getPath());
 
     // Cropping
     /*
@@ -706,60 +682,55 @@ class SLIR
       // Determine the dimensions of the source image after cropping and
       // before resizing
 
-      if ($this->request->cropRatio['ratio'] > $this->source->ratio()) {
+      if ($this->request->cropRatio['ratio'] > $this->source->getRatio()) {
         // Image is too tall so we will crop the top and bottom
-        $this->source->cropHeight = $this->source->width / $this->request->cropRatio['ratio'];
-        $this->source->cropWidth  = $this->source->width;
+        $this->source->setCropHeight($this->source->getWidth() / $this->request->cropRatio['ratio']);
+        $this->source->setCropWidth($this->source->getWidth());
       } else {
         // Image is too wide so we will crop off the left and right sides
-        $this->source->cropWidth  = $this->source->height * $this->request->cropRatio['ratio'];
-        $this->source->cropHeight = $this->source->height;
-      } // if
-
-      $this->source->cropper    = $this->request->cropper;
-      $this->rendered->cropper  = $this->source->cropper;
-    } // if
+        $this->source->setCropWidth($this->source->getHeight() * $this->request->cropRatio['ratio']);
+        $this->source->setCropHeight($this->source->getHeight());
+      }
+    }
 
     if ($this->shouldResizeBasedOnWidth()) {
       $resizeFactor = $this->resizeWidthFactor();
-      $this->rendered->height = round($resizeFactor * $this->source->height);
-      $this->rendered->width  = round($resizeFactor * $this->source->width);
+      $this->rendered->setHeight(round($resizeFactor * $this->source->getHeight()));
+      $this->rendered->setWidth(round($resizeFactor * $this->source->getWidth()));
 
       // Determine dimensions after cropping
       if ($this->isCroppingNeeded()) {
-        $this->rendered->cropHeight = round($resizeFactor * $this->source->cropHeight);
-        $this->rendered->cropWidth  = round($resizeFactor * $this->source->cropWidth);
+        $this->rendered->setCropHeight(round($resizeFactor * $this->source->cropHeight));
+        $this->rendered->setCropWidth(round($resizeFactor * $this->source->cropWidth));
       } // if
     } else if ($this->shouldResizeBasedOnHeight()) {
       $resizeFactor = $this->resizeHeightFactor();
-      $this->rendered->width  = round($resizeFactor * $this->source->width);
-      $this->rendered->height = round($resizeFactor * $this->source->height);
+      $this->rendered->setWidth(round($resizeFactor * $this->source->getWidth()));
+      $this->rendered->setHeight(round($resizeFactor * $this->source->getHeight()));
 
       // Determine dimensions after cropping
       if ($this->isCroppingNeeded()) {
-        $this->rendered->cropHeight = round($resizeFactor * $this->source->cropHeight);
-        $this->rendered->cropWidth  = round($resizeFactor * $this->source->cropWidth);
+        $this->rendered->setCropHeight(round($resizeFactor * $this->source->cropHeight));
+        $this->rendered->setCropWidth(round($resizeFactor * $this->source->cropWidth));
       } // if
     } else if ($this->isCroppingNeeded()) {
       // No resizing is needed but we still need to crop
       $ratio  = ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
-        ? $this->resizeUncroppedWidthFactor() : $this->resizeUncroppedHeightFactor();
+        ? $this->resizeUncroppedWidthFactor()
+        : $this->resizeUncroppedHeightFactor();
 
-      $this->rendered->width    = round($ratio * $this->source->width);
-      $this->rendered->height   = round($ratio * $this->source->height);
+      $this->rendered->setWidth(round($ratio * $this->source->getWidth()));
+      $this->rendered->setHeight(round($ratio * $this->source->getHeight()));
 
-      $this->rendered->cropWidth  = round($ratio * $this->source->cropWidth);
-      $this->rendered->cropHeight = round($ratio * $this->source->cropHeight);
+      $this->rendered->setCropWidth(round($ratio * $this->source->getCropWidth()));
+      $this->rendered->setCropHeight(round($ratio * $this->source->getCropHeight()));
     } // if
-
-    // Determine the quality of the output image
-    $this->rendered->quality    = ($this->request->quality !== null)
-      ? $this->request->quality : SLIRConfig::$defaultQuality;
 
     // Set up the appropriate image handling parameters based on the original
     // image's mime type
     // @todo some of this code should be moved to the SLIRImage class
-    $this->rendered->mime       = $this->source->mime;
+    /*
+    $this->renderedMime       = $this->source->getMimeType();
     if ($this->source->isJPEG()) {
       $this->rendered->progressive  = ($this->request->progressive !== null)
         ? $this->request->progressive : SLIRConfig::$defaultProgressiveJPEG;
@@ -776,6 +747,34 @@ class SLIR
 
     if ($this->isBackgroundFillOn()) {
       $this->rendered->background = $this->request->background;
+    }
+    */
+  }
+
+  /**
+   * Determine the quality to use when rendering the image
+   * @return integer
+   * @since 2.0
+   */
+  private function getQuality()
+  {
+    if ($this->request->quality !== null) {
+      return $this->request->quality;
+    } else {
+      return SLIRConfig::$defaultQuality;
+    }
+  }
+
+  /**
+   * @return string
+   * @since 2.0
+   */
+  private function getBackground()
+  {
+    if ($this->isBackgroundFillOn()) {
+      return $this->request->background;
+    } else {
+      return false;
     }
   }
 
@@ -827,7 +826,7 @@ class SLIR
    */
   private function resizeUncroppedWidthFactor()
   {
-    return $this->request->width / $this->source->width;
+    return $this->request->width / $this->source->getWidth();
   }
 
   /**
@@ -836,7 +835,7 @@ class SLIR
    */
   private function resizeCroppedWidthFactor()
   {
-    return $this->request->width / $this->source->cropWidth;
+    return $this->request->width / $this->source->getCropWidth();
   }
 
   /**
@@ -858,7 +857,7 @@ class SLIR
    */
   private function resizeUncroppedHeightFactor()
   {
-    return $this->request->height / $this->source->height;
+    return $this->request->height / $this->source->getHeight();
   }
 
   /**
@@ -867,7 +866,7 @@ class SLIR
    */
   private function resizeCroppedHeightFactor()
   {
-    return $this->request->height / $this->source->cropHeight;
+    return $this->request->height / $this->source->getCropHeight();
   }
 
   /**
@@ -944,7 +943,7 @@ class SLIR
    */
   private function renderedCacheFilename()
   {
-    return '/' . hash('md4', $this->request->fullPath() . serialize($this->rendered->cacheParameters()));
+    return '/' . hash('md4', $this->request->fullPath() . serialize($this->rendered->getInfo()));
   }
 
   /**
@@ -1167,11 +1166,11 @@ class SLIR
   private function serveSourceImage()
   {
     $this->serveFile(
-        $this->source->fullPath(),
+        $this->source->getPath(),
         null,
         null,
         null,
-        $this->source->mime,
+        $this->source->getMimeType(),
         'source'
     );
 
@@ -1257,15 +1256,15 @@ class SLIR
     // Serve the file
     $this->serveFile(
         null,
-        $this->rendered->data,
+        $this->rendered->getData(),
         gmdate('U'),
-        $this->rendered->fileSize(),
-        $this->rendered->mime,
+        $this->rendered->getDatasize(),
+        $this->rendered->getMimeType(),
         'rendered'
     );
 
     // Clean up memory
-    $this->rendered->destroyImage();
+    $this->rendered->destroy();
 
     exit();
   }
