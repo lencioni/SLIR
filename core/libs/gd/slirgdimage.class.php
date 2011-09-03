@@ -90,7 +90,7 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
   {
     if ($this->image === null) {
       if ($this->getPath() === null) {
-        $this->new($fallbackWidth, $fallbackHeight);
+        $this->create($fallbackWidth, $fallbackHeight);
       } else {
         try {
           if ($this->isJPEG()) {
@@ -265,7 +265,7 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
    * @return array with keys of width, height, and iptc
    * @since 2.0
    */
-  private function getInfo()
+  protected function getInfo()
   {
     if ($this->info === null) {
       if ($this->getPath() === null) {
@@ -338,7 +338,7 @@ class SLIRGDImage extends SLIRImageLibrary implements SLIRImageLibrary
    * @param integer $height
    * @return SLIRImageLibrary
    */
-  public function new($width, $height)
+  public function create($width, $height)
   {
     $this->image  = imagecreatetruecolor($width, $height);
     $this->info   = array(

@@ -53,7 +53,7 @@ interface SLIRImageLibrary
    * @return array with keys of width, height, and iptc
    * @since 2.0
    */
-  private function getInfo();
+  protected function getInfo();
 
   /**
    * Gets the width of the image
@@ -88,7 +88,7 @@ interface SLIRImageLibrary
    * @param integer $height
    * @return SLIRImageLibrary
    */
-  public function new($width, $height);
+  public function create($width, $height);
 
   /**
    * Turns on transparency for image if no background fill color is
