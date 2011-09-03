@@ -130,14 +130,6 @@ class SLIR
   const CROP_CLASS_SMART    = 'smart';
 
   /**
-   * Setting for the garbage collector to sleep for a second after looking at this many files
-   *
-   * @since 2.0
-   * @var integer
-   */
-  const GARBAGE_COLLECTOR_BREATHE_EVERY = 5000;
-
-  /**
    * @var string
    * @since 2.0
    */
@@ -338,9 +330,9 @@ class SLIR
   public function collectGarbage()
   {
     // Shut down the connection so the user can go about his or her business
-    // header('Connection: close');
-    // ignore_user_abort(true);
-    // flush();
+    header('Connection: close');
+    ignore_user_abort(true);
+    flush();
 
     require 'slirgarbagecollector.class.php';
     $garbageCollector = new SLIRGarbageCollector(array(
