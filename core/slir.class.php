@@ -332,119 +332,21 @@ class SLIR
   }
 
   /**
-   * Deletes stale files from a directory.
-   *
-   * Used by the garbage collector to keep the cache directories from overflowing.
-   *
-   * @param string $path Directory to delete stale files from
-   */
-  private function deleteStaleFilesFromDirectory($path, $useAccessedTime = true)
-  {
-    $now  = time();
-    $dir  = new DirectoryIterator($path);
-
-    if ($useAccessedTime === true) {
-      $function = 'getATime';
-    } else {
-      $function = 'getCTime';
-    }
-
-    foreach ($dir as $file) {
-      // Every x files, stop for a second to help let other things on the server happen
-      if ($file->key() % self::GARBAGE_COLLECTOR_BREATHE_EVERY == 0) {
-        sleep(1);
-      }
-
-      // If the file is a link and not readable, the file it was pointing at has probably
-      // been deleted, so we need to delete the link.
-      // Otherwise, if the file is older than the max lifetime specified in the config, it is
-      // stale and should be deleted.
-      if (!$file->isDot() && (($file->isLink() && !$file->isReadable()) || ($now - $file->$function()) > SLIRConfig::$garbageCollectFileCacheMaxLifetime)) {
-        unlink($file->getPathName());
-      }
-    }
-  }
-
-
-  /**
-   * Checks to see if the garbage collector is currently running.
-   *
-   * @since 2.0
-   * @return boolean
-   */
-  private function garbageCollectorIsRunning()
-  {
-    if (file_exists(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') && filemtime(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp') > time() - 86400) {
-      // If the file is more than 1 day old, something probably went wrong and we should run again anyway
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Writes a file to the cache to use as a signal that the garbage collector is currently running.
-   *
-   * @since 2.0
    * @return void
-   */
-  private function startGarbageCollection()
-  {
-    error_log(sprintf("\n[%s] Garbage collection started", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
-
-    // Shut down the connection so the user can go about his or her business
-    header("Connection: close");
-    ignore_user_abort(true);
-    flush();
-
-    // Create the file that tells SLIR that the garbage collector is currently running and doesn't need to run again right now.
-    touch(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
-  }
-
-  /**
-   * Removes the file that signifies that the garbage collector is currently running.
-   *
    * @since 2.0
-   * @param boolean $successful
-   * @return void
-   */
-  private function finishGarbageCollection($successful = true)
-  {
-    // Delete the file that tells SLIR that the garbage collector is running
-    unlink(SLIRConfig::$pathToCacheDir . '/garbageCollector.tmp');
-
-    if ($successful) {
-      error_log(sprintf("\n[%s] Garbage collection completed", @gmdate('D M d H:i:s Y')), 3, SLIRConfig::$pathToErrorLog);
-    }
-  }
-
-  /**
-   * Garbage collector
-   *
-   * Clears out old files from the cache
-   *
-   * @since 2.0
-   * @return void
    */
   public function collectGarbage()
   {
-    // This code needs to be in a try/catch block to prevent the epically unhelpful
-    // "PHP Fatal error:  Exception thrown without a stack frame in Unknown on line
-    // 0" from showing up in the error log.
-    try {
-      if ($this->garbageCollectorIsRunning()) {
-        return;
-      }
+    // Shut down the connection so the user can go about his or her business
+    // header('Connection: close');
+    // ignore_user_abort(true);
+    // flush();
 
-      $this->startGarbageCollection();
-      $this->deleteStaleFilesFromDirectory($this->getRequestCacheDir(), false);
-      $this->deleteStaleFilesFromDirectory($this->getRenderedCacheDir());
-      $this->finishGarbageCollection();
-    } catch (Exception $e) {
-      error_log(sprintf("\n[%s] %s thrown within the SLIR garbage collector. Message: %s in %s on line %d", @gmdate('D M d H:i:s Y'), get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()), 3, SLIRConfig::$pathToErrorLog);
-      error_log("\nException trace stack: " . print_r($e->getTrace(), true), 3, SLIRConfig::$pathToErrorLog);
-      $this->finishGarbageCollection(false);
-    }
+    require 'slirgarbagecollector.class.php';
+    $garbageCollector = new SLIRGarbageCollector(array(
+      $this->getRequestCacheDir() => false,
+      $this->getRenderedCacheDir() => true,
+    ));
   }
 
   /**
