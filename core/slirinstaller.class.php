@@ -92,6 +92,7 @@ class SLIRInstaller
     echo '<p>Installing <abbr title="Smart Lencioni Image Resizer">SLIR</abbr>&hellip;</p>';
 
     $tasks  = array(
+      'PHP Version'     => 'checkPHPVersion',
       'Config File'     => 'initializeConfigFile',
       'Config Entropy'  => 'checkConfigEntropy',
       'Error Log'       => 'initializeErrorLog',
@@ -256,6 +257,20 @@ class SLIRInstaller
       return sprintf($singularPattern, $number);
     } else {
       return sprintf($pluralPattern, $number);
+    }
+  }
+
+  /**
+   * Checks the version of PHP to make sure it is new enough for SLIR to work properly.
+   */
+  private function checkPHPVersion()
+  {
+    $minimumVersion = '5.1.2';
+
+    if (version_compare(PHP_VERSION, $minimumVersion) >= 0) {
+      return new PositiveSLIRInstallerResponse('Your PHP version is new enough for SLIR to work properly.');
+    } else {
+      return new NegativeSLIRInstallerResponse(sprintf('You are running a version of PHP that is too old for SLIR to work properly. Please upgrade to version %s or newer.', $minimumVersion));
     }
   }
 
