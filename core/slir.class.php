@@ -1489,11 +1489,6 @@ class SLIR
     // Nothing has changed since their last request - serve a 304 and exit
     header('HTTP/1.1 304 Not Modified');
 
-    // Serve a "Connection: close" header here in case there are any
-    // shutdown functions that have been registered with
-    // register_shutdown_function()
-    header('Connection: close');
-
     exit();
   }
 
