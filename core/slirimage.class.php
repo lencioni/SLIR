@@ -184,8 +184,7 @@ class SLIRImage
    */
   final public function __set($name, $value)
   {
-    switch ($name)
-    {
+    switch ($name) {
       case 'path':
         $this->setPath($value);
           break;
@@ -217,8 +216,7 @@ class SLIRImage
    */
   final public function __get($name)
   {
-    switch($name)
-    {
+    switch ($name) {
       case 'data':
         if ($this->data === null) {
           $this->data = $this->getData();
