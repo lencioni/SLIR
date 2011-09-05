@@ -344,7 +344,11 @@ abstract class SLIRImage
    */
   final public function getRatio()
   {
-    return $this->getWidth() / $this->getHeight();
+    if ($this->getHeight() === 0 || $this->getHeight() === null) {
+      return null;
+    } else {
+      return $this->getWidth() / $this->getHeight();
+    }
   }
 
   /**
@@ -353,7 +357,11 @@ abstract class SLIRImage
    */
   final public function getCropRatio()
   {
-    return $this->getCropWidth() / $this->getCropHeight();
+    if ($this->getCropHeight() === 0 || $this->getCropHeight() === null) {
+      return null;
+    } else {
+      return $this->getCropWidth() / $this->getCropHeight();
+    }
   }
 
   /**
