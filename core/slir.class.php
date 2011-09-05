@@ -37,7 +37,7 @@
  * discuss any specifics (joe@shiftingpixel.com).
  *
  * REQUIREMENTS:
- *     - PHP 5.1.0+
+ *     - PHP 5.1.2+
  *     - GD
  *
  * RECOMMENDED:
