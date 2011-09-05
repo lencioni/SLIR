@@ -1204,7 +1204,7 @@ class SLIR
   private function serveSourceImage()
   {
     $this->serveFile(
-        $this->source->getPath(),
+        $this->source->getFullPath(),
         null,
         null,
         null,
