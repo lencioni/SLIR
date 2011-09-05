@@ -522,7 +522,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
     if ($this->isJPEG()) {
       return imagejpeg($this->image, $path, $this->getQuality());
     } else if ($this->isPNG()) {
-      return imagepng($this->image, $path, (integer) $this->getQuality() / 10);
+      return imagepng($this->image, $path, (integer) round(10 - ($this->getQuality() / 10)));
     } else if ($this->isGIF()) {
       return imagegif($this->image, $path);
     } else {
