@@ -510,19 +510,18 @@ abstract class SLIRImage
    * Turns on transparency for image if no background fill color is
    * specified, otherwise, fills background with specified color
    *
-   * @param string $color in hex format
    * @since 2.0
    * @return SLIRImageLibrary
    */
-  final public function background($color = null)
+  final public function background()
   {
     if ($this->isAbleToHaveTransparency()) {
-      if (empty($color)) {
+      if ($this->getBackground() === null) {
         // If this is a GIF or a PNG, we need to set up transparency
         $this->enableTransparency();
       } else {
         // Fill the background with the specified color for matting purposes
-        $this->fill($color);
+        $this->fill($this->getBackground());
       }
     }
 

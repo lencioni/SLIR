@@ -449,6 +449,10 @@ class SLIR
    */
   private function copySourceToRendered()
   {
+    // Set up the background. If there is a color fill, it needs to happen
+    // before copying the image over.
+    $this->rendered->background();
+
     // Resample the original image into the resized canvas we set up earlier
     if ($this->source->getWidth() !== $this->rendered->getWidth() || $this->source->getHeight() != $this->rendered->getHeight()) {
       $this->source->resample($this->rendered);

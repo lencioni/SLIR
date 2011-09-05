@@ -244,13 +244,12 @@ interface SLIRImageLibrary
 
   /**
    * Turns on transparency for image if no background fill color is
-   * specified, otherwise, fills background with specified color
+   * specified, otherwise, fills background
    *
-   * @param string $color in hex format
    * @since 2.0
    * @return SLIRImageLibrary
    */
-  public function background($color = null);
+  public function background();
 
   /**
    * Turns on the alpha channel to enable transparency in the image
@@ -260,12 +259,11 @@ interface SLIRImageLibrary
   public function enableTransparency();
 
   /**
-   * Fills the image with the given color
-   * @param string $color in hex format
+   * Fills the image with the set background color
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function fill($color);
+  public function fill();
 
   /**
    * @return boolean

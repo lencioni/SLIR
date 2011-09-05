@@ -327,15 +327,16 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   }
 
   /**
-   * Fills the image with the given color
-   * @param string $color in hex format
+   * Fills the image with the set background color
    * @return SLIRImageLibrary
    * @since 2.0
    */
-  public function fill($color)
+  public function fill()
   {
+    $color      = $this->getBackground();
+
     $background = imagecolorallocate(
-        $image,
+        $this->getImage(),
         hexdec($color[0].$color[1]),
         hexdec($color[2].$color[3]),
         hexdec($color[4].$color[5])
@@ -523,7 +524,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
     } else if ($this->isPNG()) {
       return imagepng($this->image, $path, (integer) $this->getQuality() / 10);
     } else if ($this->isGIF()) {
-      return imagegif($this->image, $path, $this->getQuality());
+      return imagegif($this->image, $path);
     } else {
       return false;
     }
