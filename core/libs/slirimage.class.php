@@ -105,6 +105,7 @@ abstract class SLIRImage
       $this->getProgressive(),
       $this->getInfo(),
       $this->getCropper(),
+      $this->getQuality()
     );
 
     $infos = array_merge($infos, $infosToInclude);
