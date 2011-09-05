@@ -628,7 +628,7 @@ class SLIR
    */
   private function isCroppingNeeded()
   {
-    if ($this->request->isCropping() && $this->request->cropRatio['ratio'] != $this->source->ratio()) {
+    if ($this->request->isCropping() && $this->request->cropRatio['ratio'] != $this->source->getRatio()) {
       return true;
     } else {
       return false;

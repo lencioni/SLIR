@@ -171,6 +171,13 @@ interface SLIRImageLibrary
   public function getRatio();
 
   /**
+   * Gets the cropWidth / cropHeight
+   * @return float
+   * @since 2.0
+   */
+  public function getCropRatio();
+
+  /**
    * Gets the MIME type of the image
    * @return string
    * @since 2.0

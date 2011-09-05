@@ -349,6 +349,15 @@ abstract class SLIRImage
 
   /**
    * @since 2.0
+   * @return float
+   */
+  final public function getCropRatio()
+  {
+    return $this->getCropWidth() / $this->getCropHeight();
+  }
+
+  /**
+   * @since 2.0
    * @return integer
    */
   final public function getCropWidth()
