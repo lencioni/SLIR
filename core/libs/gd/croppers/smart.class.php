@@ -93,7 +93,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function shouldCropTopAndBottom(SLIRImage $image)
   {
-    if ($image->cropRatio() > $image->ratio()) {
+    if ($image->getCropRatio() > $image->getRatio()) {
       return true;
     } else {
       return false;
@@ -113,13 +113,13 @@ class SLIRCropperSmart implements SLIRCropper
     // @todo Change this method to resize image, determine offset, and then extrapolate the actual offset based on the image size difference. Then we can cache the offset in APC (all just like we are doing for face detection)
 
     if ($this->shouldCropTopAndBottom($image)) {
-      $length           = $image->cropHeight;
-      $lengthB          = $image->cropWidth;
-      $originalLength   = $image->height;
+      $length           = $image->getCropHeight();
+      $lengthB          = $image->getCropWidth();
+      $originalLength   = $image->getHeight();
     } else {
-      $length           = $image->cropWidth;
-      $lengthB          = $image->cropHeight;
-      $originalLength   = $image->width;
+      $length           = $image->getCropWidth();
+      $lengthB          = $image->getCropHeight();
+      $originalLength   = $image->getWidth();
     }
 
     // To smart crop an image, we need to calculate the difference between
@@ -174,7 +174,8 @@ class SLIRCropperSmart implements SLIRCropper
 
     // Fight the near and far rows. The stronger will remain standing.
     $returningChampion  = null;
-    $ratio        = 1;
+    $ratio              = 1;
+
     for ($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped) {
       $a  = $this->rowInterestingness($image, $offset[self::OFFSET_NEAR], $pixelStep, $originalLength);
       $b  = $this->rowInterestingness($image, $originalLength - $offset[self::OFFSET_FAR] - 1, $pixelStep, $originalLength);
@@ -250,7 +251,7 @@ class SLIRCropperSmart implements SLIRCropper
     $max              = 0;
 
     if ($this->shouldCropTopAndBottom($image)) {
-      for ($totalPixels = 0; $totalPixels < $image->width; $totalPixels += $pixelStep) {
+      for ($totalPixels = 0; $totalPixels < $image->getWidth(); $totalPixels += $pixelStep) {
         $i  = $this->pixelInterestingness($image, $totalPixels, $row);
 
         // Content at the very edge of an image tends to be less interesting than
@@ -261,7 +262,7 @@ class SLIRCropperSmart implements SLIRCropper
         $interestingness  += $i;
       }
     } else {
-      for ($totalPixels = 0; $totalPixels < $image->height; $totalPixels += $pixelStep) {
+      for ($totalPixels = 0; $totalPixels < $image->getHeight(); $totalPixels += $pixelStep) {
         $i  = $this->pixelInterestingness($image, $row, $totalPixels);
 
         // Content at the very edge of an image tends to be less interesting than
@@ -314,7 +315,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function loadPixelInfo(SLIRImage $image, $x, $y)
   {
-    if ($x < 0 || $x >= $image->width || $y < 0 || $y >= $image->height) {
+    if ($x < 0 || $x >= $image->getWidth() || $y < 0 || $y >= $image->getHeight()) {
       return false;
     }
 
@@ -327,7 +328,7 @@ class SLIRCropperSmart implements SLIRCropper
     }
 
     if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS]) && !isset($this->colors[$x][$y][self::PIXEL_LAB])) {
-      $this->colors[$x][$y][self::PIXEL_LAB]  = $this->evaluateColor(imagecolorat($image->image, $x, $y));
+      $this->colors[$x][$y][self::PIXEL_LAB]  = $this->evaluateColor(imagecolorat($image->getImage(), $x, $y));
     }
 
     return true;
@@ -393,7 +394,7 @@ class SLIRCropperSmart implements SLIRCropper
     $yB = $yA + $yMove;
 
     // Pixel is outside of the image, so we cant't calculate the Delta E
-    if ($xB < 0 || $xB >= $image->width || $yB < 0 || $yB >= $image->height) {
+    if ($xB < 0 || $xB >= $image->getWidth() || $yB < 0 || $yB >= $image->getHeight()) {
       return null;
     }
 

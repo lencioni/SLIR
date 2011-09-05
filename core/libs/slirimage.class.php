@@ -27,9 +27,14 @@ abstract class SLIRImage
   protected $sharpeningFactor;
 
   /**
-   * @var boolean $progressive
+   * @var boolean
    */
   protected $progressive;
+
+  /**
+   * @var string specified cropper to use
+   */
+  protected $cropper;
 
   /**
    * @var array information about the image
@@ -99,6 +104,7 @@ abstract class SLIRImage
       $this->getSharpeningFactor(),
       $this->getProgressive(),
       $this->getInfo(),
+      $this->getCropper(),
     );
 
     $infos = array_merge($infos, $infosToInclude);
@@ -370,7 +376,7 @@ abstract class SLIRImage
    */
   final public function getCropWidth()
   {
-    return $this->getInfo('cropWidth');
+    return (integer) $this->getInfo('cropWidth');
   }
 
   /**
@@ -379,27 +385,29 @@ abstract class SLIRImage
    */
   final public function getCropHeight()
   {
-    return $this->getInfo('cropHeight');
+    return (integer) $this->getInfo('cropHeight');
   }
 
   /**
    * @since 2.0
    * @param integer $width
-   * @return integer
+   * @return SLIRImage
    */
   final public function setCropWidth($width)
   {
-    return $this->info['cropWidth'] = $width;
+    $this->info['cropWidth'] = $width;
+    return $this;
   }
 
   /**
    * @since 2.0
    * @param integer $height
-   * @return integer
+   * @return SLIRImage
    */
   final public function setCropHeight($height)
   {
-    return $this->info['cropHeight'] = $height;
+    $this->info['cropHeight'] = $height;
+    return $this;
   }
 
   /**
@@ -463,6 +471,30 @@ abstract class SLIRImage
   public function setMimeType($mime)
   {
     $this->info['mime'] = $mime;
+    return $this;
+  }
+
+  /**
+   * @return string
+   * @since 2.0
+   */
+  public function getCropper()
+  {
+    if ($this->cropper !== null) {
+      return $this->cropper;
+    } else {
+      return SLIRConfig::$defaultCropper;
+    }
+  }
+
+  /**
+   * @param string $cropper
+   * @return SLIRImage
+   * @since 2.0
+   */
+  public function setCropper($cropper)
+  {
+    $this->cropper = $cropper;
     return $this;
   }
 

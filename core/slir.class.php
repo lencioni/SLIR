@@ -418,11 +418,11 @@ class SLIR
    */
   private function allocateMemory()
   {
-    // Multiply width * height * 8 bytes
-    $estimatedMemory = $this->source->width * $this->source->height * 8;
+    // Multiply width * height * 4 bytes
+    $estimatedMemory = $this->source->getArea() * 4;
 
     // Convert memory to Megabytes and add 15 in order to allow some slack
-    $estimatedMemory = round(($estimatedMemory / 1024) / 1024, 0) + 15;
+    $estimatedMemory = (integer) ($estimatedMemory / 1024) + 15;
 
     $v = ini_set('memory_limit', min($estimatedMemory, SLIRConfig::$maxMemoryToAllocate) . 'M');
   }
@@ -438,8 +438,6 @@ class SLIR
     $this->allocateMemory();
     $this->copySourceToRendered();
     $this->source->destroy();
-    // var_dump($this->rendered);
-    // exit();
     $this->rendered->applyTransformations();
   }
 
@@ -690,8 +688,8 @@ class SLIR
 
       // Determine dimensions after cropping
       if ($this->isCroppingNeeded()) {
-        $this->rendered->setCropHeight(round($resizeFactor * $this->source->cropHeight));
-        $this->rendered->setCropWidth(round($resizeFactor * $this->source->cropWidth));
+        $this->rendered->setCropHeight(round($resizeFactor * $this->source->getCropHeight()));
+        $this->rendered->setCropWidth(round($resizeFactor * $this->source->getCropWidth()));
       } // if
     } else if ($this->shouldResizeBasedOnHeight()) {
       $resizeFactor = $this->resizeHeightFactor();
@@ -700,8 +698,8 @@ class SLIR
 
       // Determine dimensions after cropping
       if ($this->isCroppingNeeded()) {
-        $this->rendered->setCropHeight(round($resizeFactor * $this->source->cropHeight));
-        $this->rendered->setCropWidth(round($resizeFactor * $this->source->cropWidth));
+        $this->rendered->setCropHeight(round($resizeFactor * $this->source->getCropHeight()));
+        $this->rendered->setCropWidth(round($resizeFactor * $this->source->getCropWidth()));
       } // if
     } else if ($this->isCroppingNeeded()) {
       // No resizing is needed but we still need to crop
@@ -720,7 +718,8 @@ class SLIR
       ->setBackground($this->getBackground())
       ->setQuality($this->getQuality())
       ->setProgressive($this->getProgressive())
-      ->setMimeType($this->getMimeType());
+      ->setMimeType($this->getMimeType())
+      ->setCropper($this->request->cropper);
 
     // Set up the appropriate image handling parameters based on the original
     // image's mime type
@@ -840,7 +839,7 @@ class SLIR
    */
   private function resizeWidthFactor()
   {
-    if ($this->source->cropWidth !== null) {
+    if ($this->source->getCropWidth() !== null) {
       return $this->resizeCroppedWidthFactor();
     } else {
       return $this->resizeUncroppedWidthFactor();
@@ -871,7 +870,7 @@ class SLIR
    */
   private function resizeHeightFactor()
   {
-    if ($this->source->cropHeight !== null) {
+    if ($this->source->getCropHeight() !== null) {
       return $this->resizeCroppedHeightFactor();
     } else {
       return $this->resizeUncroppedHeightFactor();

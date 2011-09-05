@@ -47,7 +47,7 @@ class SLIRCropperCentered implements SLIRCropper
    */
   private function shouldCropTopAndBottom(SLIRImage $image)
   {
-    if ($image->cropRatio() > $image->ratio()) {
+    if ($image->getCropRatio() > $image->getRatio()) {
       return true;
     } else {
       return false;
@@ -61,7 +61,7 @@ class SLIRCropperCentered implements SLIRCropper
    */
   public function getCropY(SLIRImage $image)
   {
-    return round(($image->height - $image->cropHeight) / 2);
+    return round(($image->getHeight() - $image->getCropHeight()) / 2);
   }
 
   /**
@@ -71,7 +71,7 @@ class SLIRCropperCentered implements SLIRCropper
    */
   public function getCropX(SLIRImage $image)
   {
-    return round(($image->width - $image->cropWidth) / 2);
+    return round(($image->getWidth() - $image->getCropWidth()) / 2);
   }
 
   /**
@@ -85,8 +85,8 @@ class SLIRCropperCentered implements SLIRCropper
   {
     // Determine crop offset
     $crop = array(
-      'x'     => 0,
-      'y'     => 0,
+      'x' => 0,
+      'y' => 0,
     );
 
     if ($this->shouldCropTopAndBottom($image)) {

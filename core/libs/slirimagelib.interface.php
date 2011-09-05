@@ -106,7 +106,7 @@ interface SLIRImageLibrary
   /**
    * Sets the width of the image
    * @param integer $width
-   * @return integer
+   * @return SLIRImageLibrary
    * @since 2.0
    */
   public function setWidth($width);
@@ -114,7 +114,7 @@ interface SLIRImageLibrary
   /**
    * Sets the height of the image
    * @param integer $height
-   * @return integer
+   * @return SLIRImageLibrary
    * @since 2.0
    */
   public function setHeight($height);
@@ -136,7 +136,7 @@ interface SLIRImageLibrary
   /**
    * Sets the width of the cropped image
    * @param integer $width
-   * @return integer
+   * @return SLIRImageLibrary
    * @since 2.0
    */
   public function setCropWidth($width);
@@ -144,10 +144,25 @@ interface SLIRImageLibrary
   /**
    * Sets the height of the cropped image
    * @param integer $height
-   * @return integer
+   * @return SLIRImageLibrary
    * @since 2.0
    */
   public function setCropHeight($height);
+
+  /**
+   * Gets cropper to be used
+   * @return string
+   * @since 2.0
+   */
+  public function getCropper();
+
+  /**
+   * Sets the cropper to be used
+   * @param string $cropper
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function setCropper($cropper);
 
   /**
    * @return integer

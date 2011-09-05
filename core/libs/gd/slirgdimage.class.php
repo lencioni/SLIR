@@ -63,7 +63,6 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   public function __destruct()
   {
-    $this->destroy();
     unset(
         $this->image
     );
@@ -93,7 +92,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    * @return resource
    * @since 2.0
    */
-  private function getImage()
+  public function getImage()
   {
     if ($this->image === null) {
       if ($this->getPath() === null) {
@@ -361,33 +360,14 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   }
 
   /**
-   * Gets the name of the class that will be used to determine the crop offset for the image
-   *
-   * @since 2.0
-   * @param string $className Name of the cropper class name to get
-   * @return string
-   */
-  private function getCropperClassName($className = null)
-  {
-    if ($className !== null) {
-      return $className;
-    } else if ($this->cropper !== null) {
-      return $this->cropper;
-    } else {
-      return SLIRConfig::$defaultCropper;
-    }
-  }
-
-  /**
    * Gets the class that will be used to determine the crop offset for the image
    *
    * @since 2.0
-   * @param string $className Name of the cropper class to get
    * @return SLIRCropper
    */
-  final public function getCropperClass($className = null)
+  final public function getCropperClass()
   {
-    $cropClass  = strtolower($this->getCropperClassName($className));
+    $cropClass  = strtolower($this->getCropper());
     $fileName   = SLIRConfig::$pathToSLIR . "/core/libs/gd/croppers/$cropClass.class.php";
     $class      = 'SLIRCropper' . ucfirst($cropClass);
 
@@ -428,7 +408,8 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   private function cropImage($leftOffset, $topOffset)
   {
-    $cropped = new get_class();
+    $class    = __CLASS__;
+    $cropped  = new $class();
 
     $cropped->setWidth($this->getCropWidth())
       ->setHeight($this->getCropHeight())
@@ -455,7 +436,6 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
     $this->info['height'] = $cropped->getHeight();
 
     // Clean up memory
-    $cropped->destroy(); // This might destroy both images
     unset($cropped);
 
     return $this;
