@@ -535,7 +535,7 @@ abstract class SLIRImage
    */
   protected function croppingIsNeeded()
   {
-    if ($this->getCropWidth() === null || $this->getCropHeight() === null) {
+    if ($this->getCropWidth() === 0 || $this->getCropHeight() === 0) {
       return false;
     } else if ($this->getCropWidth() < $this->getWidth() || $this->getCropHeight() < $this->getHeight()) {
       return true;

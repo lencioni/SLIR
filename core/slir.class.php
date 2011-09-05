@@ -839,7 +839,7 @@ class SLIR
    */
   private function resizeWidthFactor()
   {
-    if ($this->source->getCropWidth() !== null) {
+    if ($this->source->getCropWidth() !== 0) {
       return $this->resizeCroppedWidthFactor();
     } else {
       return $this->resizeUncroppedWidthFactor();
@@ -861,7 +861,11 @@ class SLIR
    */
   private function resizeCroppedWidthFactor()
   {
-    return $this->request->width / $this->source->getCropWidth();
+    if ($this->source->getCropWidth() === 0) {
+      return false;
+    } else {
+      return $this->request->width / $this->source->getCropWidth();
+    }
   }
 
   /**
@@ -870,7 +874,7 @@ class SLIR
    */
   private function resizeHeightFactor()
   {
-    if ($this->source->getCropHeight() !== null) {
+    if ($this->source->getCropHeight() !== 0) {
       return $this->resizeCroppedHeightFactor();
     } else {
       return $this->resizeUncroppedHeightFactor();
@@ -892,7 +896,11 @@ class SLIR
    */
   private function resizeCroppedHeightFactor()
   {
-    return $this->request->height / $this->source->getCropHeight();
+    if ($this->source->getCropHeight() === 0) {
+      return false;
+    } else {
+      return $this->request->height / $this->source->getCropHeight();
+    }
   }
 
   /**
