@@ -558,6 +558,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   {
     if ($this->image !== null) {
       imagedestroy($this->image);
+      // We need to set the image to null because imagedestroy() doesn't
       $this->image = null;
     }
     return $this;
