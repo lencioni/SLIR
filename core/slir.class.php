@@ -816,7 +816,7 @@ class SLIR
    */
   private function shouldResizeBasedOnWidth()
   {
-    if (floor($this->resizeWidthFactor() * $this->source->height) <= $this->request->height) {
+    if (floor($this->resizeWidthFactor() * $this->source->getHeight()) <= $this->request->height) {
       return true;
     } else {
       return false;
@@ -830,7 +830,7 @@ class SLIR
    */
   private function shouldResizeBasedOnHeight()
   {
-    if (floor($this->resizeHeightFactor() * $this->source->width) <= $this->request->width) {
+    if (floor($this->resizeHeightFactor() * $this->source->getWidth()) <= $this->request->width) {
       return true;
     } else {
       return false;
