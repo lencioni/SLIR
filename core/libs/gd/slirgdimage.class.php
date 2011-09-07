@@ -354,9 +354,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   public function interlace()
   {
-    if ($this->getProgressive() === true) {
-      imageinterlace($this->getImage(), $interlace);
-    }
+    imageinterlace($this->getImage(), $this->getProgressive());
     return $this;
   }
 
