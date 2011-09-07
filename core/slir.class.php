@@ -619,7 +619,7 @@ class SLIR
    */
   private function isQualityOn()
   {
-    if ($this->request->isQuality() || SLIRConfig::$defaultQuality < 100) {
+    if ($this->getQuality() < 100) {
       return true;
     } else {
       return false;
