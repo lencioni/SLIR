@@ -71,9 +71,9 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 
   /**
    * Gets a hash that represents the properties of the image.
-   * 
+   *
    * Used for caching.
-   * 
+   *
    * @param $infosToInclude
    * @return string
    * @since 2.0
@@ -476,6 +476,93 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   }
 
   /**
+   * Determines if the image can be converted to a palette image
+   *
+   * @since 2.0
+   * @return array colors in image, otherwise false if image is not palette
+   */
+  private function isPalette()
+  {
+    $colors = array();
+
+    // Loop over all of the pixels in the image, counting the colors and checking their alpha channels
+    for ($x = 0, $width = $this->getWidth(); $x < $width; ++$x) {
+      for ($y = 0, $height = $this->getHeight(); $y < $height; ++$y) {
+        $color = imagecolorat($this->getImage(), $x, $y);
+
+        if (isset($colors[$color])) {
+          // This color has already been checked, move on to the next pixel
+          continue;
+        }
+
+        $colors[$color] = true;
+
+        if (count($colors) > 256) {
+          // Too many colors to convert to a palette image without losing quality
+          return false;
+        }
+
+        // Get the alpha channel of the color
+        $alpha  = ($color & 0x7F000000) >> 24;
+
+        // What is the threshold for visibility in an alpha channel? (out of 127)
+        if ($alpha > 1 && $alpha < 126) {
+          return false;
+        }
+      }
+    }
+
+    return $colors;
+  }
+
+  /**
+   * @since 2.0
+   * @return void
+   * @link http://us.php.net/manual/ro/function.imagetruecolortopalette.php#44803
+   */
+  private function trueColorToPalette($dither, $ncolors)
+  {
+    $palette  = imagecreate($this->getWidth(), $this->getHeight());
+
+    imagecopy(
+        $palette,
+        $this->getImage(),
+        0,
+        0,
+        0,
+        0,
+        $this->getWidth(),
+        $this->getHeight()
+    );
+
+    $this->destroy();
+    $this->image  = $palette;
+    $this->setMimeType('image/png');
+
+    /* For some reason, ImageTrueColorToPalette produces horrible results for true color images that have less than 256 colors. http://stackoverflow.com/questions/5187480/imagetruecolortopalette-losing-colors
+
+    $colorsHandle = ImageCreateTrueColor($this->getWidth(), $this->getHeight());
+    ImageCopy($colorsHandle, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
+    ImageTrueColorToPalette($this->image, $dither, $ncolors);
+    ImageColorMatch($colorsHandle, $this->image);
+    ImageDestroy($colorsHandle);
+    */
+  }
+
+  /**
+   * @since 2.0
+   * @return SLIRImage
+   */
+  public function optimize()
+  {
+    $colors = $this->isPalette();
+    if ($colors !== false) {
+      $this->trueColorToPalette(false, count($colors));
+    }
+    return $this;
+  }
+
+  /**
    * @return string
    */
   public function getData()
@@ -485,7 +572,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
       $this->output();
       $this->data = ob_get_clean();
     }
-    
+
     return $this->data;
   }
 

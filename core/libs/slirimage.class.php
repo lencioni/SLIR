@@ -89,9 +89,9 @@ abstract class SLIRImage
 
   /**
    * Gets a hash that represents the properties of the image.
-   * 
+   *
    * Used for caching.
-   * 
+   *
    * @param $infosToInclude
    * @return string
    * @since 2.0
@@ -542,16 +542,6 @@ abstract class SLIRImage
     } else {
       return false;
     }
-  }
-
-  /**
-   * @since 2.0
-   * @return SLIRImage
-   */
-  public function optimize()
-  {
-    // @todo
-    return $this;
   }
 
   /**
