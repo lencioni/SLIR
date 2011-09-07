@@ -517,7 +517,7 @@ abstract class SLIRImage
   final public function background()
   {
     if ($this->isAbleToHaveTransparency()) {
-      if ($this->getBackground() === null) {
+      if ($this->getBackground() === false || $this->getBackground() === null) {
         // If this is a GIF or a PNG, we need to set up transparency
         $this->enableTransparency();
       } else {
