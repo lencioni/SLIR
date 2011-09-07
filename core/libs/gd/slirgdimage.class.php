@@ -484,11 +484,11 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   private function isPalette()
   {
     $colors = array();
-
+    $image  = $this->getImage();
     // Loop over all of the pixels in the image, counting the colors and checking their alpha channels
     for ($x = 0, $width = $this->getWidth(); $x < $width; ++$x) {
       for ($y = 0, $height = $this->getHeight(); $y < $height; ++$y) {
-        $color = imagecolorat($this->getImage(), $x, $y);
+        $color = imagecolorat($image, $x, $y);
 
         if (isset($colors[$color])) {
           // This color has already been checked, move on to the next pixel
