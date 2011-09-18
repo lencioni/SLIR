@@ -222,6 +222,7 @@ class SLIR
 
     require 'slirrequest.class.php';
     $this->request  = new SLIRRequest();
+    $this->request->initialize();
 
     // Check the cache based on the request URI
     if ($this->shouldUseRequestCache() && $this->isRequestCached()) {

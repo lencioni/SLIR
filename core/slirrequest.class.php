@@ -112,6 +112,13 @@ class SLIRRequest
    */
   final public function __construct()
   {
+  }
+
+  /**
+   * @since 2.0
+   */
+  final public function initialize()
+  {
     $params = $this->getParameters();
 
     // Set image path first
