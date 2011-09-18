@@ -223,4 +223,84 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request->quality = 101;
   }
 
+  /**
+   * @test
+   */
+  public function setProgressiveWithNumericStringOne()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = '1';
+    $this->assertSame($request->progressive, true);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithNumericStringZero()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = '0';
+    $this->assertSame($request->progressive, false);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithNumericStringGreaterThanOne()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = '100';
+    $this->assertSame($request->progressive, true);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithNumericStringLessThanZero()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = '-100';
+    $this->assertSame($request->progressive, true);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithNonNumericString()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = 'test';
+    $this->assertSame($request->progressive, true);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithNonNumericStringFalse()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = 'false';
+    $this->assertSame($request->progressive, true);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithEmptyString()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = '';
+    $this->assertSame($request->progressive, false);
+  }
+
+  /**
+   * @test
+   */
+  public function setProgressiveWithIntegerOne()
+  {
+    $request = new SLIRRequest();
+    $request->progressive = 1;
+    $this->assertSame($request->progressive, true);
+  }
+
 }
