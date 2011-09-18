@@ -21,7 +21,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/nonexistant/image.jpg';
-    unset($request);
   }
 
   /**
@@ -32,7 +31,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/../insecure/image.jpg';
-    unset($request);
   }
 
   /**
@@ -43,7 +41,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/insecure/im:age.jpg';
-    unset($request);
   }
 
   /**
@@ -54,7 +51,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/insecure/im>age.jpg';
-    unset($request);
   }
 
   /**
@@ -65,7 +61,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/insecure/im<age.jpg';
-    unset($request);
   }
 
   /**
@@ -76,7 +71,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->height = '100';
     $this->assertSame($request->height, 100);
-    unset($request);
   }
 
   /**
@@ -87,7 +81,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->height = 100;
     $this->assertSame($request->height, 100);
-    unset($request);
   }
 
   /**
@@ -98,7 +91,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->height = 100.1;
     $this->assertSame($request->height, 100);
-    unset($request);
   }
 
   /**
@@ -109,7 +101,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->height = 100.9;
     $this->assertSame($request->height, 100);
-    unset($request);
   }
 
   /**
@@ -120,7 +111,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->height = -100;
-    unset($request);
   }
 
   /**
@@ -131,7 +121,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->width = '100';
     $this->assertSame($request->width, 100);
-    unset($request);
   }
 
   /**
@@ -142,7 +131,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->width = 100;
     $this->assertSame($request->width, 100);
-    unset($request);
   }
 
   /**
@@ -153,7 +141,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->width = 100.1;
     $this->assertSame($request->width, 100);
-    unset($request);
   }
 
   /**
@@ -164,7 +151,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->width = 100.9;
     $this->assertSame($request->width, 100);
-    unset($request);
   }
 
   /**
@@ -175,7 +161,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->width = -100;
-    unset($request);
   }
 
   /**
@@ -186,7 +171,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->quality = '50';
     $this->assertSame($request->quality, 50);
-    unset($request);
   }
 
   /**
@@ -197,7 +181,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->quality = 50;
     $this->assertSame($request->quality, 50);
-    unset($request);
   }
 
   /**
@@ -208,7 +191,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->quality = 50.1;
     $this->assertSame($request->quality, 50);
-    unset($request);
   }
 
   /**
@@ -219,7 +201,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $request = new SLIRRequest();
     $request->quality = 50.9;
     $this->assertSame($request->quality, 50);
-    unset($request);
   }
 
   /**
@@ -230,7 +211,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->quality = -1;
-    unset($request);
   }
 
   /**
@@ -241,7 +221,6 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->quality = 101;
-    unset($request);
   }
 
 }
