@@ -220,6 +220,9 @@ class SLIRRequest
   private function setWidth($value)
   {
     $this->width  = (int) $value;
+    if ($this->width < 1) {
+      throw new RuntimeException('Width must be greater than 0: ' . $this->width);
+    }
   }
 
   /**
@@ -229,6 +232,9 @@ class SLIRRequest
   private function setHeight($value)
   {
     $this->height = (int) $value;
+    if ($this->height < 1) {
+      throw new RuntimeException('Height must be greater than 0: ' . $this->height);
+    }
   }
 
   /**
