@@ -157,8 +157,7 @@ class SLIRRequest
    */
   final public function __set($name, $value)
   {
-    switch($name)
-    {
+    switch ($name) {
       case 'i':
       case 'image':
       case 'imagePath':
