@@ -403,12 +403,11 @@ Example usage:
   {
     $this->path = $this->localizePath((string) urldecode($path));
 
-    // Make sure the image path is secure
     if (!$this->isPathSecure()) {
+      // Make sure the image path is secure
       throw new RuntimeException('Image path may not contain ":", "..", "<", or ">"');
-    }
-    // Make sure the image file exists
-    else if (!$this->pathExists()) {
+    } else if (!$this->pathExists()) {
+      // Make sure the image file exists
       if (SLIRConfig::$defaultImagePath !== null && !$this->isUsingDefaultImagePath()) {
         $this->isUsingDefaultImagePath  = true;
         return $this->setPath(SLIRConfig::$defaultImagePath);
