@@ -1,0 +1,247 @@
+<?php
+
+require_once 'core/slir.class.php';
+require_once 'core/slirrequest.class.php';
+
+class SLIRRequestTest extends PHPUnit_Framework_TestCase
+{
+  protected $slir;
+
+  protected function setUp()
+  {
+    $this->slir = new SLIR();
+    $this->slir->getConfig();
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setPathToNonexistentImage()
+  {
+    $request = new SLIRRequest();
+    $request->path = 'path/to/nonexistant/image.jpg';
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setPathToImageWithDoubleDots()
+  {
+    $request = new SLIRRequest();
+    $request->path = 'path/to/../insecure/image.jpg';
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setPathToImageWithColon()
+  {
+    $request = new SLIRRequest();
+    $request->path = 'path/to/insecure/im:age.jpg';
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setPathToImageWithGreaterThan()
+  {
+    $request = new SLIRRequest();
+    $request->path = 'path/to/insecure/im>age.jpg';
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setPathToImageWithLessThan()
+  {
+    $request = new SLIRRequest();
+    $request->path = 'path/to/insecure/im<age.jpg';
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setHeightWithString()
+  {
+    $request = new SLIRRequest();
+    $request->height = '100';
+    $this->assertSame($request->height, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setHeightWithInteger()
+  {
+    $request = new SLIRRequest();
+    $request->height = 100;
+    $this->assertSame($request->height, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setHeightWithFloatLowDecimal()
+  {
+    $request = new SLIRRequest();
+    $request->height = 100.1;
+    $this->assertSame($request->height, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setHeightWithFloatHighDecimal()
+  {
+    $request = new SLIRRequest();
+    $request->height = 100.9;
+    $this->assertSame($request->height, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setHeightWithNegativeInteger()
+  {
+    $request = new SLIRRequest();
+    $request->height = -100;
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setWidthWithString()
+  {
+    $request = new SLIRRequest();
+    $request->width = '100';
+    $this->assertSame($request->width, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setWidthWithInteger()
+  {
+    $request = new SLIRRequest();
+    $request->width = 100;
+    $this->assertSame($request->width, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setWidthWithFloatLowDecimal()
+  {
+    $request = new SLIRRequest();
+    $request->width = 100.1;
+    $this->assertSame($request->width, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setWidthWithFloatHighDecimal()
+  {
+    $request = new SLIRRequest();
+    $request->width = 100.9;
+    $this->assertSame($request->width, 100);
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setWidthWithNegativeInteger()
+  {
+    $request = new SLIRRequest();
+    $request->width = -100;
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setQualityWithString()
+  {
+    $request = new SLIRRequest();
+    $request->quality = '50';
+    $this->assertSame($request->quality, 50);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setQualityWithInteger()
+  {
+    $request = new SLIRRequest();
+    $request->quality = 50;
+    $this->assertSame($request->quality, 50);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setQualityWithFloatLowDecimal()
+  {
+    $request = new SLIRRequest();
+    $request->quality = 50.1;
+    $this->assertSame($request->quality, 50);
+    unset($request);
+  }
+
+  /**
+   * @test
+   */
+  public function setQualityWithFloatHighDecimal()
+  {
+    $request = new SLIRRequest();
+    $request->quality = 50.9;
+    $this->assertSame($request->quality, 50);
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setQualityWithNegativeInteger()
+  {
+    $request = new SLIRRequest();
+    $request->quality = -1;
+    unset($request);
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setQualityWithIntegerAbove100()
+  {
+    $request = new SLIRRequest();
+    $request->quality = 101;
+    unset($request);
+  }
+
+}
