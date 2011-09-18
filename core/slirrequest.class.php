@@ -243,7 +243,7 @@ class SLIRRequest
    */
   private function setQuality($value)
   {
-    $this->quality  = $value;
+    $this->quality  = (int) $value;
     if ($this->quality < 0 || $this->quality > 100) {
       throw new RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
     }
