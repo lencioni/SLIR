@@ -303,4 +303,124 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $this->assertSame($request->progressive, true);
   }
 
+  /**
+   * @test
+   */
+  public function setBackgroundWithLongHexUppercase()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'BADA55';
+    $this->assertSame($request->background, 'BADA55');
+  }
+
+  /**
+   * @test
+   */
+  public function setBackgroundWithLongHexLowercase()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'bada55';
+    $this->assertSame($request->background, 'bada55');
+  }
+
+  /**
+   * @test
+   */
+  public function setBackgroundWithLongHexMixedcase()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'BadA55';
+    $this->assertSame($request->background, 'BadA55');
+  }
+
+  /**
+   * @test
+   */
+  public function setBackgroundWithShortHexUppercase()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'FA8';
+    $this->assertSame($request->background, 'FFAA88');
+  }
+
+  /**
+   * @test
+   */
+  public function setBackgroundWithShortHexLowercase()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'fa8';
+    $this->assertSame($request->background, 'ffaa88');
+  }
+
+  /**
+   * @test
+   */
+  public function setBackgroundWithShortHexMixedcase()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'Fa8';
+    $this->assertSame($request->background, 'FFaa88');
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setBackgroundOneCharacter()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'a';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setBackgroundTwoCharacters()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'ef';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setBackgroundFourCharacters()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'FACE';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setBackgroundFiveCharacters()
+  {
+    $request = new SLIRRequest();
+    $request->background = 'Ca5e5';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setBackgroundSevenCharacters()
+  {
+    $request = new SLIRRequest();
+    $request->background = '1234567';
+  }
+
+  /**
+   * @test
+   */
+  public function setBackgroundWithNonHexCharacters()
+  {
+    $request = new SLIRRequest();
+    $request->background = '#BADA55';
+    $this->assertSame($request->background, 'BADA55');
+  }
+
 }
