@@ -285,8 +285,8 @@ class SLIRRequest
    */
   private function setCropRatio($value)
   {
-    $delimiters     = preg_quote(self::CROP_RATIO_DELIMITERS);
-    $ratio        = preg_split("/[$delimiters]/", (string) urldecode($value));
+    $delimiters = preg_quote(self::CROP_RATIO_DELIMITERS);
+    $ratio      = preg_split("/[$delimiters]/", (string) urldecode($value));
     if (count($ratio) >= 2) {
       if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0) {
         throw new RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
