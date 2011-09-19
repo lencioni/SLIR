@@ -200,7 +200,7 @@ class SLIRRequest
 
       case 'c':
       case 'cropRatio':
-        $this->setCrop($value);
+        $this->setCropRatio($value);
           break;
     } // switch
   }
@@ -283,7 +283,7 @@ class SLIRRequest
    * @param string $value
    * @return void
    */
-  private function setCrop($value)
+  private function setCropRatio($value)
   {
     $delimiters     = preg_quote(self::CROP_RATIO_DELIMITERS);
     $ratio        = preg_split("/[$delimiters]/", (string) urldecode($value));
