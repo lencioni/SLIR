@@ -169,8 +169,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setQualityWithString()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isQuality());
     $request->quality = '50';
     $this->assertSame($request->quality, 50);
+    $this->assertTrue($request->isQuality());
   }
 
   /**
@@ -179,8 +181,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setQualityWithInteger()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isQuality());
     $request->quality = 50;
     $this->assertSame($request->quality, 50);
+    $this->assertTrue($request->isQuality());
   }
 
   /**
@@ -189,8 +193,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setQualityWithFloatLowDecimal()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isQuality());
     $request->quality = 50.1;
     $this->assertSame($request->quality, 50);
+    $this->assertTrue($request->isQuality());
   }
 
   /**
@@ -199,8 +205,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setQualityWithFloatHighDecimal()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isQuality());
     $request->quality = 50.9;
     $this->assertSame($request->quality, 50);
+    $this->assertTrue($request->isQuality());
   }
 
   /**
@@ -211,6 +219,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->quality = -1;
+    $this->assertFalse($request->isQuality());
   }
 
   /**
@@ -221,6 +230,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->quality = 101;
+    $this->assertFalse($request->isQuality());
   }
 
   /**
@@ -309,8 +319,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithLongHexUppercase()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = 'BADA55';
     $this->assertSame($request->background, 'BADA55');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -319,8 +331,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithLongHexLowercase()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = 'bada55';
     $this->assertSame($request->background, 'bada55');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -329,8 +343,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithLongHexMixedcase()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = 'BadA55';
     $this->assertSame($request->background, 'BadA55');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -339,8 +355,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithShortHexUppercase()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = 'FA8';
     $this->assertSame($request->background, 'FFAA88');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -349,8 +367,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithShortHexLowercase()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = 'fa8';
     $this->assertSame($request->background, 'ffaa88');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -359,8 +379,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithShortHexMixedcase()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = 'Fa8';
     $this->assertSame($request->background, 'FFaa88');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -371,6 +393,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->background = 'a';
+    $this->assertFalse($request->isBackground());
   }
 
   /**
@@ -381,6 +404,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->background = 'ef';
+    $this->assertFalse($request->isBackground());
   }
 
   /**
@@ -391,6 +415,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->background = 'FACE';
+    $this->assertFalse($request->isBackground());
   }
 
   /**
@@ -401,6 +426,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->background = 'Ca5e5';
+    $this->assertFalse($request->isBackground());
   }
 
   /**
@@ -411,6 +437,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->background = '1234567';
+    $this->assertFalse($request->isBackground());
   }
 
   /**
@@ -419,8 +446,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setBackgroundWithNonHexCharacters()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isBackground());
     $request->background = '#BADA55';
     $this->assertSame($request->background, 'BADA55');
+    $this->assertTrue($request->isBackground());
   }
 
   /**
@@ -429,8 +458,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithXDelimiter()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2x1';
     $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -439,8 +470,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithPeriodDelimiter()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2.1';
     $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -449,8 +482,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithColonDelimiter()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2:1';
     $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -459,9 +494,11 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithCropperSameDelimiters()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2x1xsmart';
     $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
     $this->assertSame($request->cropper, 'smart');
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -470,9 +507,11 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithCropperMixedDelimiters()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2x1.smart';
     $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
     $this->assertSame($request->cropper, 'smart');
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -481,9 +520,11 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithExtraInformation()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2x1xsmartxbonusxinformation';
     $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
     $this->assertSame($request->cropper, 'smart');
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -492,8 +533,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithLargeWidth()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '2000000x1';
     $this->assertSame($request->cropRatio, array('width' => 2000000.0, 'height' => 1.0, 'ratio' => 2000000.0));
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -502,8 +545,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setCropRatioWithLargeHeight()
   {
     $request = new SLIRRequest();
+    $this->assertFalse($request->isCropping());
     $request->cropRatio = '1x2000000';
     $this->assertSame($request->cropRatio, array('width' => 1.0, 'height' => 2000000.0, 'ratio' => 0.0000005));
+    $this->assertTrue($request->isCropping());
   }
 
   /**
@@ -514,6 +559,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->cropRatio = '100x0';
+    $this->assertFalse($request->isCropping());
   }
 
   /**
@@ -524,6 +570,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->cropRatio = '0x100';
+    $this->assertFalse($request->isCropping());
   }
 
   /**
@@ -534,6 +581,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->cropRatio = '100';
+    $this->assertFalse($request->isCropping());
   }
 
 }
