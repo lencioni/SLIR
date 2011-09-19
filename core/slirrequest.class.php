@@ -193,6 +193,7 @@ class SLIRRequest
           break;
 
       case 'b';
+      case 'background':
       case 'backgroundFillColor':
         $this->setBackgroundFillColor($value);
           break;
