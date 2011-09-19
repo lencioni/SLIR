@@ -423,4 +423,117 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $this->assertSame($request->background, 'BADA55');
   }
 
+  /**
+   * @test
+   */
+  public function setCropRatioWithXDelimiter()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2x1';
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithPeriodDelimiter()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2.1';
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithColonDelimiter()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2:1';
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithCropperSameDelimiters()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2x1xsmart';
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertSame($request->cropper, 'smart');
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithCropperMixedDelimiters()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2x1.smart';
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertSame($request->cropper, 'smart');
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithExtraInformation()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2x1xsmartxbonusxinformation';
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertSame($request->cropper, 'smart');
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithLargeWidth()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '2000000x1';
+    $this->assertSame($request->cropRatio, array('width' => 2000000.0, 'height' => 1.0, 'ratio' => 2000000.0));
+  }
+
+  /**
+   * @test
+   */
+  public function setCropRatioWithLargeHeight()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '1x2000000';
+    $this->assertSame($request->cropRatio, array('width' => 1.0, 'height' => 2000000.0, 'ratio' => 0.0000005));
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setCropRatioWithZeroWidth()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '100x0';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setCropRatioWithZeroHeight()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '0x100';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   */
+  public function setCropRatioWithNoHeight()
+  {
+    $request = new SLIRRequest();
+    $request->cropRatio = '100';
+  }
+
 }
