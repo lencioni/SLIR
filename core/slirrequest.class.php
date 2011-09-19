@@ -303,7 +303,7 @@ class SLIRRequest
         $this->cropper  = (string) $ratio[2];
       }
     } else {
-      throw new RuntimeException('Crop ratio must be in width:height format: ' . (string) $value);
+      throw new RuntimeException('Crop ratio must be in [width]x[height] format (e.g. 2x1): ' . (string) $value);
     } // if
   }
 
