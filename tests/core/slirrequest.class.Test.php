@@ -1,22 +1,10 @@
 <?php
 
-require_once 'core/slir.class.php';
+require_once 'tests/slirTestCase.class.php';
 require_once 'core/slirrequest.class.php';
 
-class SLIRRequestTest extends PHPUnit_Framework_TestCase
+class SLIRRequestTest extends SLIRTestCase
 {
-  protected $slir;
-
-  protected function setUp()
-  {
-    $this->slir = new SLIR();
-    $this->slir->getConfig();
-    SLIRConfig::$defaultImagePath = null;
-    SLIRConfig::$forceQueryString = false;
-
-    // Try to fix documentRoot for CLI
-    SLIRConfig::$documentRoot = preg_replace('`/slir/?$`', '', SLIRConfig::$documentRoot);
-  }
 
   /**
    * @test
