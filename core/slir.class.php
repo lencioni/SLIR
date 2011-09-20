@@ -216,11 +216,11 @@ class SLIR
 
     // Set up our exception and error handler after the request cache to
     // help keep everything humming along nicely
-    require 'slirexceptionhandler.class.php';
+    require_once 'slirexceptionhandler.class.php';
 
     $this->initializeGarbageCollection();
 
-    require 'slirrequest.class.php';
+    require_once 'slirrequest.class.php';
     $this->request  = new SLIRRequest();
     $this->request->initialize();
 
@@ -229,7 +229,7 @@ class SLIR
       $this->serveRequestCachedImage();
     }
 
-    require 'libs/gd/slirgdimage.class.php';
+    require_once 'libs/gd/slirgdimage.class.php';
     // Set all parameters for resizing
     $this->setParameters();
 
@@ -338,7 +338,7 @@ class SLIR
     ignore_user_abort(true);
     flush();
 
-    require 'slirgarbagecollector.class.php';
+    require_once 'slirgarbagecollector.class.php';
     $garbageCollector = new SLIRGarbageCollector(array(
       $this->getRequestCacheDir() => false,
       $this->getRenderedCacheDir() => true,
