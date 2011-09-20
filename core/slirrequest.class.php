@@ -145,17 +145,15 @@ class SLIRRequest
    */
   final public function __destruct()
   {
-    unset(
-        $this->path,
-        $this->width,
-        $this->height,
-        $this->cropRatio,
-        $this->cropper,
-        $this->quality,
-        $this->progressive,
-        $this->background,
-        $this->isUsingDefaultImagePath
-    );
+    unset($this->path);
+    unset($this->width);
+    unset($this->height);
+    unset($this->cropRatio);
+    unset($this->cropper);
+    unset($this->quality);
+    unset($this->progressive);
+    unset($this->background);
+    unset($this->isUsingDefaultImagePath);
   }
 
   /**
