@@ -11,16 +11,31 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $this->slir = new SLIR();
     $this->slir->getConfig();
+    SLIRConfig::$defaultImagePath = null;
   }
 
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Image does not exist
    */
-  public function setPathToNonexistentImage()
+  public function setPathToNonexistentImageWithoutDefaultImage()
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/nonexistant/image.jpg';
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage Image does not exist
+   */
+  public function setPathToNonexistentImageWithDefaultImage()
+  {
+    $request = new SLIRRequest();
+    SLIRConfig::$defaultImagePath = 'default.jpg';
+    $request->path = 'path/to/nonexistant/image.jpg';
+    SLIRConfig::$defaultImagePath = null;
   }
 
   /**
@@ -36,16 +51,18 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Image path may not contain
    */
   public function setPathToImageWithColon()
   {
     $request = new SLIRRequest();
-    $request->path = 'path/to/insecure/im:age.jpg';
+    $request->path = 'path/to/in:secure/image.jpg';
   }
 
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Image path may not contain
    */
   public function setPathToImageWithGreaterThan()
   {
@@ -56,6 +73,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Image path may not contain
    */
   public function setPathToImageWithLessThan()
   {
@@ -106,6 +124,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Height must be greater than 0
    */
   public function setHeightWithNegativeInteger()
   {
@@ -156,6 +175,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Width must be greater than 0
    */
   public function setWidthWithNegativeInteger()
   {
@@ -214,6 +234,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Quality must be between 0 and 100
    */
   public function setQualityWithNegativeInteger()
   {
@@ -225,6 +246,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Quality must be between 0 and 100
    */
   public function setQualityWithIntegerAbove100()
   {
@@ -388,6 +410,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Background fill color must be in hexadecimal format
    */
   public function setBackgroundOneCharacter()
   {
@@ -399,6 +422,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Background fill color must be in hexadecimal format
    */
   public function setBackgroundTwoCharacters()
   {
@@ -410,6 +434,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Background fill color must be in hexadecimal format
    */
   public function setBackgroundFourCharacters()
   {
@@ -421,6 +446,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Background fill color must be in hexadecimal format
    */
   public function setBackgroundFiveCharacters()
   {
@@ -432,6 +458,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Background fill color must be in hexadecimal format
    */
   public function setBackgroundSevenCharacters()
   {
@@ -554,6 +581,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Crop ratio must not contain a zero
    */
   public function setCropRatioWithZeroWidth()
   {
