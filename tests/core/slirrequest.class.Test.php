@@ -12,6 +12,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $this->slir = new SLIR();
     $this->slir->getConfig();
     SLIRConfig::$defaultImagePath = null;
+    SLIRConfig::$forceQueryString = false;
 
     // Try to fix documentRoot for CLI
     SLIRConfig::$documentRoot = preg_replace('`/slir/?$`', '', SLIRConfig::$documentRoot);
@@ -50,6 +51,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     SLIRConfig::$defaultImagePath = 'slir/tests/images/camera-logo.png';
     $request->path = 'path/to/nonexistent/image.jpg';
     $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
+    SLIRConfig::$defaultImagePath = null;
   }
 
   /**
@@ -645,13 +647,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
    */
   public function initializeNoImage()
   {
-    $request        = new SLIRRequest();
-    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    $request = new SLIRRequest();
     
     $_SERVER['REQUEST_URI'] = '/slir/w100/';
     $request->initialize();
-
-    $_SERVER['REQUEST_URI'] = $oldRequestURI;
   }
 
   /**
@@ -661,13 +660,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
    */
   public function initializeNoParameters()
   {
-    $request        = new SLIRRequest();
-    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    $request = new SLIRRequest();
     
     $_SERVER['REQUEST_URI'] = '/';
     $request->initialize();
-
-    $_SERVER['REQUEST_URI'] = $oldRequestURI;
   }
 
   /**
@@ -677,13 +673,10 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
    */
   public function initializeNonexistentImage()
   {
-    $request        = new SLIRRequest();
-    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    $request = new SLIRRequest();
     
     $_SERVER['REQUEST_URI'] = '/slir/w100/path/to/nonexistent/image.jpg';
     $request->initialize();
-
-    $_SERVER['REQUEST_URI'] = $oldRequestURI;
   }
 
   /**
@@ -691,16 +684,126 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
    */
   public function initializeExistentImageOnlyWidth()
   {
-    $request        = new SLIRRequest();
-    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    $request = new SLIRRequest();
     
     $_SERVER['REQUEST_URI'] = '/slir/w100/slir/tests/images/camera-logo.png';
     $request->initialize();
 
     $this->assertSame($request->width, 100);
     $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
+  }
 
-    $_SERVER['REQUEST_URI'] = $oldRequestURI;
+  /**
+   * @test
+   */
+  public function initializeLotsOfParameters()
+  {
+    $request = new SLIRRequest();
+    
+    $_SERVER['REQUEST_URI'] = '/slir/w100-h101-c2.1-q15-p1/slir/tests/images/camera-logo.png';
+    $request->initialize();
+
+    $this->assertSame($request->width, 100);
+    $this->assertSame($request->height, 101);
+    $this->assertSame($request->cropRatio, array('width' => 2.0, 'height' => 1.0, 'ratio' => 2.0));
+    $this->assertSame($request->quality, 15);
+    $this->assertSame($request->progressive, true);
+    $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
+  }
+
+  /**
+   * @test
+   */
+  public function initializeDefaultImageOnlyWidth()
+  {
+    $request = new SLIRRequest();
+
+    SLIRConfig::$defaultImagePath = '/slir/tests/images/camera-logo.png';
+    
+    $_SERVER['REQUEST_URI'] = '/slir/w100/path/to/nonexistent/image.png';
+    $request->initialize();
+
+    $this->assertSame($request->width, 100);
+    $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
+
+    SLIRConfig::$defaultImagePath = null;
+  }
+
+  /**
+   * @test
+   */
+  public function initializeUnspecifiedImageWithDefaultImageOnlyWidth()
+  {
+    $request = new SLIRRequest();
+
+    SLIRConfig::$defaultImagePath = '/slir/tests/images/camera-logo.png';
+    
+    $_SERVER['REQUEST_URI'] = '/slir/w100/';
+    $request->initialize();
+
+    $this->assertSame($request->width, 100);
+    $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
+
+    SLIRConfig::$defaultImagePath = null;
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage Source image was not specified
+   */
+  public function initializeForceQueryStringNoParameters()
+  {
+    SLIRConfig::$forceQueryString = true;
+    $request = new SLIRRequest();
+
+    // This should have no effect
+    $_SERVER['REQUEST_URI'] = '/slir/w100/slir/tests/images/camera-logo.png';
+    $request->initialize();
+
+    SLIRConfig::$forceQueryString = false;
+  }
+
+   /**
+   * @test
+   */
+  public function initializeForceQueryStringWidthAndImage()
+  {
+    SLIRConfig::$forceQueryString = true;
+    $request = new SLIRRequest();
+
+    // This should have no effect
+    $_SERVER['REQUEST_URI'] = '/slir/w100/nonexistent/image.png';
+
+    $_GET       = array();
+    $_GET['i']  = '/slir/tests/images/camera-logo.png';
+    $_GET['w']  = '100';
+
+    $request->initialize();
+
+    $this->assertSame($request->path, $_GET['i']);
+    $this->assertSame($request->width, 100);
+
+    SLIRConfig::$forceQueryString = false;
+  }
+
+  /**
+   * @test
+   */
+  public function initializeUnforcedQueryStringWidthAndImage()
+  {
+    SLIRConfig::$forceQueryString = false;
+    $request = new SLIRRequest();
+
+    $_SERVER['QUERY_STRING'] = 'i=/slir/tests/images/camera-logo.png&w=100';
+    $_GET       = array();
+    $_GET['i']  = '/slir/tests/images/camera-logo.png';
+    $_GET['w']  = '100';
+
+    $request->initialize();
+
+    $this->assertSame($request->path, $_GET['i']);
+    $this->assertSame($request->width, 100);
   }
 
   /**
