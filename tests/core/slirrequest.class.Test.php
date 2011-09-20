@@ -12,6 +12,9 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     $this->slir = new SLIR();
     $this->slir->getConfig();
     SLIRConfig::$defaultImagePath = null;
+
+    // Try to fix documentRoot for CLI
+    SLIRConfig::$documentRoot = preg_replace('`/slir/?$`', '', SLIRConfig::$documentRoot);
   }
 
   /**
@@ -44,9 +47,9 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setPathToNonexistentImageWithExistentDefaultImage()
   {
     $request = new SLIRRequest();
-    SLIRConfig::$defaultImagePath = 'tests/images/camera-logo.png';
+    SLIRConfig::$defaultImagePath = 'slir/tests/images/camera-logo.png';
     $request->path = 'path/to/nonexistent/image.jpg';
-    $this->assertSame($request->path, '/tests/images/camera-logo.png');
+    $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
   }
 
   /**
@@ -98,8 +101,8 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   public function setPathToExistentImage()
   {
     $request = new SLIRRequest();
-    $request->path = 'tests/images/camera-logo.png';
-    $this->assertSame($request->path, '/tests/images/camera-logo.png');
+    $request->path = 'slir/tests/images/camera-logo.png';
+    $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
   }
 
   /**
@@ -647,6 +650,55 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
     
     $_SERVER['REQUEST_URI'] = '/slir/w100/';
     $request->initialize();
+
+    $_SERVER['REQUEST_URI'] = $oldRequestURI;
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage Not enough parameters were given
+   */
+  public function initializeNoParameters()
+  {
+    $request        = new SLIRRequest();
+    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    
+    $_SERVER['REQUEST_URI'] = '/';
+    $request->initialize();
+
+    $_SERVER['REQUEST_URI'] = $oldRequestURI;
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage Image does not exist
+   */
+  public function initializeNonexistentImage()
+  {
+    $request        = new SLIRRequest();
+    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    
+    $_SERVER['REQUEST_URI'] = '/slir/w100/path/to/nonexistent/image.jpg';
+    $request->initialize();
+
+    $_SERVER['REQUEST_URI'] = $oldRequestURI;
+  }
+
+  /**
+   * @test
+   */
+  public function initializeExistentImageOnlyWidth()
+  {
+    $request        = new SLIRRequest();
+    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    
+    $_SERVER['REQUEST_URI'] = '/slir/w100/slir/tests/images/camera-logo.png';
+    $request->initialize();
+
+    $this->assertSame($request->width, 100);
+    $this->assertSame($request->path, '/slir/tests/images/camera-logo.png');
 
     $_SERVER['REQUEST_URI'] = $oldRequestURI;
   }
