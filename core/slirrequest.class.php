@@ -384,7 +384,7 @@ Example usage:
   {
     if (SLIRConfig::$forceQueryString === true) {
       return true;
-    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b'), array_keys($_GET)))) {
+    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b', 'p'), array_keys($_GET)))) {
       return true;
     } else {
       return false;
