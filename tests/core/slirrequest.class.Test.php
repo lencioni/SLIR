@@ -30,12 +30,23 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
    * @expectedException RuntimeException
    * @expectedExceptionMessage Image does not exist
    */
-  public function setPathToNonexistentImageWithDefaultImage()
+  public function setPathToNonexistentImageWithNonexistentDefaultImage()
   {
     $request = new SLIRRequest();
     SLIRConfig::$defaultImagePath = 'default.jpg';
     $request->path = 'path/to/nonexistant/image.jpg';
     SLIRConfig::$defaultImagePath = null;
+  }
+
+  /**
+   * @test
+   */
+  public function setPathToNonexistentImageWithExistentDefaultImage()
+  {
+    $request = new SLIRRequest();
+    SLIRConfig::$defaultImagePath = 'tests/images/camera-logo.png';
+    $request->path = 'path/to/nonexistent/image.jpg';
+    $this->assertSame($request->path, '/tests/images/camera-logo.png');
   }
 
   /**
@@ -79,6 +90,16 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   {
     $request = new SLIRRequest();
     $request->path = 'path/to/insecure/im<age.jpg';
+  }
+
+  /**
+   * @test
+   */
+  public function setPathToExistentImage()
+  {
+    $request = new SLIRRequest();
+    $request->path = 'tests/images/camera-logo.png';
+    $this->assertSame($request->path, '/tests/images/camera-logo.png');
   }
 
   /**
@@ -593,6 +614,7 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Crop ratio must not contain a zero
    */
   public function setCropRatioWithZeroHeight()
   {
@@ -604,12 +626,49 @@ class SLIRRequestTest extends PHPUnit_Framework_TestCase
   /**
    * @test
    * @expectedException RuntimeException
+   * @expectedExceptionMessage Crop ratio must be in [width]x[height] format
    */
   public function setCropRatioWithNoHeight()
   {
     $request = new SLIRRequest();
     $request->cropRatio = '100';
     $this->assertFalse($request->isCropping());
+  }
+
+  /**
+   * @test
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage Source image was not specified
+   */
+  public function initializeNoImage()
+  {
+    $request        = new SLIRRequest();
+    $oldRequestURI  = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : null;
+    
+    $_SERVER['REQUEST_URI'] = '/slir/w100/';
+    $request->initialize();
+
+    $_SERVER['REQUEST_URI'] = $oldRequestURI;
+  }
+
+  /**
+   * @test
+   */
+  public function destruct()
+  {
+    $request = new SLIRRequest();
+    $request->__destruct();
+
+    $this->assertFalse(isset($request->path));
+    $this->assertFalse(isset($request->width));
+    $this->assertFalse(isset($request->height));
+    $this->assertFalse(isset($request->cropRatio));
+    $this->assertFalse(isset($request->cropper));
+    $this->assertFalse(isset($request->quality));
+    $this->assertFalse(isset($request->progressive));
+    $this->assertFalse(isset($request->background));
+    $this->assertFalse(isset($request->isUsingDefaultImagePath));
+    $this->assertTrue(isset($request));
   }
 
 }
