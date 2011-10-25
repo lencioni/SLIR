@@ -5,7 +5,7 @@
 <phpunit>
   <testsuites>
     <testsuite name="Smart Lencioni Image Resizer">
-      <directory suffix="Test.php">/cis/www/slir/tests/</directory>
+      <directory suffix="Test.php">./tests/</directory>
     </testsuite>
   </testsuites>
 
