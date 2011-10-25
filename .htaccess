@@ -1,3 +1,8 @@
+# Prevent other scripts from interfering with SLIR
+php_value auto_prepend_file none
+php_value auto_append_file none
+
+# Pretty URLs
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -f [OR]
