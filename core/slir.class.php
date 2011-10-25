@@ -237,16 +237,17 @@ class SLIR
 
     // Check the cache based on the request URI
     if ($this->shouldUseRequestCache() && $this->isRequestCached()) {
-      $this->serveRequestCachedImage();
+      return $this->serveRequestCachedImage();
     }
 
     require_once 'libs/gd/slirgdimage.class.php';
+
     // Set all parameters for resizing
     $this->setParameters();
 
     // See if there is anything we actually need to do
     if ($this->isSourceImageDesired()) {
-      $this->serveSourceImage();
+      return $this->serveSourceImage();
     }
 
     // Determine rendered dimensions
@@ -257,8 +258,8 @@ class SLIR
       // Image is not cached in any way, so we need to render the image,
       // cache it, and serve it up to the client
       $this->render();
-      $this->serveRenderedImage();
-    } // if
+      return $this->serveRenderedImage();
+    }
   }
 
   /**
@@ -1245,7 +1246,7 @@ class SLIR
    */
   private function serveSourceImage()
   {
-    $this->serveFile(
+    return $this->serveFile(
         $this->source->getFullPath(),
         null,
         null,
@@ -1253,8 +1254,6 @@ class SLIR
         $this->source->getMimeType(),
         'source'
     );
-
-    exit();
   }
 
   /**
@@ -1291,7 +1290,7 @@ class SLIR
   private function serveCachedImage($cacheFilePath, $cacheType)
   {
     // Serve the image
-    $this->serveFile(
+    return $this->serveFile(
         $cacheFilePath,
         null,
         null,
@@ -1305,8 +1304,6 @@ class SLIR
     if ($cacheType != 'request') {
       $this->cacheRequest(file_get_contents($cacheFilePath), false);
     }
-
-    exit();
   }
 
   /**
@@ -1334,7 +1331,7 @@ class SLIR
     $this->cache();
 
     // Serve the file
-    $this->serveFile(
+    return $this->serveFile(
         null,
         $this->rendered->getData(),
         gmdate('U'),
@@ -1345,8 +1342,6 @@ class SLIR
 
     // Clean up memory
     $this->rendered->destroy();
-
-    exit();
   }
 
   /**
