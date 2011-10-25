@@ -1005,9 +1005,24 @@ class SLIR
    * @since 2.0
    * @return string
    */
+  private function getHTTPHost()
+  {
+    if ($this->isCLI()) {
+      return 'CLI';
+    } else if (isset($_SERVER['HTTP_HOST'])) {
+      return $_SERVER['HTTP_HOST'];
+    } else {
+      return '';
+    }
+  }
+
+  /**
+   * @since 2.0
+   * @return string
+   */
   private function requestCacheFilename()
   {
-    return '/' . hash('md4', $_SERVER['HTTP_HOST'] . '/' . $this->requestURI() . '/' . SLIRConfig::$defaultCropper);
+    return '/' . hash('md4', $this->getHTTPHost() . '/' . $this->requestURI() . '/' . SLIRConfig::$defaultCropper);
   }
 
   /**
