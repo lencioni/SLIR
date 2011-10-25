@@ -14,7 +14,6 @@ abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
   protected function setUp()
   {
     $this->slir = new SLIR();
-    $this->slir->getConfig();
     SLIRConfig::$defaultImagePath = null;
     SLIRConfig::$forceQueryString = false;
     SLIRConfig::$enableErrorImages = false;
