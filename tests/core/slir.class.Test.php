@@ -33,7 +33,7 @@ class SLIRTest extends SLIRTestCase
    * @test
    * @outputBuffering enabled
    */
-  public function processRequestFromURLOnlyWidth()
+  public function processRequestFromURLWithOnlyWidthSpecified()
   {
     $_SERVER['REQUEST_URI'] = '/slir/w50/slir/tests/images/camera-logo.png';
     $this->slir->processRequestFromURL();
