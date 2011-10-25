@@ -1159,7 +1159,9 @@ class SLIR
    */
   public function uncacheRendered()
   {
-    unlink($this->renderedCacheFilePath());
+    if ($this->isRenderedCached()) {
+      unlink($this->renderedCacheFilePath());
+    }
     return $this;
   }
 
@@ -1169,7 +1171,9 @@ class SLIR
    */
   public function uncacheRequest()
   {
-    unlink($this->requestCacheFilePath());
+    if ($this->isRequestCached()) {
+      unlink($this->requestCacheFilePath());
+    }
     return $this;
   }
 
