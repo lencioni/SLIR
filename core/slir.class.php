@@ -171,6 +171,16 @@ class SLIR
   private $isCacheInitialized = false;
 
   /**
+   * Headers that have been sent.
+   *
+   * This is primarily used for testing.
+   *
+   * @since 2.0
+   * @var array
+   */
+  private $headers = array();
+
+  /**
    * The magic starts here
    *
    * @since 2.0
@@ -331,7 +341,7 @@ class SLIR
   public function collectGarbage()
   {
     // Shut down the connection so the user can go about his or her business
-    header('Connection: close');
+    $this->header('Connection: close');
     ignore_user_abort(true);
     flush();
 
@@ -1168,6 +1178,31 @@ class SLIR
   }
 
   /**
+   * Determines if SLIR is being run from a command line interface.
+   *
+   * @since 2.0
+   * @return boolean
+   */
+  private function isCLI()
+  {
+    return (PHP_SAPI === 'cli');
+  }
+
+  /**
+   * @since 2.0
+   * @param string $header
+   * @return void
+   */
+  private function header($header)
+  {
+    $this->headers[] = $header;
+
+    if (!$this->isCLI()) {
+      header($header);
+    }
+  }
+
+  /**
    * @since 2.0
    * @param string $path Directory to initialize
    * @param boolean $verifyReadWriteability
@@ -1177,7 +1212,7 @@ class SLIR
   {
     if (!file_exists($path)) {
       if (!@mkdir($path, 0755, true)) {
-        header('HTTP/1.1 500 Internal Server Error');
+        $this->header('HTTP/1.1 500 Internal Server Error');
         throw new RuntimeException("Directory ($path) does not exist and was unable to be created. Please create the directory.");
       }
     }
@@ -1188,10 +1223,10 @@ class SLIR
 
     // Make sure we can read and write the cache directory
     if (!is_readable($path)) {
-      header('HTTP/1.1 500 Internal Server Error');
+      $this->header('HTTP/1.1 500 Internal Server Error');
       throw new RuntimeException("Directory ($path) is not readable");
     } else if (!is_writable($path)) {
-      header('HTTP/1.1 500 Internal Server Error');
+      $this->header('HTTP/1.1 500 Internal Server Error');
       throw new RuntimeException("Directory ($path) is not writable");
     }
 
@@ -1364,22 +1399,22 @@ class SLIR
    */
   private function serveHeaders($lastModified, $mimeType, $fileSize, $slirHeader)
   {
-    header("Last-Modified: $lastModified");
-    header("Content-Type: $mimeType");
-    header("Content-Length: $fileSize");
+    $this->header("Last-Modified: $lastModified");
+    $this->header("Content-Type: $mimeType");
+    $this->header("Content-Length: $fileSize");
 
     // Lets us easily know whether the image was rendered from scratch,
     // from the cache, or served directly from the source image
-    header("X-Content-SLIR: $slirHeader");
+    $this->header("X-Content-SLIR: $slirHeader");
 
     // Keep in browser cache how long?
-    header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL)));
+    $this->header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + SLIRConfig::$browserCacheTTL)));
 
     // Public in the Cache-Control lets proxies know that it is okay to
     // cache this content. If this is being served over HTTPS, there may be
     // sensitive content and therefore should probably not be cached by
     // proxy servers.
-    header(sprintf('Cache-Control: max-age=%d, public', SLIRConfig::$browserCacheTTL));
+    $this->header(sprintf('Cache-Control: max-age=%d, public', SLIRConfig::$browserCacheTTL));
 
     $this->doConditionalGet($lastModified);
 
@@ -1387,7 +1422,7 @@ class SLIR
     // the browser finish processing the script so we can do extra work
     // without making the user wait. This header must come last or the file
     // size will not properly work for images in the browser's cache
-    //header('Connection: close');
+    //$this->header('Connection: close');
   }
 
   /**
@@ -1421,7 +1456,7 @@ class SLIR
     }
 
     // Nothing has changed since their last request - serve a 304 and exit
-    header('HTTP/1.1 304 Not Modified');
+    $this->header('HTTP/1.1 304 Not Modified');
 
     exit();
   }
