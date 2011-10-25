@@ -20,7 +20,7 @@ abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
     SLIRConfig::$enableErrorImages = false;
 
     // Try to fix documentRoot for CLI
-    SLIRConfig::$documentRoot = preg_replace('`/slir/?$`', '', SLIRConfig::$documentRoot);
+    SLIRConfig::$documentRoot = realpath(__DIR__ . '/../../');
   }
 
   /**
