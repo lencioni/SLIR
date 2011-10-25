@@ -162,9 +162,6 @@ class SLIR
    */
   private $rendered;
 
-  private $renderedWidth;
-  private $renderedHeight;
-
   /**
    * Whether or not the cache has already been initialized
    *
