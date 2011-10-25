@@ -218,7 +218,7 @@ class SLIRConfigDefaults
     }
 
     if (self::$pathToCacheDir === null) {
-      self::$pathToCacheDir   = self::$pathToSLIR . '/cache';
+      self::$pathToCacheDir = self::$pathToSLIR . '/cache';
     }
 
     if (self::$pathToErrorLog === null) {

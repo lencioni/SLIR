@@ -127,13 +127,13 @@ class SLIR
    * @since 2.0
    * @var string
    */
-  const CROP_CLASS_SMART    = 'smart';
+  const CROP_CLASS_SMART = 'smart';
 
   /**
    * @var string
    * @since 2.0
    */
-  const CONFIG_FILENAME     = 'slirconfig.class.php';
+  const CONFIG_FILENAME = 'slirconfig.class.php';
 
   /**
    * Request object
