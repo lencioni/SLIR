@@ -216,8 +216,12 @@ class SLIR
     $this->disableStrictErrorReporting();
 
     // Prevents ob_start('ob_gzhandler') in auto_prepend files from messing
-    // up SLIR's output.
-    $this->escapeOutputBuffering();
+    // up SLIR's output. However, if SLIR is being run from a command line
+    // interface, we need to buffer the output so the command line does not
+    // get messed up with garbage output of image data.
+    if (!$this->isCLI()) {
+      $this->escapeOutputBuffering();
+    }
 
     $this->getConfig();
 
