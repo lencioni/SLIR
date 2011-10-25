@@ -279,7 +279,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 
         if ($this->info === false) {
           header('HTTP/1.1 400 Bad Request');
-          throw new RuntimeException('getimagesize failed (source file may not be an image): ' . $this->fullPath());
+          throw new RuntimeException('getimagesize failed (source file may not be an image): ' . $this->getFullPath());
         }
 
         $this->info['width']  =& $this->info[0];
