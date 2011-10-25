@@ -238,9 +238,6 @@ class SLIR
       return $this->serveSourceImage();
     }
 
-    // Determine rendered dimensions
-    $this->setRenderedProperties();
-
     // Check the cache based on the properties of the rendered image
     if (!$this->isRenderedCached() || !$this->serveRenderedCachedImage()) {
       // Image is not cached in any way, so we need to render the image,
@@ -288,6 +285,122 @@ class SLIR
     }
 
     return $this->source;
+  }
+
+  /**
+   * @since 2.0
+   * @return SLIRImage
+   */
+  private function getRendered()
+  {
+    if (empty($this->rendered)) {
+      require_once 'libs/gd/slirgdimage.class.php';
+      $this->rendered = new SLIRGDImage();
+      $this->rendered->setOriginalPath($this->getSource()->getPath());
+
+      // Cropping
+      /*
+      To determine the width and height of the rendered image, the following
+      should occur.
+
+      If cropping an image is required, we need to:
+       1. Compute the dimensions of the source image after cropping before
+        resizing.
+       2. Compute the dimensions of the resized image before cropping. One of
+        these dimensions may be greater than maxWidth or maxHeight because
+        they are based on the dimensions of the final rendered image, which
+        will be cropped to fit within the specified maximum dimensions.
+       3. Compute the dimensions of the resized image after cropping. These
+        must both be less than or equal to maxWidth and maxHeight.
+       4. Then when rendering, the image needs to be resized, crop offsets
+        need to be computed based on the desired method (smart or centered),
+        and the image needs to be cropped to the specified dimensions.
+
+      If cropping an image is not required, we need to compute the dimensions
+      of the image without cropping. These must both be less than or equal to
+      maxWidth and maxHeight.
+      */
+      if ($this->isCroppingNeeded()) {
+        // Determine the dimensions of the source image after cropping and
+        // before resizing
+
+        if ($this->getRequest()->cropRatio['ratio'] > $this->getSource()->getRatio()) {
+          // Image is too tall so we will crop the top and bottom
+          $this->getSource()->setCropHeight($this->getSource()->getWidth() / $this->getRequest()->cropRatio['ratio']);
+          $this->getSource()->setCropWidth($this->getSource()->getWidth());
+        } else {
+          // Image is too wide so we will crop off the left and right sides
+          $this->getSource()->setCropWidth($this->getSource()->getHeight() * $this->getRequest()->cropRatio['ratio']);
+          $this->getSource()->setCropHeight($this->getSource()->getHeight());
+        }
+      }
+
+      if ($this->shouldResizeBasedOnWidth()) {
+        $resizeFactor = $this->resizeWidthFactor();
+        $this->rendered->setHeight(round($resizeFactor * $this->getSource()->getHeight()));
+        $this->rendered->setWidth(round($resizeFactor * $this->getSource()->getWidth()));
+
+        // Determine dimensions after cropping
+        if ($this->isCroppingNeeded()) {
+          $this->rendered->setCropHeight(round($resizeFactor * $this->getSource()->getCropHeight()));
+          $this->rendered->setCropWidth(round($resizeFactor * $this->getSource()->getCropWidth()));
+        } // if
+      } else if ($this->shouldResizeBasedOnHeight()) {
+        $resizeFactor = $this->resizeHeightFactor();
+        $this->rendered->setWidth(round($resizeFactor * $this->getSource()->getWidth()));
+        $this->rendered->setHeight(round($resizeFactor * $this->getSource()->getHeight()));
+
+        // Determine dimensions after cropping
+        if ($this->isCroppingNeeded()) {
+          $this->rendered->setCropHeight(round($resizeFactor * $this->getSource()->getCropHeight()));
+          $this->rendered->setCropWidth(round($resizeFactor * $this->getSource()->getCropWidth()));
+        } // if
+      } else if ($this->isCroppingNeeded()) {
+        // No resizing is needed but we still need to crop
+        $ratio  = ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
+          ? $this->resizeUncroppedWidthFactor()
+          : $this->resizeUncroppedHeightFactor();
+
+        $this->rendered->setWidth(round($ratio * $this->getSource()->getWidth()));
+        $this->rendered->setHeight(round($ratio * $this->getSource()->getHeight()));
+
+        $this->rendered->setCropWidth(round($ratio * $this->getSource()->getCropWidth()));
+        $this->rendered->setCropHeight(round($ratio * $this->getSource()->getCropHeight()));
+      } // if
+
+      $this->rendered->setSharpeningFactor($this->calculateSharpnessFactor())
+        ->setBackground($this->getBackground())
+        ->setQuality($this->getQuality())
+        ->setProgressive($this->getProgressive())
+        ->setMimeType($this->getMimeType())
+        ->setCropper($this->getRequest()->cropper);
+
+      // Set up the appropriate image handling parameters based on the original
+      // image's mime type
+      // @todo some of this code should be moved to the SLIRImage class
+      /*
+      $this->renderedMime       = $this->getSource()->getMimeType();
+      if ($this->getSource()->isJPEG()) {
+        $this->rendered->progressive  = ($this->getRequest()->progressive !== null)
+          ? $this->getRequest()->progressive : SLIRConfig::$defaultProgressiveJPEG;
+        $this->rendered->background   = null;
+      } else if ($this->getSource()->isPNG()) {
+        $this->rendered->progressive  = false;
+      } else if ($this->getSource()->isGIF() || $this->getSource()->isBMP()) {
+        // We convert GIFs and BMPs to PNGs
+        $this->rendered->mime     = 'image/png';
+        $this->rendered->progressive  = false;
+      } else {
+        throw new RuntimeException("Unable to determine type of source image ({$this->getSource()->mime})");
+      } // if
+
+      if ($this->isBackgroundFillOn()) {
+        $this->rendered->background = $this->getRequest()->background;
+      }
+      */
+    }
+
+    return $this->rendered;
   }
 
   /**
@@ -457,7 +570,7 @@ class SLIR
     $this->allocateMemory();
     $this->copySourceToRendered();
     $this->getSource()->destroy();
-    $this->rendered->applyTransformations();
+    $this->getRendered()->applyTransformations();
   }
 
   /**
@@ -470,14 +583,14 @@ class SLIR
   {
     // Set up the background. If there is a color fill, it needs to happen
     // before copying the image over.
-    $this->rendered->background();
+    $this->getRendered()->background();
 
     // Resample the original image into the resized canvas we set up earlier
-    if ($this->getSource()->getWidth() !== $this->rendered->getWidth() || $this->getSource()->getHeight() != $this->rendered->getHeight()) {
-      $this->getSource()->resample($this->rendered);
+    if ($this->getSource()->getWidth() !== $this->getRendered()->getWidth() || $this->getSource()->getHeight() != $this->getRendered()->getHeight()) {
+      $this->getSource()->resample($this->getRendered());
     } else {
       // No resizing is needed, so make a clean copy
-      $this->getSource()->copy($this->rendered);
+      $this->getSource()->copy($this->getRendered());
     } // if
   }
 
@@ -489,7 +602,7 @@ class SLIR
    */
   private function calculateSharpnessFactor()
   {
-    return $this->calculateASharpnessFactor($this->getSource()->getArea(), $this->rendered->getArea());
+    return $this->calculateASharpnessFactor($this->getSource()->getArea(), $this->getRendered()->getArea());
   }
 
   /**
@@ -658,119 +771,6 @@ class SLIR
     } else {
       return false;
     }
-  }
-
-  /**
-   * Computes and sets properties of the rendered image, such as the actual
-   * width, height, and quality
-   *
-   * @since 2.0
-   */
-  private function setRenderedProperties()
-  {
-    $this->rendered = new SLIRGDImage();
-    $this->rendered->setOriginalPath($this->getSource()->getPath());
-
-    // Cropping
-    /*
-    To determine the width and height of the rendered image, the following
-    should occur.
-
-    If cropping an image is required, we need to:
-     1. Compute the dimensions of the source image after cropping before
-      resizing.
-     2. Compute the dimensions of the resized image before cropping. One of
-      these dimensions may be greater than maxWidth or maxHeight because
-      they are based on the dimensions of the final rendered image, which
-      will be cropped to fit within the specified maximum dimensions.
-     3. Compute the dimensions of the resized image after cropping. These
-      must both be less than or equal to maxWidth and maxHeight.
-     4. Then when rendering, the image needs to be resized, crop offsets
-      need to be computed based on the desired method (smart or centered),
-      and the image needs to be cropped to the specified dimensions.
-
-    If cropping an image is not required, we need to compute the dimensions
-    of the image without cropping. These must both be less than or equal to
-    maxWidth and maxHeight.
-    */
-    if ($this->isCroppingNeeded()) {
-      // Determine the dimensions of the source image after cropping and
-      // before resizing
-
-      if ($this->getRequest()->cropRatio['ratio'] > $this->getSource()->getRatio()) {
-        // Image is too tall so we will crop the top and bottom
-        $this->getSource()->setCropHeight($this->getSource()->getWidth() / $this->getRequest()->cropRatio['ratio']);
-        $this->getSource()->setCropWidth($this->getSource()->getWidth());
-      } else {
-        // Image is too wide so we will crop off the left and right sides
-        $this->getSource()->setCropWidth($this->getSource()->getHeight() * $this->getRequest()->cropRatio['ratio']);
-        $this->getSource()->setCropHeight($this->getSource()->getHeight());
-      }
-    }
-
-    if ($this->shouldResizeBasedOnWidth()) {
-      $resizeFactor = $this->resizeWidthFactor();
-      $this->rendered->setHeight(round($resizeFactor * $this->getSource()->getHeight()));
-      $this->rendered->setWidth(round($resizeFactor * $this->getSource()->getWidth()));
-
-      // Determine dimensions after cropping
-      if ($this->isCroppingNeeded()) {
-        $this->rendered->setCropHeight(round($resizeFactor * $this->getSource()->getCropHeight()));
-        $this->rendered->setCropWidth(round($resizeFactor * $this->getSource()->getCropWidth()));
-      } // if
-    } else if ($this->shouldResizeBasedOnHeight()) {
-      $resizeFactor = $this->resizeHeightFactor();
-      $this->rendered->setWidth(round($resizeFactor * $this->getSource()->getWidth()));
-      $this->rendered->setHeight(round($resizeFactor * $this->getSource()->getHeight()));
-
-      // Determine dimensions after cropping
-      if ($this->isCroppingNeeded()) {
-        $this->rendered->setCropHeight(round($resizeFactor * $this->getSource()->getCropHeight()));
-        $this->rendered->setCropWidth(round($resizeFactor * $this->getSource()->getCropWidth()));
-      } // if
-    } else if ($this->isCroppingNeeded()) {
-      // No resizing is needed but we still need to crop
-      $ratio  = ($this->resizeUncroppedWidthFactor() > $this->resizeUncroppedHeightFactor())
-        ? $this->resizeUncroppedWidthFactor()
-        : $this->resizeUncroppedHeightFactor();
-
-      $this->rendered->setWidth(round($ratio * $this->getSource()->getWidth()));
-      $this->rendered->setHeight(round($ratio * $this->getSource()->getHeight()));
-
-      $this->rendered->setCropWidth(round($ratio * $this->getSource()->getCropWidth()));
-      $this->rendered->setCropHeight(round($ratio * $this->getSource()->getCropHeight()));
-    } // if
-
-    $this->rendered->setSharpeningFactor($this->calculateSharpnessFactor())
-      ->setBackground($this->getBackground())
-      ->setQuality($this->getQuality())
-      ->setProgressive($this->getProgressive())
-      ->setMimeType($this->getMimeType())
-      ->setCropper($this->getRequest()->cropper);
-
-    // Set up the appropriate image handling parameters based on the original
-    // image's mime type
-    // @todo some of this code should be moved to the SLIRImage class
-    /*
-    $this->renderedMime       = $this->getSource()->getMimeType();
-    if ($this->getSource()->isJPEG()) {
-      $this->rendered->progressive  = ($this->getRequest()->progressive !== null)
-        ? $this->getRequest()->progressive : SLIRConfig::$defaultProgressiveJPEG;
-      $this->rendered->background   = null;
-    } else if ($this->getSource()->isPNG()) {
-      $this->rendered->progressive  = false;
-    } else if ($this->getSource()->isGIF() || $this->getSource()->isBMP()) {
-      // We convert GIFs and BMPs to PNGs
-      $this->rendered->mime     = 'image/png';
-      $this->rendered->progressive  = false;
-    } else {
-      throw new RuntimeException("Unable to determine type of source image ({$this->getSource()->mime})");
-    } // if
-
-    if ($this->isBackgroundFillOn()) {
-      $this->rendered->background = $this->getRequest()->background;
-    }
-    */
   }
 
   /**
@@ -1004,7 +1004,7 @@ class SLIR
    */
   private function renderedCacheFilename()
   {
-    return '/' . $this->rendered->getHash();
+    return '/' . $this->getRendered()->getHash();
   }
 
   /**
@@ -1073,7 +1073,7 @@ class SLIR
     $this->cacheRendered();
 
     if ($this->shouldUseRequestCache()) {
-      return $this->cacheRequest($this->rendered->getData(), true);
+      return $this->cacheRequest($this->getRendered()->getData(), true);
     } else {
       return true;
     }
@@ -1089,7 +1089,7 @@ class SLIR
   {
     $this->cacheFile(
         $this->renderedCacheFilePath(),
-        $this->rendered->getData(),
+        $this->getRendered()->getData(),
         true
     );
 
@@ -1353,15 +1353,15 @@ class SLIR
     // Serve the file
     return $this->serveFile(
         null,
-        $this->rendered->getData(),
+        $this->getRendered()->getData(),
         gmdate('U'),
-        $this->rendered->getDatasize(),
-        $this->rendered->getMimeType(),
+        $this->getRendered()->getDatasize(),
+        $this->getRendered()->getMimeType(),
         'rendered'
     );
 
     // Clean up memory
-    $this->rendered->destroy();
+    $this->getRendered()->destroy();
   }
 
   /**
