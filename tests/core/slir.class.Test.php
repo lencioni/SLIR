@@ -33,7 +33,19 @@ class SLIRTest extends SLIRTestCase
    * @test
    * @outputBuffering enabled
    */
-  public function processRequestFromURLWithOnlyWidthSpecified()
+  public function processUncachedRequestFromURLWithOnlyWidthSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/tests/images/camera-logo.png';
+    $this->slir->uncache();
+    $this->slir->processRequestFromURL();
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   * @depends processUncachedRequestFromURLWithOnlyWidthSpecified
+   */
+  public function processCachedRequestFromURLWithOnlyWidthSpecified()
   {
     $_SERVER['REQUEST_URI'] = '/slir/w50/slir/tests/images/camera-logo.png';
     $this->slir->processRequestFromURL();

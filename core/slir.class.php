@@ -1152,6 +1152,19 @@ class SLIR
   }
 
   /**
+   * Removes an image from the cache
+   *
+   * @since 2.0
+   * @return SLIR
+   */
+  public function uncache()
+  {
+    unlink($this->requestCacheFilePath());
+    unlink($this->renderedCacheFilePath());
+    return $this;
+  }
+
+  /**
    * Copy the source image's EXIF information to the new file in the cache
    *
    * @since 2.0
