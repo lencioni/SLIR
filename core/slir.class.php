@@ -1249,7 +1249,7 @@ class SLIR
   /**
    * @since 2.0
    * @param string $header
-   * @return void
+   * @return SLIR
    */
   private function header($header)
   {
@@ -1258,6 +1258,17 @@ class SLIR
     if (!$this->isCLI()) {
       header($header);
     }
+
+    return $this;
+  }
+
+  /**
+   * @since 2.0
+   * @return array
+   */
+  public function getHeaders()
+  {
+    return $this->headers;
   }
 
   /**
@@ -1425,12 +1436,16 @@ class SLIR
     } // if
 
     // Serve the headers
-    $this->serveHeaders(
+    $continue = $this->serveHeaders(
         $this->lastModified($lastModified),
         $mimeType,
         $length,
         $slirHeader
     );
+
+    if (!$continue) {
+      return;
+    }
 
     if ($data === null) {
       readfile($imagePath);
@@ -1447,7 +1462,7 @@ class SLIR
    * @param string $mimeType
    * @param integer $fileSize
    * @param string $slirHeader
-   * @return void
+   * @return boolean true to continue, false to stop
    */
   private function serveHeaders($lastModified, $mimeType, $fileSize, $slirHeader)
   {
@@ -1468,7 +1483,7 @@ class SLIR
     // proxy servers.
     $this->header(sprintf('Cache-Control: max-age=%d, public', SLIRConfig::$browserCacheTTL));
 
-    $this->doConditionalGet($lastModified);
+    return $this->doConditionalGet($lastModified);
 
     // The "Connection: close" header allows us to serve the file and let
     // the browser finish processing the script so we can do extra work
@@ -1495,7 +1510,7 @@ class SLIR
    *
    * @since 2.0
    * @param string $lastModified
-   * @return void
+   * @return boolean true to continue, false to stop
    */
   private function doConditionalGet($lastModified)
   {
@@ -1503,14 +1518,14 @@ class SLIR
       stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) :
       false;
 
-    if (!$ifModifiedSince || $ifModifiedSince != $lastModified) {
-      return;
+    if (!$ifModifiedSince || $ifModifiedSince <= $lastModified) {
+      return true;
     }
 
     // Nothing has changed since their last request - serve a 304 and exit
     $this->header('HTTP/1.1 304 Not Modified');
 
-    exit();
+    return false;
   }
 
 } // class SLIR

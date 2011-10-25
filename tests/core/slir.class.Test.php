@@ -4,6 +4,15 @@ require_once realpath(__DIR__ . '/../slirTestCase.class.php');
 class SLIRTest extends SLIRTestCase
 {
   /**
+   * @param string $header
+   * @return void
+   */
+  private function assertSentHeader($header)
+  {
+    $this->assertTrue(in_array($header, $this->slir->getHeaders()));
+  }
+
+  /**
    * @test
    */
   public function escapeOutputBuffering()
@@ -118,5 +127,23 @@ class SLIRTest extends SLIRTestCase
 
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   */
+  public function processRequestThatShouldBeCachedInTheBrowser()
+  {
+    $_SERVER['HTTP_IF_MODIFIED_SINCE'] = gmdate('D, d M Y H:i:s', time() + 100) . ' GMT';
+
+    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/tests/images/camera-logo.png';
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertSentHeader('HTTP/1.1 304 Not Modified');
+    $this->assertSame('', ob_get_contents());
+
+    unset($_SERVER['HTTP_IF_MODIFIED_SINCE']);
   }
 }
