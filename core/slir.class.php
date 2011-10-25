@@ -239,12 +239,14 @@ class SLIR
     }
 
     // Check the cache based on the properties of the rendered image
-    if (!$this->isRenderedCached() || !$this->serveRenderedCachedImage()) {
-      // Image is not cached in any way, so we need to render the image,
-      // cache it, and serve it up to the client
-      $this->render();
-      return $this->serveRenderedImage();
+    if ($this->isRenderedCached()) {
+      return $this->serveRenderedCachedImage();
     }
+
+    // Image is not cached in any way, so we need to render the image,
+    // cache it, and serve it up to the client
+    $this->render();
+    $this->serveRenderedImage();
   }
 
   /**
