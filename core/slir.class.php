@@ -938,7 +938,7 @@ class SLIR
    * @since 2.0
    * @return boolean
    */
-  private function isRenderedCached()
+  public function isRenderedCached()
   {
     return $this->isCached($this->renderedCacheFilePath());
   }
@@ -949,7 +949,7 @@ class SLIR
    * @since 2.0
    * @return boolean
    */
-  private function isRequestCached()
+  public function isRequestCached()
   {
     return $this->isCached($this->requestCacheFilePath());
   }
@@ -1154,6 +1154,26 @@ class SLIR
   }
 
   /**
+   * @since 2.0
+   * @return SLIR
+   */
+  public function uncacheRendered()
+  {
+    unlink($this->renderedCacheFilePath());
+    return $this;
+  }
+
+  /**
+   * @since 2.0
+   * @return SLIR
+   */
+  public function uncacheRequest()
+  {
+    unlink($this->requestCacheFilePath());
+    return $this;
+  }
+
+  /**
    * Removes an image from the cache
    *
    * @since 2.0
@@ -1161,9 +1181,7 @@ class SLIR
    */
   public function uncache()
   {
-    unlink($this->requestCacheFilePath());
-    unlink($this->renderedCacheFilePath());
-    return $this;
+    return $this->uncacheRequest()->uncacheRendered();
   }
 
   /**
