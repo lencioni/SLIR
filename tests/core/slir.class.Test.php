@@ -80,6 +80,36 @@ class SLIRTest extends SLIRTestCase
   /**
    * @test
    * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlyHeightSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/h50/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(50, imagesy($image));
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
    * @depends processUncachedRequestFromURLWithOnlyWidthSpecified
    *
    * @param string $uncachedImageOutput
@@ -146,6 +176,7 @@ class SLIRTest extends SLIRTestCase
   /**
    * @test
    * @outputBuffering enabled
+   * @depends processUncachedRequestFromURLWithOnlyWidthSpecified
    */
   public function processRequestThatShouldBeCachedInTheBrowser()
   {
@@ -160,4 +191,6 @@ class SLIRTest extends SLIRTestCase
 
     unset($_SERVER['HTTP_IF_MODIFIED_SINCE']);
   }
+
+
 }
