@@ -17,6 +17,7 @@ abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
     $this->slir->getConfig();
     SLIRConfig::$defaultImagePath = null;
     SLIRConfig::$forceQueryString = false;
+    SLIRConfig::$enableErrorImages = false;
 
     // Try to fix documentRoot for CLI
     SLIRConfig::$documentRoot = preg_replace('`/slir/?$`', '', SLIRConfig::$documentRoot);
