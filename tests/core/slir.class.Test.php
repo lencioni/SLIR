@@ -7,9 +7,18 @@ class SLIRTest extends SLIRTestCase
    * @param string $header
    * @return void
    */
-  private function assertSentHeader($header)
+  private function assertHeaderSent($header)
   {
     $this->assertTrue(in_array($header, $this->slir->getHeaders()));
+  }
+
+  /**
+   * @param string $header
+   * @return void
+   */
+  private function assertHeaderNotSent($header)
+  {
+    $this->assertFalse(in_array($header, $this->slir->getHeaders()));
   }
 
   /**
@@ -55,6 +64,7 @@ class SLIRTest extends SLIRTestCase
 
     $this->slir->processRequestFromURL();
 
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
 
@@ -83,6 +93,8 @@ class SLIRTest extends SLIRTestCase
 
     $this->slir->processRequestFromURL();
 
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+
     $this->assertSame($uncachedImageOutput, ob_get_contents());
   }
 
@@ -105,6 +117,7 @@ class SLIRTest extends SLIRTestCase
 
     $this->slir->processRequestFromURL();
 
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
 
     $this->assertSame($uncachedImageOutput, ob_get_contents());
@@ -123,6 +136,7 @@ class SLIRTest extends SLIRTestCase
 
     $this->slir->processRequestFromURL();
 
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertSame(file_get_contents(realpath(__DIR__ . '/../images/camera-logo.png')), ob_get_contents());
 
     $this->assertFalse($this->slir->isRequestCached());
@@ -141,7 +155,7 @@ class SLIRTest extends SLIRTestCase
 
     $this->slir->processRequestFromURL();
 
-    $this->assertSentHeader('HTTP/1.1 304 Not Modified');
+    $this->assertHeaderSent('HTTP/1.1 304 Not Modified');
     $this->assertSame('', ob_get_contents());
 
     unset($_SERVER['HTTP_IF_MODIFIED_SINCE']);
