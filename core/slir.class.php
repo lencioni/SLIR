@@ -1310,7 +1310,7 @@ class SLIR
   private function serveCachedImage($cacheFilePath, $cacheType)
   {
     // Serve the image
-    return $this->serveFile(
+    $this->serveFile(
         $cacheFilePath,
         null,
         null,
@@ -1351,7 +1351,7 @@ class SLIR
     $this->cache();
 
     // Serve the file
-    return $this->serveFile(
+    $this->serveFile(
         null,
         $this->getRendered()->getData(),
         gmdate('U'),
