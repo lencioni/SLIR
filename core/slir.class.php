@@ -197,11 +197,9 @@ class SLIR
    */
   final public function __destruct()
   {
-    unset(
-        $this->request,
-        $this->source,
-        $this->rendered
-    );
+    unset($this->request);
+    unset($this->source);
+    unset($this->rendered);
   }
 
   /**
