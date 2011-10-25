@@ -1,6 +1,6 @@
 <?php
-require_once 'tests/slirTestCase.class.php';
-require_once 'core/slirrequest.class.php';
+require_once realpath(__DIR__ . '/../slirTestCase.class.php');
+require_once realpath(__DIR__ . '/../../core/slirrequest.class.php');
 
 class SLIRRequestTest extends SLIRTestCase
 {

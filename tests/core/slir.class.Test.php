@@ -1,5 +1,5 @@
 <?php
-require_once 'tests/slirTestCase.class.php';
+require_once realpath(__DIR__ . '/../slirTestCase.class.php');
 
 class SLIRTest extends SLIRTestCase
 {

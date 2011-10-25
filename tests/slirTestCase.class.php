@@ -1,5 +1,5 @@
 <?php
-require_once 'core/slir.class.php';
+require_once realpath(__DIR__ . '/../core/slir.class.php');
 
 abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
 {
