@@ -1,5 +1,4 @@
 <?php
-
 require_once 'tests/slirTestCase.class.php';
 require_once 'core/slirrequest.class.php';
 
@@ -636,7 +635,7 @@ class SLIRRequestTest extends SLIRTestCase
   public function initializeNoImage()
   {
     $request = new SLIRRequest();
-    
+
     $_SERVER['REQUEST_URI'] = '/slir/w100/';
     $request->initialize();
   }
@@ -649,7 +648,7 @@ class SLIRRequestTest extends SLIRTestCase
   public function initializeNoParameters()
   {
     $request = new SLIRRequest();
-    
+
     $_SERVER['REQUEST_URI'] = '/';
     $request->initialize();
   }
@@ -662,7 +661,7 @@ class SLIRRequestTest extends SLIRTestCase
   public function initializeNonexistentImage()
   {
     $request = new SLIRRequest();
-    
+
     $_SERVER['REQUEST_URI'] = '/slir/w100/path/to/nonexistent/image.jpg';
     $request->initialize();
   }
@@ -673,7 +672,7 @@ class SLIRRequestTest extends SLIRTestCase
   public function initializeExistentImageOnlyWidth()
   {
     $request = new SLIRRequest();
-    
+
     $_SERVER['REQUEST_URI'] = '/slir/w100/slir/tests/images/camera-logo.png';
     $request->initialize();
 
@@ -687,7 +686,7 @@ class SLIRRequestTest extends SLIRTestCase
   public function initializeLotsOfParameters()
   {
     $request = new SLIRRequest();
-    
+
     $_SERVER['REQUEST_URI'] = '/slir/w100-h101-c2.1-q15-p1/slir/tests/images/camera-logo.png';
     $request->initialize();
 
@@ -707,7 +706,7 @@ class SLIRRequestTest extends SLIRTestCase
     $request = new SLIRRequest();
 
     SLIRConfig::$defaultImagePath = '/slir/tests/images/camera-logo.png';
-    
+
     $_SERVER['REQUEST_URI'] = '/slir/w100/path/to/nonexistent/image.png';
     $request->initialize();
 
@@ -725,7 +724,7 @@ class SLIRRequestTest extends SLIRTestCase
     $request = new SLIRRequest();
 
     SLIRConfig::$defaultImagePath = '/slir/tests/images/camera-logo.png';
-    
+
     $_SERVER['REQUEST_URI'] = '/slir/w100/';
     $request->initialize();
 
