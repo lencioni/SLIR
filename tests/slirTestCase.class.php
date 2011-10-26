@@ -14,9 +14,10 @@ abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
   protected function setUp()
   {
     $this->slir = new SLIR();
-    SLIRConfig::$defaultImagePath = null;
-    SLIRConfig::$forceQueryString = false;
-    SLIRConfig::$enableErrorImages = false;
+    SLIRConfig::$defaultImagePath   = null;
+    SLIRConfig::$forceQueryString   = false;
+    SLIRConfig::$enableErrorImages  = false;
+    SLIRConfig::$defaultCropper     = SLIR::CROP_CLASS_CENTERED;
 
     // Try to fix documentRoot for CLI
     SLIRConfig::$documentRoot = realpath(__DIR__ . '/../../');
