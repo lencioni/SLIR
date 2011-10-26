@@ -74,6 +74,9 @@ class SLIRTest extends SLIRTestCase
     $this->assertInternalType('resource', $image);
     $this->assertSame(50, imagesx($image));
 
+    imagedestroy($image);
+    unset($image);
+
     return $output;
   }
 
@@ -103,6 +106,9 @@ class SLIRTest extends SLIRTestCase
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
     $this->assertSame(50, imagesy($image));
+
+    imagedestroy($image);
+    unset($image);
 
     return $output;
   }
@@ -220,6 +226,9 @@ class SLIRTest extends SLIRTestCase
     $this->assertLessThan(50, imagesy($image));
     $this->assertSame(50, imagesx($image));
 
+    imagedestroy($image);
+    unset($image);
+
     return $output;
   }
 
@@ -229,9 +238,9 @@ class SLIRTest extends SLIRTestCase
    *
    * @return string image output
    */
-  public function processUncachedRequestFromURLWithOnlySquareCropSpecified()
+  public function processUncachedRequestFromURLWithSquareCropSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/c1.1/slir/tests/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1/slir/tests/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -250,6 +259,9 @@ class SLIRTest extends SLIRTestCase
     $this->assertInternalType('resource', $image);
     $this->assertSame(imagesx($image), imagesy($image));
 
+    imagedestroy($image);
+    unset($image);
+
     return $output;
   }
 
@@ -259,9 +271,9 @@ class SLIRTest extends SLIRTestCase
    *
    * @return string image output
    */
-  public function processUncachedRequestFromURLWithOnlyWideCropSpecified()
+  public function processUncachedRequestFromURLWithWideCropSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/c2.1/slir/tests/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c2.1/slir/tests/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -278,7 +290,11 @@ class SLIRTest extends SLIRTestCase
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
-    $this->assertSame(imagesy($image) * 2, imagesx($image));
+    $this->assertSame(50, imagesx($image));
+    $this->assertSame(25, imagesy($image));
+
+    imagedestroy($image);
+    unset($image);
 
     return $output;
   }
@@ -289,9 +305,9 @@ class SLIRTest extends SLIRTestCase
    *
    * @return string image output
    */
-  public function processUncachedRequestFromURLWithOnlyTallCropSpecified()
+  public function processUncachedRequestFromURLWithTallCropSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/c1.2/slir/tests/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.2/slir/tests/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -308,7 +324,11 @@ class SLIRTest extends SLIRTestCase
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
-    $this->assertSame(imagesx($image) * 2, imagesy($image));
+    $this->assertSame(50, imagesx($image));
+    $this->assertSame(100, imagesy($image));
+
+    imagedestroy($image);
+    unset($image);
 
     return $output;
   }
@@ -321,7 +341,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithSquareCropCenteredSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/c1.1.centered/slir/tests/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.centered/slir/tests/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -339,6 +359,9 @@ class SLIRTest extends SLIRTestCase
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
     $this->assertSame(imagesx($image), imagesy($image));
+
+    imagedestroy($image);
+    unset($image);
 
     return $output;
   }
@@ -353,7 +376,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithSquareCropSmartSpecified($centerCroppedImage)
   {
-    $_SERVER['REQUEST_URI'] = '/slir/c1.1.smart/slir/tests/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.smart/slir/tests/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -371,7 +394,50 @@ class SLIRTest extends SLIRTestCase
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
-    $this->assertSame(imagesx($image), imagesy($image));
+    $this->assertSame(50, imagesx($image));
+    $this->assertSame(50, imagesy($image));
+
+    imagedestroy($image);
+    unset($image);
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlyBlueBackgroundFill()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/b00f/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+
+    $color = imagecolorat($image, 0, 0);
+    $rgb   = imagecolorsforindex($image, $color);
+    $this->assertSame(0, $rgb['red']);
+    $this->assertSame(0, $rgb['green']);
+    $this->assertSame(255, $rgb['blue']);
+    $this->assertSame(0, $rgb['alpha']);
+
+    imagedestroy($image);
+    unset($image);
 
     return $output;
   }
