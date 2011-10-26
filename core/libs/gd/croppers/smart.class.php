@@ -72,19 +72,6 @@ class SLIRCropperSmart implements SLIRCropper
   }
 
   /**
-   * @param integer $size
-   * @return array|SplFixedArray
-   */
-  private function newArray($size)
-  {
-    if (class_exists('SplFixedArray')) {
-      return new SplFixedArray($size);
-    } else {
-      return array();
-    }
-  }
-
-  /**
    * Determines if the top and bottom need to be cropped
    *
    * @since 2.0
