@@ -9,7 +9,7 @@ class SLIRTest extends SLIRTestCase
    */
   private function assertHeaderSent($header)
   {
-    $this->assertTrue(in_array($header, $this->slir->getHeaders()));
+    $this->assertContains($header, $this->slir->getHeaders());
   }
 
   /**
@@ -18,7 +18,7 @@ class SLIRTest extends SLIRTestCase
    */
   private function assertHeaderNotSent($header)
   {
-    $this->assertFalse(in_array($header, $this->slir->getHeaders()));
+    $this->assertNotContains($header, $this->slir->getHeaders());
   }
 
   /**
