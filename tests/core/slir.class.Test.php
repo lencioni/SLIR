@@ -49,7 +49,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -62,13 +61,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -82,7 +81,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -95,13 +93,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -157,16 +155,17 @@ class SLIRTest extends SLIRTestCase
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
 
-    $this->assertSame($uncachedImageOutput, ob_get_contents());
+    $this->assertSame($uncachedImageOutput, $output);
   }
 
   /**
    * @test
-   * @outputBuffering enabled
    * @depends processUncachedRequestFromURLWithOnlyWidthSpecified
    *
    * @param string $uncachedImageOutput
@@ -181,17 +180,18 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
 
-    $this->assertSame($uncachedImageOutput, ob_get_contents());
+    $this->assertSame($uncachedImageOutput, $output);
   }
 
   /**
    * @test
-   * @outputBuffering enabled
    */
   public function processRequestThatShouldServeSourceImage()
   {
@@ -200,10 +200,12 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
-    $this->assertSame(file_get_contents(realpath(__DIR__ . '/../images/camera-logo.png')), ob_get_contents());
+    $this->assertSame(file_get_contents(realpath(__DIR__ . '/../images/camera-logo.png')), $output);
 
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
@@ -211,7 +213,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    * @depends processUncachedRequestFromURLWithOnlyWidthSpecified
    */
   public function processRequestThatShouldBeCachedInTheBrowser()
@@ -220,17 +221,18 @@ class SLIRTest extends SLIRTestCase
 
     $_SERVER['REQUEST_URI'] = '/slir/w50/slir/tests/images/camera-logo.png';
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderSent('HTTP/1.1 304 Not Modified');
-    $this->assertSame('', ob_get_contents());
+    $this->assertSame('', $output);
 
     unset($_SERVER['HTTP_IF_MODIFIED_SINCE']);
   }
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -243,13 +245,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -264,7 +266,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -277,13 +278,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -297,7 +298,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -310,13 +310,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -331,7 +331,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -344,13 +343,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -365,7 +364,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -378,13 +376,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
@@ -398,7 +396,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    * @depends processUncachedRequestFromURLWithSquareCropCenteredSpecified
    *
    * @param string $centerCroppedImage
@@ -413,13 +410,14 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
 
-    $output = ob_get_contents();
     $this->assertNotSame($centerCroppedImage, $output);
 
     $image = imagecreatefromstring($output);
@@ -435,7 +433,6 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
    *
    * @return string image output
    */
@@ -448,13 +445,13 @@ class SLIRTest extends SLIRTestCase
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
 
+    ob_start();
     $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
 
     $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
-
-    $output = ob_get_contents();
 
     $image = imagecreatefromstring($output);
     $this->assertInternalType('resource', $image);
