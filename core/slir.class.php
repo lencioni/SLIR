@@ -543,25 +543,6 @@ class SLIR
   }
 
   /**
-   * Allocates memory for the request.
-   *
-   * Tries to dynamically guess how much memory will be needed for the request based on the dimensions of the source image.
-   *
-   * @since 2.0
-   * @return void
-   */
-  private function allocateMemory()
-  {
-    // Multiply width * height * 4 bytes
-    $estimatedMemory = $this->getSource()->getArea() * 4;
-
-    // Convert memory to Megabytes and add 15 in order to allow some slack
-    $estimatedMemory = (integer) ($estimatedMemory / 1024) + 15;
-
-    $v = ini_set('memory_limit', min($estimatedMemory, SLIRConfig::$maxMemoryToAllocate) . 'M');
-  }
-
-  /**
    * Renders requested changes to the image
    *
    * @since 2.0
@@ -569,7 +550,7 @@ class SLIR
    */
   private function render()
   {
-    $this->allocateMemory();
+    ini_set('memory_limit', SLIRConfig::$maxMemoryToAllocate . 'M');
     $this->copySourceToRendered();
     $this->getSource()->destroy();
     $this->getRendered()->applyTransformations();
