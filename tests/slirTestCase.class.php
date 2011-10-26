@@ -18,6 +18,7 @@ abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
     SLIRConfig::$forceQueryString   = false;
     SLIRConfig::$enableErrorImages  = false;
     SLIRConfig::$defaultCropper     = SLIR::CROP_CLASS_CENTERED;
+    SLIRConfig::$copyEXIF           = false;
 
     // Try to fix documentRoot for CLI
     SLIRConfig::$documentRoot = realpath(__DIR__ . '/../../');
