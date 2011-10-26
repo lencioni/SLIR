@@ -115,7 +115,37 @@ class SLIRTest extends SLIRTestCase
 
   /**
    * @test
-   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlyQualitySpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/q10/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    ob_start();
+    $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+
+    imagedestroy($image);
+    unset($image);
+
+    return $output;
+  }
+
+  /**
+   * @test
    * @depends processUncachedRequestFromURLWithOnlyWidthSpecified
    *
    * @param string $uncachedImageOutput
@@ -442,5 +472,73 @@ class SLIRTest extends SLIRTestCase
     return $output;
   }
 
+  /**
+   * @test
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlyWidthSpecifiedForJPEG()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/tests/images/joe-lencioni.jpg';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    ob_start();
+    $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(50, imagesx($image));
+
+    imagedestroy($image);
+    unset($image);
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @depends processUncachedRequestFromURLWithOnlyWidthSpecifiedForJPEG
+   *
+   * @param string $defaultQualityImage
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithWidthAndQualitySpecifiedForJPEG($defaultQualityImage)
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/w50-q10/slir/tests/images/joe-lencioni.jpg';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    ob_start();
+    $this->slir->processRequestFromURL();
+    $output = ob_get_clean();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $this->assertNotSame($defaultQualityImage, $output);
+    $this->assertLessThan(strlen($defaultQualityImage), strlen($output));
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(50, imagesx($image));
+
+    imagedestroy($image);
+    unset($image);
+
+    return $output;
+  }
 
 }
