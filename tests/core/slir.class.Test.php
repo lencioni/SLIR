@@ -192,5 +192,189 @@ class SLIRTest extends SLIRTestCase
     unset($_SERVER['HTTP_IF_MODIFIED_SINCE']);
   }
 
+  /**
+   * @test
+   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithHeightAndWidthSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/w50-h50/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertLessThan(50, imagesy($image));
+    $this->assertSame(50, imagesx($image));
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlySquareCropSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/c1.1/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(imagesx($image), imagesy($image));
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlyWideCropSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/c2.1/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(imagesy($image) * 2, imagesx($image));
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithOnlyTallCropSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/c1.2/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(imagesx($image) * 2, imagesy($image));
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   *
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithSquareCropCenteredSpecified()
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/c1.1.centered/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(imagesx($image), imagesy($image));
+
+    return $output;
+  }
+
+  /**
+   * @test
+   * @outputBuffering enabled
+   * @depends processUncachedRequestFromURLWithSquareCropCenteredSpecified
+   *
+   * @param string $centerCroppedImage
+   * @return string image output
+   */
+  public function processUncachedRequestFromURLWithSquareCropSmartSpecified($centerCroppedImage)
+  {
+    $_SERVER['REQUEST_URI'] = '/slir/c1.1.smart/slir/tests/images/camera-logo.png';
+
+    $this->slir->uncache();
+
+    $this->assertFalse($this->slir->isRequestCached());
+    $this->assertFalse($this->slir->isRenderedCached());
+
+    $this->slir->processRequestFromURL();
+
+    $this->assertHeaderNotSent('HTTP/1.1 304 Not Modified');
+    $this->assertTrue($this->slir->isRequestCached());
+    $this->assertTrue($this->slir->isRenderedCached());
+
+    $output = ob_get_contents();
+    $this->assertNotSame($centerCroppedImage, $output);
+
+    $image = imagecreatefromstring($output);
+    $this->assertInternalType('resource', $image);
+    $this->assertSame(imagesx($image), imagesy($image));
+
+    return $output;
+  }
+
 
 }
