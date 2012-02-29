@@ -11,9 +11,15 @@ SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crop
 
 * [mod_rewrite](http://httpd.apache.org/docs/2.4/mod/mod_rewrite.html)
 
+## Setting up
+
+Download and unpack to a directory in your web root. I recommend putting SLIR in `/slir/` for ease of use. For example, if your website is `http://yourdomain.com`, then SLIR would be at `http://yourdomain.com/slir/`.
+
+After you have SLIR downloaded, visit `http://yourdomain.com/slir/install/` in your favorite web browser.
+
 ## Usage
 
-To use, place an `<img\>` tag with the src pointing to the path of SLIR (typically "/slir/") followed by the parameters, followed by the path to the source image to resize. All parameters follow the pattern of a one-letter code and then the parameter value:
+To use SLIR, place an `<img\>` tag with the src pointing to the path of SLIR (typically "/slir/") followed by the parameters, followed by the path to the source image to resize. All parameters follow the pattern of a one-letter code and then the parameter value:
 
 <table>
   <caption>Parameter Meaning</caption>
