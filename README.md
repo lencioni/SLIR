@@ -13,7 +13,7 @@ SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crop
 
 ## Usage
 
-To use, place an `&lt;img\&gt;` tag with the src pointing to the path of SLIR (typically "/slir/") followed by the parameters, followed by the path to the source image to resize. All parameters follow the pattern of a one-letter code and then the parameter value:
+To use, place an `<img\>` tag with the src pointing to the path of SLIR (typically "/slir/") followed by the parameters, followed by the path to the source image to resize. All parameters follow the pattern of a one-letter code and then the parameter value:
 
 <table>
   <caption>Parameter Meaning</caption>
@@ -45,7 +45,7 @@ To use, place an `&lt;img\&gt;` tag with the src pointing to the path of SLIR (t
   </tbody>
 </table>
 
-Filenames that include special characters must be URL-encoded (e.g. plus sign, +, should be encoded as %2B) in order for SLIR to recognize them properly. This can be accomplished by passing your filenames through PHP's rawurlencode() or urlencode() function.
+Filenames that include special characters must be URL-encoded (e.g. plus sign, +, should be encoded as %2B) in order for SLIR to recognize them properly. This can be accomplished by passing your filenames through PHP's `rawurlencode()` or `urlencode()` function.
 
 ### Examples
 
