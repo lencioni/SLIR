@@ -9,7 +9,7 @@ SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crop
 
 ### Recommended
 
-[mod_rewrite](http://httpd.apache.org/docs/2.4/mod/mod_rewrite.html)
+* [mod_rewrite](http://httpd.apache.org/docs/2.4/mod/mod_rewrite.html)
 
 ## Usage
 
