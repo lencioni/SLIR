@@ -1,11 +1,7 @@
-<!-- When adding a test suite, make sure require_once is using absolute path-->
-
-<!--More options here http://www.phpunit.de/manual/current/en/appendixes.configuration.html-->
-
 <phpunit>
   <testsuites>
     <testsuite name="Smart Lencioni Image Resizer">
-      <directory suffix="Test.php">./tests/</directory>
+      <directory suffix="Test.php">./Test/</directory>
     </testsuite>
   </testsuites>
 
