@@ -97,4 +97,4 @@ PHP is missing some calendar functions and needs to be recompiled with `--enable
 
 ***
 
-For more documentation, open core/slir.class.php in your favorite text editor.
+For more documentation, open `core/slir.class.php` in your favorite text editor.
