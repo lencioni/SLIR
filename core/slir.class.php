@@ -1131,6 +1131,11 @@ class SLIR
       $imageData = $this->copyEXIF($cacheFilePath);
     }
 
+    if ($this->getSource()->isJPEG()) {
+      // Copy ICC Profile (color profile)
+      $imageData = $this->copyICCProfile($cacheFilePath);
+    }
+
     return $imageData;
   }
 
@@ -1196,6 +1201,31 @@ class SLIR
 
       return $imageData;
     } // if
+
+    return file_get_contents($cacheFilePath);
+  }
+
+  /**
+   * Copy the source images' ICC Profile (color profile) to the new file in the cache
+   *
+   * @since 2.0
+   * @uses PHP JPEG ICC profile manipulator
+   * @param string $cacheFilePath
+   * @return string contents of image
+   *
+   * @link http://jpeg-icc.sourceforge.net/
+   * @link http://sourceforge.net/projects/jpeg-icc/
+   */
+  private function copyICCProfile($cacheFilePath)
+  {
+    require_once dirname(__FILE__) . '/../icc/class.jpeg_icc.php';
+
+    try {
+      $o = new JPEG_ICC();
+      $o->LoadFromJPEG($this->getSource()->getFullPath());
+      $o->SaveToJPEG($cacheFilePath);
+    } catch (Exception $e) {
+    }
 
     return file_get_contents($cacheFilePath);
   }
