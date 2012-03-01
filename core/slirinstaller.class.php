@@ -78,6 +78,13 @@ class SLIRInstaller
   public function __construct()
   {
     $this->slir = new SLIR();
+
+    // By default, the SLIR exception and error handler converts error messages
+    // into images. We want to disable this it so that errors and exceptions
+    // can be seen by the user.
+    restore_error_handler();
+    restore_exception_handler();
+
     $this->slir->escapeOutputBuffering();
 
     echo $this->renderTemplate('header.html', array(
