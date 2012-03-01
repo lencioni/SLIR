@@ -19,7 +19,7 @@ Download and unpack to a directory in your web root. I recommend putting SLIR in
 
 After you have SLIR downloaded, visit `http://yourdomain.com/slir/install/` in your favorite web browser.
 
-## Usage
+## Using
 
 To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path of SLIR (typically "/slir/") followed by the parameters, followed by the path to the source image to resize (e.g. `<img src="/slir/w100/path/to/image.jpg"/>`). All parameters follow the pattern of a one-letter code and then the parameter value:
 
@@ -107,7 +107,7 @@ Filenames that include special characters must be URL-encoded (e.g. plus sign, `
 
     <img src="/slir/w100/path/to/image%2Bfile.jpg"/>
 
-## Support SLIR
+## Supporting SLIR
 
 If you would like to support SLIR or to show your appreciation for the time spend developing this project, please make a financial contribution.
 
