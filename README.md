@@ -101,7 +101,7 @@ However, SLIR will not enlarge images. So, if your source image is smaller than 
 
     <img src="/slir/?w=100&amp;h=100&amp;c=1x1&amp;i=/path/to/image.jpg"/>
 
-#### An image with special characters (e.g. `+`) in its filename
+#### Special characters (e.g. `+`) in image filenames
 
 Filenames that include special characters must be URL-encoded (e.g. plus sign, `+`, should be encoded as `%2B`) in order for SLIR to recognize them properly. This can be accomplished by passing your filenames through PHP's `rawurlencode()` function.
 
