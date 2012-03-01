@@ -93,17 +93,6 @@ However, SLIR will not enlarge images. So, if your source image is smaller than 
 
     <img src="/slir/w100/path/to/image%2Bfile.jpg" alt="Don't forget your alt text" />
 
-## Troubleshooting
-
-### Call to undefined function `unixtojd()`
-
-If you see an error message like this in your logs:
-
-    PHP Fatal error:  Call to undefined function unixtojd() in
-    /xxx/xxx/slir/pel-0.9.1/PelEntryAscii.php on line 313
-
-PHP is missing some calendar functions and needs to be recompiled with `--enable-calendar`.
-
 ## Support SLIR
 
 If you would like to support SLIR or to show your appreciation for the time spend developing this project, please make a financial contribution.
