@@ -35,32 +35,32 @@ To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path
     <tr>
       <td>w</td>
       <td>Maximum width</td>
-      <td>`/slir/w100/path/to/image.jpg`</td>
+      <td><code>/slir/<strong>w100</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
       <td>h</td>
       <td>Maximum height</td>
-      <td>`/slir/h100/path/to/image.jpg`</td>
+      <td><code>/slir/<strong>h100</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
       <td>c</td>
       <td>Crop ratio</td>
-      <td>`/slir/c1x1/path/to/image.jpg`</td>
+      <td><code>/slir/<strong>c1x1</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
       <td>q</td>
       <td>Quality</td>
-      <td>`/slir/q60/path/to/image.jpg`</td>
+      <td><code>/slir/<strong>q60</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
       <td>b</td>
       <td>Background fill color</td>
-      <td>`/slir/bf00/path/to/image.png`</td>
+      <td><code>/slir/<strong>bf00</strong>/path/to/image.png</code></td>
     </tr>
     <tr>
       <td>p</td>
       <td>Progressive</td>
-      <td>`/slir/p1/path/to/image.jpg`</td>
+      <td><code>/slir/<strong>p1</strong>/path/to/image.jpg</code></td>
     </tr>
   </tbody>
 </table>
