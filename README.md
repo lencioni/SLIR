@@ -59,39 +59,39 @@ Filenames that include special characters must be URL-encoded (e.g. plus sign, +
 
 #### Resizing an image to a max width of 100 pixels and a max height of 100 pixels
 
-    <img src="/slir/w100-h100/path/to/image.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/w100-h100/path/to/image.jpg"/>
 
 #### Resizing and cropping an image into a square
 
-    <img src="/slir/w100-h100-c1x1/path/to/image.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/w100-h100-c1x1/path/to/image.jpg"/>
 
 #### Resizing and cropping an image to exact dimensions
 
 To do this, you simply need to make the crop ratio match up with the desired width and height. For example, if you want your image to be exactly 150 pixels wide by 100 pixels high, you could do this:
 
-    <img src="/slir/w150-h100-c150x100/path/to/image.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/w150-h100-c150x100/path/to/image.jpg"/>
 
 Or, more concisely:
 
-    <img src="/slir/w150-h100-c15x10/path/to/image.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/w150-h100-c15x10/path/to/image.jpg"/>
 
 However, SLIR will not enlarge images. So, if your source image is smaller than the desired size you will need to use CSS to make it the correct size.
 
 #### Resizing a JPEG without interlacing (for use in Flash)
 
-    <img src="/slir/w100-p0/path/to/image.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/w100-p0/path/to/image.jpg"/>
 
 #### Matting a PNG with #990000
 
-    <img src="/slir/b900/path/to/image.png" alt="Don't forget your alt text" />
+    <img src="/slir/b900/path/to/image.png"/>
 
 #### Without mod_rewrite (not recommended)
 
-    <img src="/slir/?w=100&amp;h=100&amp;c=1x1&amp;i=/path/to/image.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/?w=100&amp;h=100&amp;c=1x1&amp;i=/path/to/image.jpg"/>
 
 #### An image with a + in its filename
 
-    <img src="/slir/w100/path/to/image%2Bfile.jpg" alt="Don't forget your alt text" />
+    <img src="/slir/w100/path/to/image%2Bfile.jpg"/>
 
 ## Support SLIR
 
