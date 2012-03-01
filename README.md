@@ -24,31 +24,43 @@ After you have SLIR downloaded, visit `http://yourdomain.com/slir/install/` in y
 To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path of SLIR (typically "/slir/") followed by the parameters, followed by the path to the source image to resize (e.g. `<img src="/slir/w100/path/to/image.jpg"/>`). All parameters follow the pattern of a one-letter code and then the parameter value:
 
 <table>
-  <caption>Parameter Meaning</caption>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Mearning</th>
+      <th>Example</th>
+    </tr>
+  </thead>
   <tbody>
     <tr>
       <td>w</td>
       <td>Maximum width</td>
+      <td>`/slir/w100/path/to/image.jpg`</td>
     </tr>
     <tr>
       <td>h</td>
       <td>Maximum height</td>
+      <td>`/slir/h100/path/to/image.jpg`</td>
     </tr>
     <tr>
       <td>c</td>
       <td>Crop ratio</td>
+      <td>`/slir/c1x1/path/to/image.jpg`</td>
     </tr>
     <tr>
       <td>q</td>
       <td>Quality</td>
+      <td>`/slir/q60/path/to/image.jpg`</td>
     </tr>
     <tr>
       <td>b</td>
       <td>Background fill color</td>
+      <td>`/slir/bf00/path/to/image.png`</td>
     </tr>
     <tr>
       <td>p</td>
       <td>Progressive</td>
+      <td>`/slir/p1/path/to/image.jpg`</td>
     </tr>
   </tbody>
 </table>
