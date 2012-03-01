@@ -33,32 +33,32 @@ To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path
   </thead>
   <tbody>
     <tr>
-      <td>w</td>
+      <td><var>w</var></td>
       <td>Maximum width</td>
       <td><code>/slir/<strong>w100</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
-      <td>h</td>
+      <td><var>h</var></td>
       <td>Maximum height</td>
       <td><code>/slir/<strong>h100</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
-      <td>c</td>
+      <td><var>c</var></td>
       <td>Crop ratio</td>
       <td><code>/slir/<strong>c1x1</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
-      <td>q</td>
+      <td><var>q</var></td>
       <td>Quality</td>
       <td><code>/slir/<strong>q60</strong>/path/to/image.jpg</code></td>
     </tr>
     <tr>
-      <td>b</td>
+      <td><var>b</var></td>
       <td>Background fill color</td>
       <td><code>/slir/<strong>bf00</strong>/path/to/image.png</code></td>
     </tr>
     <tr>
-      <td>p</td>
+      <td><var>p</var></td>
       <td>Progressive</td>
       <td><code>/slir/<strong>p1</strong>/path/to/image.jpg</code></td>
     </tr>
