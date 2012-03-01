@@ -102,6 +102,13 @@ If you see an error message like this in your logs:
 
 PHP is missing some calendar functions and needs to be recompiled with `--enable-calendar`.
 
+## Support SLIR
+
+If you would like to support SLIR or to show your appreciation for the time spend developing this project, please make a financial contribution.
+
+* [Dwolla](https://www.dwolla.com/hub/lencioni)
+* [Flattr](http://flattr.com/thing/178729/Smart-Lencioni-Image-Resizer-SLIR)
+
 ***
 
 For more documentation, open `core/slir.class.php` in your favorite text editor.
