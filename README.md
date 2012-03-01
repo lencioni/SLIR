@@ -67,8 +67,6 @@ To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path
 
 Separate multiple parameters with a hyphen: <code>/slir/w100<strong>-</strong>h100<strong>-</strong>c1x1/path/to/image.jpg</code>
 
-Filenames that include special characters must be URL-encoded (e.g. plus sign, +, should be encoded as %2B) in order for SLIR to recognize them properly. This can be accomplished by passing your filenames through PHP's `rawurlencode()` or `urlencode()` function.
-
 ### Examples
 
 #### Resizing an image to a max width of 100 pixels and a max height of 100 pixels
@@ -103,7 +101,9 @@ However, SLIR will not enlarge images. So, if your source image is smaller than 
 
     <img src="/slir/?w=100&amp;h=100&amp;c=1x1&amp;i=/path/to/image.jpg"/>
 
-#### An image with a + in its filename
+#### An image with special characters (e.g. `+`) in its filename
+
+Filenames that include special characters must be URL-encoded (e.g. plus sign, `+`, should be encoded as `%2B`) in order for SLIR to recognize them properly. This can be accomplished by passing your filenames through PHP's `rawurlencode()` function.
 
     <img src="/slir/w100/path/to/image%2Bfile.jpg"/>
 
