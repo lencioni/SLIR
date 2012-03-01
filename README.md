@@ -2,6 +2,8 @@
 
 SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crops based on width:height ratios, color fills transparent GIFs and PNGs, and caches variations for optimal performance.
 
+For questions or support, please [visit the SLIR Google Group](https://groups.google.com/forum/?fromgroups#!forum/smart-lencioni-image-resizer). If you have found a bug, please [use the issue tracker](https://github.com/lencioni/SLIR/issues).
+
 ## Requirements
 
 * [PHP](http://php.net) 5.1.2+
