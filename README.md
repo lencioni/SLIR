@@ -65,6 +65,8 @@ To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path
   </tbody>
 </table>
 
+Separate multiple parameters with a hyphen: <code>/slir/w100<strong>-</strong>h100<strong>-</strong>c1x1/path/to/image.jpg</code>
+
 Filenames that include special characters must be URL-encoded (e.g. plus sign, +, should be encoded as %2B) in order for SLIR to recognize them properly. This can be accomplished by passing your filenames through PHP's `rawurlencode()` or `urlencode()` function.
 
 ### Examples
