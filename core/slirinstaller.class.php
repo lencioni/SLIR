@@ -79,12 +79,6 @@ class SLIRInstaller
   {
     $this->slir = new SLIR();
 
-    // By default, the SLIR exception and error handler converts error messages
-    // into images. We want to disable this it so that errors and exceptions
-    // can be seen by the user.
-    restore_error_handler();
-    restore_exception_handler();
-
     $this->slir->escapeOutputBuffering();
 
     echo $this->renderTemplate('header.html', array(
@@ -292,6 +286,7 @@ class SLIRInstaller
     $config = $this->getConfigPath();
 
     if (file_exists($config)) {
+      $this->slir->getConfig();
       return new PositiveSLIRInstallerResponse(vsprintf('Config file exists. Edit <code>%s</code> if you want to override any of the default settings found in <code>%s</code>.', array(
         $config,
         $this->getDefaultConfigPath(),
@@ -300,6 +295,7 @@ class SLIRInstaller
 
     if (file_exists($this->getSampleConfigPath())) {
       if (copy($this->getSampleConfigPath(), $config)) {
+        $this->slir->getConfig();
         return new PositiveSLIRInstallerResponse(vsprintf('Sample config file was successfully copied to <code>%s</code>. Edit this file if you want to override any of the default settings found in <code>%s</code>.', array(
           $config,
           $this->getDefaultConfigPath(),

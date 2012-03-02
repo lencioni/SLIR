@@ -163,6 +163,14 @@ class SLIR
   private $rendered;
 
   /**
+   * Whether or not SLIR has alerady been initialized
+   *
+   * @since 2.0
+   * @var boolean
+   */
+  private $isSLIRInitialized = false;
+
+  /**
    * Whether or not the cache has already been initialized
    *
    * @since 2.0
@@ -187,25 +195,7 @@ class SLIR
    */
   final public function __construct()
   {
-    // This helps prevent unnecessary warnings (which messes up images)
-    // on servers that are set to display E_STRICT errors.
-    $this->disableStrictErrorReporting();
 
-    // Prevents ob_start('ob_gzhandler') in auto_prepend files from messing
-    // up SLIR's output. However, if SLIR is being run from a command line
-    // interface, we need to buffer the output so the command line does not
-    // get messed up with garbage output of image data.
-    if (!$this->isCLI()) {
-      $this->escapeOutputBuffering();
-    }
-
-    $this->getConfig();
-
-    // Set up our exception and error handler after the request cache to
-    // help keep everything humming along nicely
-    require_once 'slirexceptionhandler.class.php';
-
-    $this->initializeGarbageCollection();
   }
 
   /**
@@ -222,12 +212,47 @@ class SLIR
   }
 
   /**
+   * Sets up SLIR to be able to process image resizing requests
+   *
+   * @since 2.0
+   * @return void
+   */
+  public function initialize()
+  {
+    if (!$this->isSLIRInitialized) {
+      // This helps prevent unnecessary warnings (which messes up images)
+      // on servers that are set to display E_STRICT errors.
+      $this->disableStrictErrorReporting();
+
+      // Prevents ob_start('ob_gzhandler') in auto_prepend files from messing
+      // up SLIR's output. However, if SLIR is being run from a command line
+      // interface, we need to buffer the output so the command line does not
+      // get messed up with garbage output of image data.
+      if (!$this->isCLI()) {
+        $this->escapeOutputBuffering();
+      }
+
+      $this->getConfig();
+
+      // Set up our exception and error handler after the request cache to
+      // help keep everything humming along nicely
+      require_once 'slirexceptionhandler.class.php';
+
+      $this->initializeGarbageCollection();
+
+      $this->isSLIRInitialized = true;
+    }
+  }
+
+  /**
    * Processes the SLIR request from the parameters passed through the URL
    *
    * @since 2.0
    */
   public function processRequestFromURL()
   {
+    $this->initialize();
+
     // Check the cache based on the request URI
     if ($this->shouldUseRequestCache() && $this->isRequestCached()) {
       return $this->serveRequestCachedImage();
