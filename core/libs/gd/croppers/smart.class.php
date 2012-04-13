@@ -61,6 +61,11 @@ class SLIRCropperSmart implements SLIRCropper
   private $colors;
 
   /**
+   * @var array Cached LAB color values for integer color indexes
+   */
+  private $labColors;
+
+  /**
    * Destruct method. Try to clean up memory a little.
    *
    * @return void
@@ -428,11 +433,13 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function evaluateColor($int)
   {
-    $rgb  = $this->colorIndexToRGB($int);
-    $xyz  = $this->RGBtoXYZ($rgb);
-    $lab  = $this->XYZtoHunterLab($xyz);
+    if (!isset($this->labColors[$int])) {
+      $rgb = $this->colorIndexToRGB($int);
+      $xyz = $this->RGBtoXYZ($rgb);
+      $this->labColors[$int] = $this->XYZtoHunterLab($xyz);
+    }
 
-    return $lab;
+    return $this->labColors[$int];
   }
 
   /**
