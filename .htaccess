@@ -7,7 +7,7 @@ php_value auto_append_file none
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^.*$ - [S=40]
+RewriteRule ^.*$ - [L]
 RewriteRule . index.php [L]
 </IfModule>
 
