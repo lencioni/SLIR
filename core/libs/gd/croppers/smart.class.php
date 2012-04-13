@@ -100,13 +100,13 @@ class SLIRCropperSmart implements SLIRCropper
     // @todo Change this method to resize image, determine offset, and then extrapolate the actual offset based on the image size difference. Then we can cache the offset in APC (all just like we are doing for face detection)
 
     if ($this->shouldCropTopAndBottom($image)) {
-      $length           = $image->getCropHeight();
-      $lengthB          = $image->getCropWidth();
-      $originalLength   = $image->getHeight();
+      $length         = $image->getCropHeight();
+      $lengthB        = $image->getCropWidth();
+      $originalLength = $image->getHeight();
     } else {
-      $length           = $image->getCropWidth();
-      $lengthB          = $image->getCropHeight();
-      $originalLength   = $image->getWidth();
+      $length         = $image->getCropWidth();
+      $lengthB        = $image->getCropHeight();
+      $originalLength = $image->getWidth();
     }
 
     // To smart crop an image, we need to calculate the difference between
@@ -155,13 +155,13 @@ class SLIRCropperSmart implements SLIRCropper
       $pixelStep = 1;
     }
 
-    $tolerance  = 0.5;
-    $upperTol   = 1 + $tolerance;
-    $lowerTol   = 1 / $upperTol;
+    $tolerance = 0.5;
+    $upperTol  = 1 + $tolerance;
+    $lowerTol  = 1 / $upperTol;
 
     // Fight the near and far rows. The stronger will remain standing.
-    $returningChampion  = null;
-    $ratio              = 1;
+    $returningChampion = null;
+    $ratio             = 1;
 
     for ($rowsCropped = 0; $rowsCropped < $rowsToCrop; ++$rowsCropped) {
       $a  = $this->rowInterestingness($image, $offset[self::OFFSET_NEAR], $pixelStep, $originalLength);
@@ -234,8 +234,8 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function rowInterestingness(SLIRImage $image, $row, $pixelStep, $originalLength)
   {
-    $interestingness  = 0;
-    $max              = 0;
+    $interestingness = 0;
+    $max             = 0;
 
     if ($this->shouldCropTopAndBottom($image)) {
       for ($totalPixels = 0; $totalPixels < $image->getWidth(); $totalPixels += $pixelStep) {
@@ -245,8 +245,8 @@ class SLIRCropperSmart implements SLIRCropper
         // content toward the center, so we give it a little extra push away from the edge
         //$i          += min($row, $originalLength - $row, $originalLength * .04);
 
-        $max              = max($i, $max);
-        $interestingness  += $i;
+        $max             = max($i, $max);
+        $interestingness += $i;
       }
     } else {
       for ($totalPixels = 0; $totalPixels < $image->getHeight(); $totalPixels += $pixelStep) {
@@ -256,8 +256,8 @@ class SLIRCropperSmart implements SLIRCropper
         // content toward the center, so we give it a little extra push away from the edge
         //$i          += min($row, $originalLength - $row, $originalLength * .04);
 
-        $max              = max($i, $max);
-        $interestingness  += $i;
+        $max             = max($i, $max);
+        $interestingness += $i;
       }
     }
 
@@ -442,10 +442,10 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function colorIndexToRGB($int)
   {
-    $a  = (255 - (($int >> 24) & 0xFF)) / 255;
-    $r  = (($int >> 16) & 0xFF) * $a;
-    $g  = (($int >> 8) & 0xFF) * $a;
-    $b  = ($int & 0xFF) * $a;
+    $a = (255 - (($int >> 24) & 0xFF)) / 255;
+    $r = (($int >> 16) & 0xFF) * $a;
+    $g = (($int >> 8) & 0xFF) * $a;
+    $b = ($int & 0xFF) * $a;
 
     return array(
       self::RGB_RED   => $r,
@@ -670,24 +670,24 @@ class SLIRCropperSmart implements SLIRCropper
   {
     // if $weightL is 2 and $weightC is 1, it means that the lightness
     // will contribute half as much importance to the delta as the chroma
-    $weightL  = 2; // Lightness
-    $weightC  = 1; // Chroma
+    $weightL = 2; // Lightness
+    $weightC = 1; // Chroma
 
-    $xCA  = sqrt((pow($labA[self::LAB_A], 2)) + (pow($labA[self::LAB_B], 2)));
-    $xCB  = sqrt((pow($labB[self::LAB_A], 2)) + (pow($labB[self::LAB_B], 2)));
-    $xff  = sqrt((pow($xCA, 4)) / ((pow($xCA, 4)) + 1900));
-    $xHA  = $this->LABtoHue($labA[self::LAB_A], $labA[self::LAB_B]);
+    $xCA = sqrt((pow($labA[self::LAB_A], 2)) + (pow($labA[self::LAB_B], 2)));
+    $xCB = sqrt((pow($labB[self::LAB_A], 2)) + (pow($labB[self::LAB_B], 2)));
+    $xff = sqrt((pow($xCA, 4)) / ((pow($xCA, 4)) + 1900));
+    $xHA = $this->LABtoHue($labA[self::LAB_A], $labA[self::LAB_B]);
 
     if ($xHA < 164 || $xHA > 345) {
-      $xTT  = 0.36 + abs(0.4 * cos(deg2rad(35 + $xHA)));
+      $xTT = 0.36 + abs(0.4 * cos(deg2rad(35 + $xHA)));
     } else {
-      $xTT  = 0.56 + abs(0.2 * cos(deg2rad(168 + $xHA)));
+      $xTT = 0.56 + abs(0.2 * cos(deg2rad(168 + $xHA)));
     }
 
     if ($labA[self::LAB_L] < 16) {
-      $xSL  = 0.511;
+      $xSL = 0.511;
     } else {
-      $xSL  = (0.040975 * $labA[self::LAB_L]) / (1 + (0.01765 * $labA[self::LAB_L]));
+      $xSL = (0.040975 * $labA[self::LAB_L]) / (1 + (0.01765 * $labA[self::LAB_L]));
     }
 
     $xSC = ((0.0638 * $xCA) / (1 + (0.0131 * $xCA))) + 0.638;
