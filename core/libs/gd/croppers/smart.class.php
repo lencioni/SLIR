@@ -469,31 +469,31 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function RGBtoXYZ($rgb)
   {
-    $r  = $rgb[self::RGB_RED] / 255;
-    $g  = $rgb[self::RGB_GREEN] / 255;
-    $b  = $rgb[self::RGB_BLUE] / 255;
+    $r = $rgb[self::RGB_RED] / 255;
+    $g = $rgb[self::RGB_GREEN] / 255;
+    $b = $rgb[self::RGB_BLUE] / 255;
 
     if ($r > 0.04045) {
-      $r  = pow((($r + 0.055) / 1.055), 2.4);
+      $r = pow((($r + 0.055) / 1.055), 2.4);
     } else {
-      $r  = $r / 12.92;
+      $r = $r / 12.92;
     }
 
     if ($g > 0.04045) {
-      $g  = pow((($g + 0.055) / 1.055), 2.4);
+      $g = pow((($g + 0.055) / 1.055), 2.4);
     } else {
-      $g  = $g / 12.92;
+      $g = $g / 12.92;
     }
 
     if ($b > 0.04045) {
-      $b  = pow((($b + 0.055) / 1.055), 2.4);
+      $b = pow((($b + 0.055) / 1.055), 2.4);
     } else {
-      $b  = $b / 12.92;
+      $b = $b / 12.92;
     }
 
-    $r  *= 100;
-    $g  *= 100;
-    $b  *= 100;
+    $r *= 100;
+    $g *= 100;
+    $b *= 100;
 
     //Observer. = 2°, Illuminant = D65
     return array(
