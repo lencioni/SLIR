@@ -198,6 +198,16 @@ class SLIRConfigDefaults
   public static $copyEXIF = false;
 
   /**
+   * Maximum allowed size for ICC color profiles.
+   *
+   * If the ICC color profile is larger than this number, it will be discarded.
+   *
+   * @since 2.0
+   * @var integer
+   */
+  public static $maxICCProfileSize = 102400; // 100KiB
+
+  /**
    * Initialize variables that require some dynamic processing.
    *
    * @since 2.0

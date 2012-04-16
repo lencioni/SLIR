@@ -1245,11 +1245,11 @@ class SLIR
   {
     require_once dirname(__FILE__) . '/../icc/class.jpeg_icc.php';
 
-    try {
-      $o = new JPEG_ICC();
-      $o->LoadFromJPEG($this->getSource()->getFullPath());
+    $o = new JPEG_ICC();
+    $o->LoadFromJPEG($this->getSource()->getFullPath());
+
+    if (strlen($o->getProfile()) <= SLIRConfig::$maxICCProfileSize) {
       $o->SaveToJPEG($cacheFilePath);
-    } catch (Exception $e) {
     }
 
     return file_get_contents($cacheFilePath);
