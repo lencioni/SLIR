@@ -403,7 +403,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithSquareCropSmartSpecified($centerCroppedImage)
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.smart/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.smart/slir/Test/images/joe-lencioni.jpg';
 
     $this->slir->uncache();
 
