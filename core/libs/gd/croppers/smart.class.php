@@ -325,13 +325,8 @@ class SLIRCropperSmart implements SLIRCropper
       return false;
     }
 
-    if (!isset($this->colors[$x])) {
-      $this->colors[$x] = array();
-    }
+    if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS], $this->colors[$x][$y][self::PIXEL_LAB])) {
 
-    if (!isset($this->colors[$x][$y])) {
-      $this->colors[$x][$y] = array();
-    }
 
     if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS]) && !isset($this->colors[$x][$y][self::PIXEL_LAB])) {
       $this->colors[$x][$y][self::PIXEL_LAB]  = $this->evaluateColor(imagecolorat($image->getImage(), $x, $y));
