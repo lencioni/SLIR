@@ -83,7 +83,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   public function __destruct()
   {
-    unset($this->colors, $this->rows, $this->rgbs);
+    unset($this->colors, $this->rows, $this->rgbs, $this->labColors);
   }
 
   /**
