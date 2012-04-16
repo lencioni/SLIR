@@ -66,6 +66,11 @@ class SLIRCropperSmart implements SLIRCropper
   private $rows;
 
   /**
+   * @var array
+   */
+  private $rgbs;
+
+  /**
    * @var array Cached LAB color values for integer color indexes
    */
   private $labColors;
@@ -78,7 +83,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   public function __destruct()
   {
-    unset($this->colors, $this->rows);
+    unset($this->colors, $this->rows, $this->rgbs);
   }
 
   /**
@@ -458,16 +463,20 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function colorIndexToRGB($int)
   {
-    $a = (255 - (($int >> 24) & 0xFF)) / 255;
-    $r = (($int >> 16) & 0xFF) * $a;
-    $g = (($int >> 8) & 0xFF) * $a;
-    $b = ($int & 0xFF) * $a;
+    if (!isset($this->rgbs[$int])) {
+      $a = (255 - (($int >> 24) & 0xFF)) / 255;
+      $r = (($int >> 16) & 0xFF) * $a;
+      $g = (($int >> 8) & 0xFF) * $a;
+      $b = ($int & 0xFF) * $a;
 
-    return array(
-      self::RGB_RED   => $r,
-      self::RGB_GREEN => $g,
-      self::RGB_BLUE  => $b,
-    );
+      $this->rgbs[$int] = array(
+        self::RGB_RED   => $r,
+        self::RGB_GREEN => $g,
+        self::RGB_BLUE  => $b,
+      );
+    }
+
+    return $this->rgbs[$int];
   }
 
   /**
