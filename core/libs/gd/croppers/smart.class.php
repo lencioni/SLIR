@@ -307,7 +307,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function loadPixelInfo(SLIRImage $image, $x, $y)
   {
-    if ($x < 0 || $x >= $image->getWidth() || $y < 0 || $y >= $image->getHeight()) {
+    if ($x < 0 || $y < 0 || $x >= $image->getWidth() || $y >= $image->getHeight()) {
       return false;
     }
 
