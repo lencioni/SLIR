@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @copyright Copyright © 2011, Joe Lencioni
+ * @copyright Copyright © 2012, Joe Lencioni
  * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
  * @since 2.0
  * @package SLIR
@@ -50,9 +50,9 @@ interface SLIRImageLibrary
 
   /**
    * Gets a hash that represents the properties of the image.
-   * 
+   *
    * Used for caching.
-   * 
+   *
    * @param array $infosToInclude
    * @return string
    * @since 2.0
@@ -88,7 +88,7 @@ interface SLIRImageLibrary
    * @since 2.0
    */
   public function getOriginalPath();
-  
+
   /**
    * Gets the width of the image
    * @return integer
