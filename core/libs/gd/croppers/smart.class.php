@@ -61,6 +61,11 @@ class SLIRCropperSmart implements SLIRCropper
   private $colors;
 
   /**
+   * @var array
+   */
+  private $rows;
+
+  /**
    * @var array Cached LAB color values for integer color indexes
    */
   private $labColors;
@@ -73,7 +78,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   public function __destruct()
   {
-    unset($this->colors);
+    unset($this->colors, $this->rows);
   }
 
   /**
@@ -239,34 +244,38 @@ class SLIRCropperSmart implements SLIRCropper
    */
   private function rowInterestingness(SLIRImage $image, $row, $pixelStep, $originalLength)
   {
-    $interestingness = 0;
-    $max             = 0;
+    if (!isset($this->rows[$row])) {
+      $interestingness = 0;
+      $max             = 0;
 
-    if ($this->shouldCropTopAndBottom($image)) {
-      for ($totalPixels = 0; $totalPixels < $image->getWidth(); $totalPixels += $pixelStep) {
-        $i  = $this->pixelInterestingness($image, $totalPixels, $row);
+      if ($this->shouldCropTopAndBottom($image)) {
+        for ($totalPixels = 0; $totalPixels < $image->getWidth(); $totalPixels += $pixelStep) {
+          $i  = $this->pixelInterestingness($image, $totalPixels, $row);
 
-        // Content at the very edge of an image tends to be less interesting than
-        // content toward the center, so we give it a little extra push away from the edge
-        //$i          += min($row, $originalLength - $row, $originalLength * .04);
+          // Content at the very edge of an image tends to be less interesting than
+          // content toward the center, so we give it a little extra push away from the edge
+          //$i          += min($row, $originalLength - $row, $originalLength * .04);
 
-        $max             = max($i, $max);
-        $interestingness += $i;
+          $max             = max($i, $max);
+          $interestingness += $i;
+        }
+      } else {
+        for ($totalPixels = 0; $totalPixels < $image->getHeight(); $totalPixels += $pixelStep) {
+          $i  = $this->pixelInterestingness($image, $row, $totalPixels);
+
+          // Content at the very edge of an image tends to be less interesting than
+          // content toward the center, so we give it a little extra push away from the edge
+          //$i          += min($row, $originalLength - $row, $originalLength * .04);
+
+          $max             = max($i, $max);
+          $interestingness += $i;
+        }
       }
-    } else {
-      for ($totalPixels = 0; $totalPixels < $image->getHeight(); $totalPixels += $pixelStep) {
-        $i  = $this->pixelInterestingness($image, $row, $totalPixels);
 
-        // Content at the very edge of an image tends to be less interesting than
-        // content toward the center, so we give it a little extra push away from the edge
-        //$i          += min($row, $originalLength - $row, $originalLength * .04);
-
-        $max             = max($i, $max);
-        $interestingness += $i;
-      }
+      $this->rows[$row] = $interestingness + (($max - ($interestingness / ($totalPixels / $pixelStep))) * ($totalPixels / $pixelStep));
     }
 
-    return $interestingness + (($max - ($interestingness / ($totalPixels / $pixelStep))) * ($totalPixels / $pixelStep));
+    return $this->rows[$row];
   }
 
   /**
