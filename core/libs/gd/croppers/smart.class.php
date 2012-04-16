@@ -36,12 +36,16 @@ require_once 'slircropper.interface.php';
  */
 class SLIRCropperSmart implements SLIRCropper
 {
+  const COLOR_SNAP = 20;
+
   const OFFSET_NEAR = 0;
   const OFFSET_FAR  = 1;
 
-  const PIXEL_LAB             = 0;
-  const PIXEL_DELTA_E         = 1;
-  const PIXEL_INTERESTINGNESS = 2;
+  const PIXEL_RGB             = 0;
+  const PIXEL_ROUNDED_COLOR   = 1;
+  const PIXEL_LAB             = 2;
+  const PIXEL_DELTA_E         = 3;
+  const PIXEL_INTERESTINGNESS = 4;
 
   const RGB_RED   = 0;
   const RGB_GREEN = 1;
@@ -76,6 +80,11 @@ class SLIRCropperSmart implements SLIRCropper
   private $labColors;
 
   /**
+   * @var array Cached deltas for color index comparisons
+   */
+  private $deltas;
+
+  /**
    * Destruct method. Try to clean up memory a little.
    *
    * @return void
@@ -83,7 +92,7 @@ class SLIRCropperSmart implements SLIRCropper
    */
   public function __destruct()
   {
-    unset($this->colors, $this->rows, $this->rgbs, $this->labColors);
+    unset($this->colors, $this->rows, $this->rgbs, $this->labColors, $this->deltas);
   }
 
   /**
@@ -327,9 +336,15 @@ class SLIRCropperSmart implements SLIRCropper
 
     if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS], $this->colors[$x][$y][self::PIXEL_LAB])) {
 
+      $this->colors[$x][$y][self::PIXEL_RGB] = $this->colorIndexToRGB(imagecolorat($image->getImage(), $x, $y));
 
-    if (!isset($this->colors[$x][$y][self::PIXEL_INTERESTINGNESS]) && !isset($this->colors[$x][$y][self::PIXEL_LAB])) {
-      $this->colors[$x][$y][self::PIXEL_LAB]  = $this->evaluateColor(imagecolorat($image->getImage(), $x, $y));
+      $this->colors[$x][$y][self::PIXEL_ROUNDED_COLOR] = $this->RGBAToColorIndex(
+        $this->colors[$x][$y][self::PIXEL_RGB][self::RGB_RED],
+        $this->colors[$x][$y][self::PIXEL_RGB][self::RGB_GREEN],
+        $this->colors[$x][$y][self::PIXEL_RGB][self::RGB_BLUE]
+      );
+
+      $this->colors[$x][$y][self::PIXEL_LAB]  = $this->evaluateColor($this->colors[$x][$y][self::PIXEL_ROUNDED_COLOR]);
     }
 
     return true;
@@ -407,9 +422,21 @@ class SLIRCropperSmart implements SLIRCropper
       $this->loadPixelInfo($image, $xB, $yB);
     }
 
-    $delta  = $this->deltaE($this->colors[$xA][$yA][self::PIXEL_LAB], $this->colors[$xB][$yB][self::PIXEL_LAB]);
+    $lowerColor = min(
+      $this->colors[$xA][$yA][self::PIXEL_ROUNDED_COLOR],
+      $this->colors[$xB][$yB][self::PIXEL_ROUNDED_COLOR]
+    );
 
-    $this->colors[$xA][$yA][self::PIXEL_DELTA_E]["d$xMove$yMove"] = $delta;
+    $upperColor = max(
+      $this->colors[$xA][$yA][self::PIXEL_ROUNDED_COLOR],
+      $this->colors[$xB][$yB][self::PIXEL_ROUNDED_COLOR]
+    );
+
+    if (!isset($this->deltas[$lowerColor][$upperColor])) {
+      $this->deltas[$lowerColor][$upperColor] = $this->deltaE($this->colors[$xA][$yA][self::PIXEL_LAB], $this->colors[$xB][$yB][self::PIXEL_LAB]);
+    }
+
+    $this->colors[$xA][$yA][self::PIXEL_DELTA_E]["d$xMove$yMove"] = $this->deltas[$lowerColor][$upperColor];
 
     $xBMove = $xMove * -1;
     $yBMove = $yMove * -1;
@@ -460,9 +487,9 @@ class SLIRCropperSmart implements SLIRCropper
   {
     if (!isset($this->rgbs[$int])) {
       $a = (255 - (($int >> 24) & 0xFF)) / 255;
-      $r = (($int >> 16) & 0xFF) * $a;
-      $g = (($int >> 8) & 0xFF) * $a;
-      $b = ($int & 0xFF) * $a;
+      $r = (round((($int >> 16) & 0xFF) / self::COLOR_SNAP) * self::COLOR_SNAP) * $a;
+      $g = (round((($int >> 8) & 0xFF) / self::COLOR_SNAP) * self::COLOR_SNAP) * $a;
+      $b = (round(($int & 0xFF) / self::COLOR_SNAP) * self::COLOR_SNAP) * $a;
 
       $this->rgbs[$int] = array(
         self::RGB_RED   => $r,
@@ -472,6 +499,28 @@ class SLIRCropperSmart implements SLIRCropper
     }
 
     return $this->rgbs[$int];
+  }
+
+  /**
+   * This function builds a 32 bit integer from 4 values which must be 0-255 (8 bits)
+   *
+   * Example 32 bit integer: 00100000010001000000100000010000
+   * The first 8 bits define the alpha
+   * The next 8 bits define the blue
+   * The next 8 bits define the green
+   * The next 8 bits define the red
+   *
+   * @since 2.0
+   * @param integer $r
+   * @param integer $g
+   * @param integer $b
+   * @return integer
+   *
+   * @link http://www.php.net/manual/en/function.imagecolorat.php#85849
+   */
+  private function RGBAToColorIndex($r, $g, $b, $a = 1)
+  {
+    return ($a << 24) + ($b << 16) + ($g << 8) + $r;
   }
 
   /**
