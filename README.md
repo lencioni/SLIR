@@ -109,7 +109,7 @@ Filenames that include special characters must be URL-encoded (e.g. plus sign, `
 
 ## Supporting SLIR
 
-If you would like to support SLIR or to show your appreciation for the time spend developing this project, please make a financial contribution.
+If you would like to support SLIR or to show your appreciation for the time spent developing this project, please make a financial contribution.
 
 * [Dwolla](https://www.dwolla.com/hub/lencioni)
 * [Flattr](http://flattr.com/thing/178729/Smart-Lencioni-Image-Resizer-SLIR)
