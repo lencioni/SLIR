@@ -979,13 +979,30 @@ class SLIR
       return false;
     }
 
-    $imageModified  = filectime($this->getRequest()->fullPath());
+	// if path is valid url try to get Last-Modified
+	if ($this->isValidURL($this->getRequest()->fullPath())) {
+		try {
+			$headers= @get_headers($this->getRequest()->fullPath(),1);
+			$imageModified=@strtotime($header['Last-Modified']);
+		} catch (Exception $e) {
+			// couldn't get Last-Modified or error in parsing
+			// so assume image is not cached
+			return false;
+		}
+	} else {
+		$imageModified  = filectime($this->getRequest()->fullPath());
+	}
 
     if ($imageModified >= $cacheModified) {
       return false;
     } else {
       return true;
     }
+  }
+
+  function isValidURL($url)
+  {
+    return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $url);
   }
 
   /**
