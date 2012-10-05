@@ -1,3 +1,16 @@
+##Note: Additional Sharpness Config
+
+SLIR rendered .jpeg files are much sharper than the originals, especially visible when typo is used.
+
+I added the configuration parameter $sharpnessFactorBase to allow finetuning of the rendering. Changed files:
+
+* core/slir.class.php
+* core/slirconfigdefaults.class.php
+
+## Note
+
+Installing from github requires to init and update the submodule pel
+
 # SLIR (Smart Lencioni Image Resizer)
 
 SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crops based on width:height ratios, color fills transparent GIFs and PNGs, and caches variations for optimal performance.

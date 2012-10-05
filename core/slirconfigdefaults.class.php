@@ -47,6 +47,17 @@ class SLIRConfigDefaults
   public static $defaultImagePath = null;
 
   /**
+   * Amount of sharpness to apply when rendering to JPEG
+   *
+   * Smaller values -> more sharpening
+   * Higher values -> less sharpening
+   *
+   * SLIR default is 52, results in very visible sharpening
+   * @var integer
+   */
+  public static $sharpnessFactorBase = 52;
+
+  /**
    * Default quality setting to use if quality is not specified in the request. Ranges from 0 (worst quality, smaller file) to 100 (best quality, largest filesize).
    *
    * @since 2.0
