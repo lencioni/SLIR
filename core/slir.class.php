@@ -1295,7 +1295,7 @@ class SLIR
   {
     $this->headers[] = $header;
 
-    if (!$this->isCLI()) {
+    if (!$this->isCLI() && !headers_sent()) {
       header($header);
     }
 
