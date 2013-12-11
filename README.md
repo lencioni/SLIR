@@ -4,6 +4,10 @@ SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crop
 
 For questions or support, please [visit the SLIR Google Group](https://groups.google.com/forum/?fromgroups#!forum/smart-lencioni-image-resizer). If you have found a bug, please [use the issue tracker](https://github.com/lencioni/SLIR/issues).
 
+## Forked by REZO ZERO
+
+Any enhancements are made to make SLIR more compatible with RZ-CMS.
+
 ## Requirements
 
 * [PHP](http://php.net) 5.1.2+
@@ -100,6 +104,12 @@ However, SLIR will not enlarge images. So, if your source image is smaller than 
 #### Without mod_rewrite (not recommended)
 
     <img src="/slir/?w=100&amp;h=100&amp;c=1x1&amp;i=/path/to/image.jpg"/>
+
+#### Changing SLIR request URL
+
+    <img src="/assets/w150-h100-c15x10/path/to/image.jpg"/>
+
+You can change SLIR request URL to handle it with your own rewrite engine. Just define `SLIRConfig::$urlToSLIR` to your relative folder: here `/assets`.
 
 #### Special characters (e.g. `+`) in image filenames
 
