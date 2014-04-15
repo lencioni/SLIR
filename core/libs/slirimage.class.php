@@ -32,6 +32,11 @@ abstract class SLIRImage
   protected $progressive;
 
   /**
+   * @var boolean
+   */
+  protected $grayscale;
+
+  /**
    * @var string specified cropper to use
    */
   protected $cropper;
@@ -105,7 +110,8 @@ abstract class SLIRImage
       $this->getProgressive(),
       $this->getInfo(),
       $this->getCropper(),
-      $this->getQuality()
+      $this->getQuality(),
+      $this->getGrayscale()
     );
 
     $infos = array_merge($infos, $infosToInclude);
@@ -204,7 +210,7 @@ abstract class SLIRImage
     return $this;
   }
 
-    /**
+  /**
    * @return boolean
    * @since 2.0
    */
@@ -220,6 +226,25 @@ abstract class SLIRImage
   public function setProgressive($progressive)
   {
     $this->progressive = $progressive;
+    return $this;
+  }
+
+  /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getGrayscale()
+  {
+    return $this->grayscale;
+  }
+
+  /**
+   * @param boolean $grayscale
+   * @return SLIRImageLibrary
+   */
+  public function setGrayscale($grayscale)
+  {
+    $this->grayscale = $grayscale;
     return $this;
   }
 
@@ -530,6 +555,20 @@ abstract class SLIRImage
   }
 
   /**
+   * 
+   * @since 2.0
+   * @return SLIRImageLibrary
+   */
+  final public function grayscale() {
+
+    if ($this->getGrayscale() == true) {
+      $this->fadeToGray();
+    }
+
+    return $this;
+  }
+
+  /**
    * @since 2.0
    * @return boolean
    */
@@ -549,7 +588,8 @@ abstract class SLIRImage
    */
   public function applyTransformations()
   {
-    $this->crop()
+    $this->grayscale()
+      ->crop()
       ->sharpen()
       ->interlace()
       ->optimize();

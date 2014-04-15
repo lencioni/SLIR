@@ -398,33 +398,11 @@ class SLIR
       $this->rendered->setSharpeningFactor($this->calculateSharpnessFactor())
         ->setBackground($this->getBackground())
         ->setQuality($this->getQuality())
+        ->setGrayscale($this->getRequest()->grayscale)
         ->setProgressive($this->getProgressive())
         ->setMimeType($this->getMimeType())
         ->setCropper($this->getRequest()->cropper);
 
-      // Set up the appropriate image handling parameters based on the original
-      // image's mime type
-      // @todo some of this code should be moved to the SLIRImage class
-      /*
-      $this->renderedMime       = $this->getSource()->getMimeType();
-      if ($this->getSource()->isJPEG()) {
-        $this->rendered->progressive  = ($this->getRequest()->progressive !== null)
-          ? $this->getRequest()->progressive : SLIRConfig::$defaultProgressiveJPEG;
-        $this->rendered->background   = null;
-      } else if ($this->getSource()->isPNG()) {
-        $this->rendered->progressive  = false;
-      } else if ($this->getSource()->isGIF() || $this->getSource()->isBMP()) {
-        // We convert GIFs and BMPs to PNGs
-        $this->rendered->mime     = 'image/png';
-        $this->rendered->progressive  = false;
-      } else {
-        throw new RuntimeException("Unable to determine type of source image ({$this->getSource()->mime})");
-      } // if
-
-      if ($this->isBackgroundFillOn()) {
-        $this->rendered->background = $this->getRequest()->background;
-      }
-      */
     }
 
     return $this->rendered;

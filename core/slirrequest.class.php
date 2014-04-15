@@ -95,6 +95,13 @@ class SLIRRequest
   private $progressive;
 
   /**
+   * Whether or not grayscale is turned on
+   * @var boolean
+   * @since 2.0
+   */
+  private $grayscale;
+
+  /**
    * Color to fill background of transparent PNGs and GIFs
    * @var string
    * @since 2.0
@@ -152,6 +159,7 @@ class SLIRRequest
     unset($this->cropper);
     unset($this->quality);
     unset($this->progressive);
+    unset($this->grayscale);
     unset($this->background);
     unset($this->isUsingDefaultImagePath);
   }
@@ -188,6 +196,12 @@ class SLIRRequest
       case 'p':
       case 'progressive':
         $this->setProgressive($value);
+          break;
+
+      case 'g':
+      case 'grayscale':
+      case 'greyscale':
+        $this->setGrayscale($value);
           break;
 
       case 'b';
@@ -255,6 +269,15 @@ class SLIRRequest
   private function setProgressive($value)
   {
     $this->progressive  = (bool) $value;
+  }
+
+  /**
+   * @param string $value
+   * @return void
+   */
+  private function setGrayscale($value)
+  {
+    $this->grayscale  = (bool) $value;
   }
 
   /**
@@ -354,6 +377,7 @@ Available parameters:
  q = Quality (0-100)
  b = Background fill color (RRGGBB or RGB)
  p = Progressive (0 or 1)
+ g = Grayscale (0 or 1)
 
 Example usage:
 /slir/w300-h300-c1.1/path/to/image.jpg');
@@ -388,7 +412,7 @@ Example usage:
   {
     if (SLIRConfig::$forceQueryString === true) {
       return true;
-    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b', 'p'), array_keys($_GET)))) {
+    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b', 'p', 'g'), array_keys($_GET)))) {
       return true;
     } else {
       return false;

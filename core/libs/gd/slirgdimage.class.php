@@ -332,6 +332,17 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   }
 
   /**
+   * Fade image to grayscale
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function fadeToGray()
+  {
+    imagefilter ( $this->getImage() , IMG_FILTER_GRAYSCALE );
+    return $this;
+  }
+
+  /**
    * Fills the image with the set background color
    * @return SLIRImageLibrary
    * @since 2.0
@@ -437,10 +448,12 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
     $cropped->setMimeType($this->getMimeType()) // To enable again transparency on PNGs !
             ->setWidth($this->getCropWidth())
             ->setHeight($this->getCropHeight())
-            ->setBackground($this->getBackground());
+            ->setBackground($this->getBackground())
+            ->setGrayscale($this->getGrayscale());
            
 
     $cropped->background();
+    $cropped->grayscale();
 
     // Copy rendered image to cropped image
     imagecopy(
@@ -564,15 +577,6 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
     $this->destroy();
     $this->image  = $palette;
     $this->setMimeType('image/png');
-
-    /* For some reason, ImageTrueColorToPalette produces horrible results for true color images that have less than 256 colors. http://stackoverflow.com/questions/5187480/imagetruecolortopalette-losing-colors
-
-    $colorsHandle = ImageCreateTrueColor($this->getWidth(), $this->getHeight());
-    ImageCopy($colorsHandle, $this->image, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
-    ImageTrueColorToPalette($this->image, $dither, $ncolors);
-    ImageColorMatch($colorsHandle, $this->image);
-    ImageDestroy($colorsHandle);
-    */
   }
 
   /**
