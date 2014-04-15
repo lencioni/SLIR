@@ -453,7 +453,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
            
 
     $cropped->background();
-    $cropped->grayscale();
+    //$cropped->grayscale();
 
     // Copy rendered image to cropped image
     imagecopy(

@@ -588,10 +588,10 @@ abstract class SLIRImage
    */
   public function applyTransformations()
   {
-    $this->grayscale()
-      ->crop()
+    $this->crop()
       ->sharpen()
       ->interlace()
-      ->optimize();
+      ->optimize()
+      ->grayscale();
   }
 }
