@@ -22,7 +22,7 @@
  * @since 2.0
  * @package SLIR
  */
-
+namespace SLIR;
 /**
  * Exception and error handler
  *
@@ -73,6 +73,7 @@ class SLIRExceptionHandler
    */
   private static function log(Exception $e)
   {
+    $configClass = SLIR::getConfigClass();
     $userAgent  = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $referrer   = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
     $request    = (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] : '';
@@ -87,7 +88,7 @@ class SLIRExceptionHandler
         $e->getTraceAsString(),
     ));
 
-    return @error_log($message, 3, SLIRConfig::$pathToErrorLog);
+    return @error_log($message, 3, $configClass::$pathToErrorLog);
   }
 
   /**
@@ -149,7 +150,7 @@ class SLIRExceptionHandler
    * @param Exception $e
    * @return void
    */
-  private static function errorText(Exception $e)
+  private static function errorText(\Exception $e)
   {
     echo nl2br($e->getMessage() . ' in ' . $e->getFile() . ' on ' . $e->getLine()) . "\n";
   }
@@ -161,9 +162,10 @@ class SLIRExceptionHandler
    * @param Exception $e
    * @return void
    */
-  public static function handleException(Exception $e)
+  public static function handleException(\Exception $e)
   {
-    if (SLIRConfig::$enableErrorImages === true) {
+    $configClass = SLIR::getConfigClass();
+    if ($configClass::$enableErrorImages === true) {
       self::errorImage($e);
     } else {
       self::errorText($e);
@@ -191,9 +193,9 @@ class SLIRExceptionHandler
       return;
     }
 
-    throw new ErrorException($message, 0, $severity, $filename, $lineno);
+    throw new \ErrorException($message, 0, $severity, $filename, $lineno);
   }
 }
 
-set_error_handler(array('SLIRExceptionHandler', 'handleError'));
-set_exception_handler(array('SLIRExceptionHandler', 'handleException'));
+set_error_handler(array('\SLIR\SLIRExceptionHandler', 'handleError'));
+set_exception_handler(array('\SLIR\SLIRExceptionHandler', 'handleException'));

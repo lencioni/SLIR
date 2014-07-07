@@ -1,5 +1,10 @@
 <?php
+require_once realpath(__DIR__ . '/../../vendor/autoload.php');
 require_once realpath(__DIR__ . '/../slirTestCase.class.php');
+
+use \SLIR\SLIR;
+use \SLIR\SLIRRequest;
+use \SLIRConfig;
 
 class SLIRTest extends SLIRTestCase
 {
@@ -54,7 +59,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithOnlyWidthSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -86,7 +91,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithOnlyHeightSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/h50/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/h50/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -118,7 +123,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithOnlyQualitySpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/q10/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/q10/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -150,7 +155,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processRequestThatShouldBeServedFromTheRequestCache($uncachedImageOutput)
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50/SLIR/Test/images/camera-logo.png';
 
     $this->assertTrue($this->slir->isRequestCached());
     $this->assertTrue($this->slir->isRenderedCached());
@@ -173,7 +178,7 @@ class SLIRTest extends SLIRTestCase
   public function processRequestThatShouldBeServedFromTheRenderedCache($uncachedImageOutput)
   {
 
-    $_SERVER['REQUEST_URI'] = '/slir/w50-h10000/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-h10000/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncacheRequest();
 
@@ -195,7 +200,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processRequestThatShouldServeSourceImage()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w99999-q100/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w99999-q100/SLIR/Test/images/camera-logo.png';
 
     $this->assertFalse($this->slir->isRequestCached());
     $this->assertFalse($this->slir->isRenderedCached());
@@ -219,7 +224,7 @@ class SLIRTest extends SLIRTestCase
   {
     $_SERVER['HTTP_IF_MODIFIED_SINCE'] = gmdate('D, d M Y H:i:s', time() + 100) . ' GMT';
 
-    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50/SLIR/Test/images/camera-logo.png';
 
     ob_start();
     $this->slir->processRequestFromURL();
@@ -238,7 +243,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithHeightAndWidthSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-h50/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-h50/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -271,7 +276,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithSquareCropSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -303,7 +308,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithWideCropSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-c2.1/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c2.1/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -336,7 +341,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithTallCropSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.2/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.2/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -369,7 +374,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithSquareCropCenteredSpecified()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.centered/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.centered/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -403,7 +408,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithSquareCropSmartSpecified($centerCroppedImage)
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.smart/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-c1.1.smart/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -438,7 +443,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithOnlyBlueBackgroundFill()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/b00f/slir/Test/images/camera-logo.png';
+    $_SERVER['REQUEST_URI'] = '/slir/b00f/SLIR/Test/images/camera-logo.png';
 
     $this->slir->uncache();
 
@@ -476,7 +481,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithOnlyWidthSpecifiedForJPEG()
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50/slir/Test/images/joe-lencioni.jpg';
+    $_SERVER['REQUEST_URI'] = '/slir/w50/SLIR/Test/images/joe-lencioni.jpg';
 
     $this->slir->uncache();
 
@@ -510,7 +515,7 @@ class SLIRTest extends SLIRTestCase
    */
   public function processUncachedRequestFromURLWithWidthAndQualitySpecifiedForJPEG($defaultQualityImage)
   {
-    $_SERVER['REQUEST_URI'] = '/slir/w50-q10/slir/Test/images/joe-lencioni.jpg';
+    $_SERVER['REQUEST_URI'] = '/slir/w50-q10/SLIR/Test/images/joe-lencioni.jpg';
 
     $this->slir->uncache();
 

@@ -1,0 +1,7 @@
+{
+	"name": "rezozero/SLIR",
+    "version": "2.0.4",
+    "autoload": {
+        "psr-4":{"SLIR\\" : "core/"}
+    }
+}

@@ -1,5 +1,10 @@
 <?php
-require_once realpath(__DIR__ . '/../core/slir.class.php');
+require_once realpath(__DIR__ . '/../vendor/autoload.php');
+require_once realpath(__DIR__ . '/../slirconfig.class.php');
+
+use \SLIR\SLIR;
+use \SLIR\SLIRRequest;
+use \SLIRConfig;
 
 abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
 {
@@ -22,7 +27,7 @@ abstract class SLIRTestCase extends PHPUnit_Framework_TestCase
     SLIRConfig::$maxMemoryToAllocate  = -1;
 
     // Try to fix documentRoot for CLI
-    SLIRConfig::$documentRoot = realpath(__DIR__ . '/../../');
+    SLIRConfig::$documentRoot = realpath(__DIR__ . '/..');
   }
 
   /**

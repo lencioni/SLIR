@@ -1,4 +1,7 @@
 <?php
+
+namespace SLIR\Libs;
+
 abstract class SLIRImage
 {
   /**
@@ -147,7 +150,8 @@ abstract class SLIRImage
    */
   final public function getFullPath()
   {
-    return SLIRConfig::$documentRoot . $this->getPath();
+    $configClass = \SLIR\SLIR::getConfigClass();
+    return $configClass::$documentRoot . $this->getPath();
   }
 
   /**

@@ -4,13 +4,10 @@ SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crop
 
 For questions or support, please [visit the SLIR Google Group](https://groups.google.com/forum/?fromgroups#!forum/smart-lencioni-image-resizer). If you have found a bug, please [use the issue tracker](https://github.com/lencioni/SLIR/issues).
 
-## Forked by REZO ZERO
-
-Any enhancements are made to make SLIR more compatible with RZ-CMS.
-
 ## Requirements
 
-* [PHP](http://php.net) 5.1.2+
+* [Composer](https://getcomposer.org)
+* [PHP](http://php.net) 5.3.6+
 * [GD Graphics Library](http://php.net/manual/en/book.image.php) -- must be a version that supports `imageconvolution()`, such as the bundled version
 
 ### Recommended
@@ -19,9 +16,10 @@ Any enhancements are made to make SLIR more compatible with RZ-CMS.
 
 ## Setting up
 
-Download and unpack to a directory in your web root. I recommend putting SLIR in `/slir/` for ease of use. For example, if your website is `http://yourdomain.com`, then SLIR would be at `http://yourdomain.com/slir/`.
-
-After you have SLIR downloaded, visit `http://yourdomain.com/slir/install/` in your favorite web browser.
+* Download and unpack to a directory in your web root. I recommend putting SLIR in `/slir/` for ease of use. For example, if your website is `http://yourdomain.com`, then SLIR would be at `http://yourdomain.com/slir/`.
+* Run `composer install` to generate **autoloader** and dependencies.
+* Create your own `SLIRConfig` class using `slirconfig-sample.class.php` file. If you want to use a namespaced configuration class, you must define `SLIR_CONFIG_CLASSNAME` global constant with its Full-qualified classname. For example : `define('SLIR_CONFIG_CLASSNAME','\MyCompany\Utils\SLIRConfig');`, then SLIR will look for this class to use static configuration.
+* After you have SLIR downloaded, visit `http://yourdomain.com/slir/install/` in your favorite web browser.
 
 ## Using
 

@@ -23,5 +23,5 @@
  * @package SLIR
  */
 
-require_once '../core/slirinstaller.class.php';
-new SLIRInstaller();
+require_once 'vendor/autoload.php';
+new \SLIR\SLIRInstaller();
