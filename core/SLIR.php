@@ -224,7 +224,7 @@ class SLIR
 
 	public static function getConfigClass()
 	{
-		return static::$configClass !== null ? $configClass : '\SLIRConfig';
+		return static::$configClass !== null ? static::$configClass : '\SLIRConfig';
 	}
 
 	/**
