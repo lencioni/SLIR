@@ -510,10 +510,11 @@ abstract class SLIRImage
    */
   public function getCropper()
   {
+    $configClass = \SLIR\SLIR::getConfigClass();
     if ($this->cropper !== null) {
       return $this->cropper;
     } else {
-      return SLIRConfig::$defaultCropper;
+      return $configClass::$defaultCropper;
     }
   }
 

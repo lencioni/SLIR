@@ -404,9 +404,10 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 	final public function getCropperClass()
 	{
 		$configClass = \SLIR\SLIR::getConfigClass();
-		$cropClass  = strtolower($this->getCropper());
+		
+		$cropClass  = 'SLIRCropper' . ucfirst($this->getCropper());
 		$fileName   = $configClass::$pathToSLIR . "/core/Libs/GD/Croppers/$cropClass.php";
-		$class      = '\SLIR\Libs\GD\Croppers\SLIRCropper' . ucfirst($cropClass);
+		$class      = '\SLIR\Libs\GD\Croppers\SLIRCropper' . ucfirst($this->getCropper());
 
 		if (!file_exists($fileName)) {
 			throw new \RuntimeException('The requested cropper could not be found: ' . $fileName);
