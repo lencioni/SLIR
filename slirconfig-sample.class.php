@@ -30,7 +30,7 @@
  * @author Joe Lencioni <joe@shiftingpixel.com>
  * @package SLIR
  */
-class SLIRConfig extends SLIR\SLIRConfigDefaults
+class SLIRConfig extends \SLIR\SLIRConfigDefaults
 {
   // override configuration values here
 
@@ -41,4 +41,4 @@ class SLIRConfig extends SLIR\SLIRConfigDefaults
   }
 }
 
-SLIRConfig::init();
+\SLIRConfig::init();
