@@ -113,7 +113,7 @@ class SLIR
 	 * @since 2.0
 	 * @var string
 	 */
-	const VERSION = '2.0b5';
+	const VERSION = '2.1.0';
 
 	/**
 	 * @since 2.0
