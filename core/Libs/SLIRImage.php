@@ -1,4 +1,7 @@
 <?php
+
+namespace SLIR\Libs;
+
 abstract class SLIRImage
 {
   /**
@@ -30,6 +33,11 @@ abstract class SLIRImage
    * @var boolean
    */
   protected $progressive;
+
+  /**
+   * @var boolean
+   */
+  protected $grayscale;
 
   /**
    * @var string specified cropper to use
@@ -105,7 +113,8 @@ abstract class SLIRImage
       $this->getProgressive(),
       $this->getInfo(),
       $this->getCropper(),
-      $this->getQuality()
+      $this->getQuality(),
+      $this->getGrayscale()
     );
 
     $infos = array_merge($infos, $infosToInclude);
@@ -141,7 +150,8 @@ abstract class SLIRImage
    */
   final public function getFullPath()
   {
-    return SLIRConfig::$documentRoot . $this->getPath();
+    $configClass = \SLIR\SLIR::getConfigClass();
+    return $configClass::$documentRoot . $this->getPath();
   }
 
   /**
@@ -204,7 +214,7 @@ abstract class SLIRImage
     return $this;
   }
 
-    /**
+  /**
    * @return boolean
    * @since 2.0
    */
@@ -220,6 +230,25 @@ abstract class SLIRImage
   public function setProgressive($progressive)
   {
     $this->progressive = $progressive;
+    return $this;
+  }
+
+  /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getGrayscale()
+  {
+    return $this->grayscale;
+  }
+
+  /**
+   * @param boolean $grayscale
+   * @return SLIRImageLibrary
+   */
+  public function setGrayscale($grayscale)
+  {
+    $this->grayscale = $grayscale;
     return $this;
   }
 
@@ -481,10 +510,11 @@ abstract class SLIRImage
    */
   public function getCropper()
   {
+    $configClass = \SLIR\SLIR::getConfigClass();
     if ($this->cropper !== null) {
       return $this->cropper;
     } else {
-      return SLIRConfig::$defaultCropper;
+      return $configClass::$defaultCropper;
     }
   }
 
@@ -530,6 +560,20 @@ abstract class SLIRImage
   }
 
   /**
+   * 
+   * @since 2.0
+   * @return SLIRImageLibrary
+   */
+  final public function grayscale() {
+
+    if ($this->getGrayscale() == true) {
+      $this->fadeToGray();
+    }
+
+    return $this;
+  }
+
+  /**
    * @since 2.0
    * @return boolean
    */
@@ -552,6 +596,7 @@ abstract class SLIRImage
     $this->crop()
       ->sharpen()
       ->interlace()
-      ->optimize();
+      ->optimize()
+      ->grayscale();
   }
 }

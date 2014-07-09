@@ -22,7 +22,7 @@
  * @since 2.0
  * @package SLIR
  */
-
+namespace SLIR;
 /**
  * SLIR Config Class
  *
@@ -133,6 +133,18 @@ class SLIRConfigDefaults
    * @var string
    */
   public static $pathToSLIR = null;
+
+
+  /**
+   * Absolute URI to SLIR (no trailing slash) from the root directory on your website filesystem.
+   *
+   * For example, if the files on your website are in /var/www/ and slir is accessible at URL : http://example.com/assets/, then the value of this setting should be '/assets'.
+   *
+   * @since 2.0
+   * @var string
+   */
+  public static $urlToSLIR = null;
+
 
   /**
    * Absolute path to cache directory (no trailing slash). This directory must be world-readable, writable by the web server. Ideally, this directory should be located outside of the web tree for security reasons.

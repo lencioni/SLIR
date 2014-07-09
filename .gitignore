@@ -1,1 +1,4 @@
 slirconfig.class.php
+cache
+/vendor
+slir-error-log

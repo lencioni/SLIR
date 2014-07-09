@@ -22,7 +22,7 @@
  * @since 2.0
  * @package SLIR
  */
-
+namespace SLIR\Libs;
 /**
  * SLIR Image Library interface
  * @package SLIR
@@ -278,11 +278,30 @@ interface SLIRImageLibrary
   public function setProgressive($progressive);
 
   /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getGrayscale();
+
+  /**
+   * @param boolean $grayscale
+   * @return SLIRImageLibrary
+   */
+  public function setGrayscale($grayscale);
+
+  /**
    * Turns interlacing on or off
    * @return SLIRImageLibrary
    * @since 2.0
    */
   public function interlace();
+
+  /**
+   * Turns grayscale on or off
+   * @return SLIRImageLibrary
+   * @since 2.0
+   */
+  public function grayscale();
 
   /**
    * Performs the actual cropping of the image

@@ -1,6 +1,6 @@
 <?php
 /**
- * Interface definition file for SLIR croppers
+ * Class definition file for the top/centered SLIR cropper
  *
  * This file is part of SLIR (Smart Lencioni Image Resizer).
  *
@@ -24,20 +24,29 @@
  * @subpackage Croppers
  */
 
+namespace SLIR\Libs\GD\Croppers;
+
+
+use \SLIR\Libs\SLIRImage;
 /**
- * SLIR cropper interface
+ * Top/centered SLIR cropper
+ *
+ * Calculates the crop offset anchored in the top of the image if the top and bottom are being cropped, or the center of the image if the left and right are being cropped
  *
  * @since 2.0
  * @author Joe Lencioni <joe@shiftingpixel.com>
  * @package SLIR
  * @subpackage Croppers
  */
-interface SLIRCropper
+class SLIRCropperTopcentered extends SLIRCropperCentered
 {
   /**
    * @since 2.0
    * @param SLIRImage $image
-   * @return array Associative array with the keys of x, y, width, and height that specify the box that should be cropped
+   * @return integer
    */
-  public function getCrop(SLIRImage $image);
+  public function getCropY(SLIRImage $image)
+  {
+    return 0;
+  }
 }

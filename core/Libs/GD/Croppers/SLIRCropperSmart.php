@@ -24,8 +24,11 @@
  * @subpackage Croppers
  */
 
-require_once 'slircropper.interface.php';
+namespace SLIR\Libs\GD\Croppers;
 
+
+
+use \SLIR\Libs\SLIRImage;
 /**
  * Smart SLIR cropper
  *

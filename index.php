@@ -23,8 +23,8 @@
  * @package SLIR
  */
 
-// define('SLIR_CONFIG_FILENAME', 'slir-config-alternate.php');
 
-require_once 'core/slir.class.php';
-$slir = new SLIR();
+require_once 'vendor/autoload.php';
+
+$slir = new \SLIR\SLIR();
 $slir->processRequestFromURL();
