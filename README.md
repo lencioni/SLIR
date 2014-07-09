@@ -19,18 +19,12 @@ For questions or support, please [use the issue tracker](https://github.com/lenc
 
 ## Setting up as a library in a symfony-like environment
 
-* Add *SLIR* to your project `composer.json` as an extern repository. 
+* Add *SLIR* to your project `composer.json` as a packagist repository. 
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/rezozero/SLIR"
-        }
-    ],
     "require": {
-        "rezozero/SLIR": "dev-master"
+        "rezozero/slir": "2.1.*"
     }
 }
 ```

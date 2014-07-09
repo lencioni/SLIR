@@ -1,6 +1,7 @@
 {
-    "name": "rezozero/SLIR",
+    "name": "rezozero/slir",
     "type": "library",
+    "keywords": ["image","resizing","resampling","image processing"],
     "authors": [
         {
             "name": "Joe Lencioni",
