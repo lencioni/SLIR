@@ -22,7 +22,7 @@
  * @since 2.0
  * @package SLIR
  */
-
+namespace SLIR;
 /**
  * SLIR Config Class
  *

@@ -22,7 +22,7 @@
  * @since 2.0
  * @package SLIR
  */
-
+namespace SLIR;
 /**
  * SLIR request class
  *
@@ -126,16 +126,17 @@ class SLIRRequest
    */
   final public function initialize()
   {
+    $configClass = SLIR::getConfigClass();
     $params = $this->getParameters();
 
     // Set image path first
     if (isset($params['i']) && $params['i'] != '' && $params['i'] != '/') {
       $this->__set('i', $params['i']);
       unset($params['i']);
-    } else if (SLIRConfig::$defaultImagePath !== null) {
-      $this->__set('i', SLIRConfig::$defaultImagePath);
+    } else if ($configClass::$defaultImagePath !== null) {
+      $this->__set('i', $configClass::$defaultImagePath);
     } else {
-      throw new RuntimeException('Source image was not specified.');
+      throw new \RuntimeException('Source image was not specified.');
     } // if
 
     // Set the rest of the parameters
@@ -234,7 +235,7 @@ class SLIRRequest
   {
     $this->width  = (int) $value;
     if ($this->width < 1) {
-      throw new RuntimeException('Width must be greater than 0: ' . $this->width);
+      throw new \RuntimeException('Width must be greater than 0: ' . $this->width);
     }
   }
 
@@ -246,7 +247,7 @@ class SLIRRequest
   {
     $this->height = (int) $value;
     if ($this->height < 1) {
-      throw new RuntimeException('Height must be greater than 0: ' . $this->height);
+      throw new \RuntimeException('Height must be greater than 0: ' . $this->height);
     }
   }
 
@@ -258,7 +259,7 @@ class SLIRRequest
   {
     $this->quality  = (int) $value;
     if ($this->quality < 0 || $this->quality > 100) {
-      throw new RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
+      throw new \RuntimeException('Quality must be between 0 and 100: ' . $this->quality);
     }
   }
 
@@ -296,7 +297,7 @@ class SLIRRequest
         .$this->background[2]
         .$this->background[2];
     } else if (strlen($this->background) != 6) {
-      throw new RuntimeException('Background fill color must be in hexadecimal format, longhand or shorthand: ' . $this->background);
+      throw new \RuntimeException('Background fill color must be in hexadecimal format, longhand or shorthand: ' . $this->background);
     } // if
   }
 
@@ -310,7 +311,7 @@ class SLIRRequest
     $ratio      = preg_split("/[$delimiters]/", (string) urldecode($value));
     if (count($ratio) >= 2) {
       if ((float) $ratio[0] == 0 || (float) $ratio[1] == 0) {
-        throw new RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
+        throw new \RuntimeException('Crop ratio must not contain a zero: ' . (string) $value);
       }
 
       $this->cropRatio  = array(
@@ -324,7 +325,7 @@ class SLIRRequest
         $this->cropper  = (string) $ratio[2];
       }
     } else {
-      throw new RuntimeException('Crop ratio must be in [width]x[height] format (e.g. 2x1): ' . (string) $value);
+      throw new \RuntimeException('Crop ratio must be in [width]x[height] format (e.g. 2x1): ' . (string) $value);
     } // if
   }
 
@@ -355,20 +356,21 @@ class SLIRRequest
    */
   private function getParametersFromURL()
   {
+    $configClass = SLIR::getConfigClass();
     $params = array();
 
     // The parameters should be the first set of characters after the SLIR path
     // 
-    if (SLIRConfig::$urlToSLIR !== null) {  
-      $request = preg_replace('`.*?/'.preg_quote(basename(SLIRConfig::$urlToSLIR)) . '/`', '', (string) $_SERVER['REQUEST_URI'], 1);
+    if ($configClass::$urlToSLIR !== null) {  
+      $request = preg_replace('`.*?/'.preg_quote(basename($configClass::$urlToSLIR)) . '/`', '', (string) $_SERVER['REQUEST_URI'], 1);
     }
     else {
-      $request = preg_replace('`.*?/' . preg_quote(basename(SLIRConfig::$pathToSLIR)) . '/`', '', (string) $_SERVER['REQUEST_URI'], 1);
+      $request = preg_replace('`.*?/' . preg_quote(basename($configClass::$pathToSLIR)) . '/`', '', (string) $_SERVER['REQUEST_URI'], 1);
     }
     $paramString  = strtok($request, '/');
 
     if ($paramString === false || $paramString === $request) {
-      throw new RuntimeException('Not enough parameters were given.
+      throw new \RuntimeException('Not enough parameters were given.
 
 Available parameters:
  w = Maximum width
@@ -410,7 +412,8 @@ Example usage:
    */
   private function isUsingQueryString()
   {
-    if (SLIRConfig::$forceQueryString === true) {
+    $configClass = SLIR::getConfigClass();
+    if ($configClass::$forceQueryString === true) {
       return true;
     } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b', 'p', 'g'), array_keys($_GET)))) {
       return true;
@@ -436,18 +439,19 @@ Example usage:
    */
   private function setPath($path)
   {
+    $configClass = SLIR::getConfigClass();
     $this->path = $this->localizePath((string) urldecode($path));
 
     if (!$this->isPathSecure()) {
       // Make sure the image path is secure
-      throw new RuntimeException('Image path may not contain ":", "..", "<", or ">"');
+      throw new \RuntimeException('Image path may not contain ":", "..", "<", or ">"');
     } else if (!$this->pathExists()) {
       // Make sure the image file exists
-      if (SLIRConfig::$defaultImagePath !== null && !$this->isUsingDefaultImagePath()) {
+      if ($configClass::$defaultImagePath !== null && !$this->isUsingDefaultImagePath()) {
         $this->isUsingDefaultImagePath  = true;
-        return $this->setPath(SLIRConfig::$defaultImagePath);
+        return $this->setPath($configClass::$defaultImagePath);
       } else {
-        throw new RuntimeException('Image does not exist: ' . $this->fullPath());
+        throw new \RuntimeException('Image does not exist: ' . $this->fullPath());
       }
     }
   }
@@ -517,7 +521,8 @@ Example usage:
    */
   final public function fullPath()
   {
-    return SLIRConfig::$documentRoot . $this->path;
+    $configClass = SLIR::getConfigClass();
+    return $configClass::$documentRoot . $this->path;
   }
 
   /**

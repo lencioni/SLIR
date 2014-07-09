@@ -22,8 +22,7 @@
  * @since 2.0
  * @package SLIR
  */
-
-require_once 'slir.class.php';
+namespace SLIR;
 
 /**
  * SLIR installer class
@@ -324,8 +323,8 @@ class SLIRInstaller
   {
     $this->slir->getConfig();
 
-    $reflectDefaults  = new ReflectionClass('SLIRConfigDefaults');
-    $reflectConfig    = new ReflectionClass('SLIRConfig');
+    $reflectDefaults  = new \ReflectionClass('\SLIR\SLIRConfigDefaults');
+    $reflectConfig    = new \ReflectionClass(SLIR::getConfigClass());
 
     $defaultProperties  = $reflectDefaults->getStaticProperties();
     $configProperties   = $reflectConfig->getStaticProperties();
@@ -354,136 +353,23 @@ class SLIRInstaller
    */
   private function initializeErrorLog()
   {
-    if (!file_exists(SLIRConfig::$pathToErrorLog)) {
+    $configClass = SLIR::getConfigClass();
+
+    if (!file_exists($configClass::$pathToErrorLog)) {
       // Error log does not exist, try creating it
-      if (file_put_contents(SLIRConfig::$pathToErrorLog, '') === false) {
+      if (file_put_contents($configClass::$pathToErrorLog, '') === false) {
         // Error log was unable to be created
-        return new NegativeSLIRInstallerResponse(sprintf('Error log does not exist and could not be created at <code>%s</code>. Please create this file and make sure the web server has permission to write to it. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
+        return new NegativeSLIRInstallerResponse(sprintf('Error log does not exist and could not be created at <code>%s</code>. Please create this file and make sure the web server has permission to write to it. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', $configClass::$pathToErrorLog));
       } else {
         // Everything worked well
-        return new PositiveSLIRInstallerResponse(sprintf('Error log successfully created at <code>%s</code>. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
+        return new PositiveSLIRInstallerResponse(sprintf('Error log successfully created at <code>%s</code>. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', $configClass::$pathToErrorLog));
       }
-    } else if (!is_writable(SLIRConfig::$pathToErrorLog)) {
+    } else if (!is_writable($configClass::$pathToErrorLog)) {
       // Error log exists, but is not writable
-      return new NegativeSLIRInstallerResponse(sprintf('Error log exists at <code>%s</code> but is not writable. Please make sure the web server has permission to write to this file. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
+      return new NegativeSLIRInstallerResponse(sprintf('Error log exists at <code>%s</code> but is not writable. Please make sure the web server has permission to write to this file. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', $configClass::$pathToErrorLog));
     } else {
       // Everything is good
-      return new PositiveSLIRInstallerResponse(sprintf('Error log exists at <code>%s</code> and is writable by the web server. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', SLIRConfig::$pathToErrorLog));
+      return new PositiveSLIRInstallerResponse(sprintf('Error log exists at <code>%s</code> and is writable by the web server. If you would like to change the path of this file, set $pathToErrorLog in slirconfig.class.php and run the installer again.', $configClass::$pathToErrorLog));
     }
   }
-}
-
-/**
- * @package SLIR
- * @subpackage Installer
- * @since 2.0
- */
-class SLIRInstallerResponse
-{
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $type   = 'Generic';
-
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $message  = 'Unknown';
-
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $description  = '';
-
-  /**
-   * @param string $description
-   * @return void
-   * @since 2.0
-   */
-  public function __construct($description = '')
-  {
-    $this->description  = $description;
-  }
-
-  /**
-   * @return string
-   * @since 2.0
-   */
-  public function getType()
-  {
-    return $this->type;
-  }
-
-  /**
-   * @return string
-   * @since 2.0
-   */
-  public function getMessage()
-  {
-    return $this->message;
-  }
-
-  /**
-   * @return string
-   * @since 2.0
-   */
-  public function getDescription()
-  {
-    return $this->description;
-  }
-}
-
-/**
- * @package SLIR
- * @subpackage Installer
- * @since 2.0
- */
-class PositiveSLIRInstallerResponse extends SLIRInstallerResponse
-{
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $type   = 'Positive';
-
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $message  = 'Success!';
-}
-
-/**
- * @package SLIR
- * @subpackage Installer
- */
-class NegativeSLIRInstallerResponse extends SLIRInstallerResponse
-{
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $type   = 'Negative';
-
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $message  = 'Failed!';
-}
-
-/**
- * @package SLIR
- * @subpackage Installer
- */
-class FatalSLIRInstallerResponse extends NegativeSLIRInstallerResponse
-{
-  /**
-   * @var string
-   * @since 2.0
-   */
-  protected $type   = 'Fatal';
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace SLIR\Libs;
+
 class SLIRCoordinates 
 {
   /**

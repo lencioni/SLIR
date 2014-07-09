@@ -23,8 +23,6 @@
  * @package SLIR
  */
 
-require_once 'core/slirconfigdefaults.class.php';
-
 /**
  * SLIR Config Class
  *
@@ -32,7 +30,7 @@ require_once 'core/slirconfigdefaults.class.php';
  * @author Joe Lencioni <joe@shiftingpixel.com>
  * @package SLIR
  */
-class SLIRConfig extends SLIRConfigDefaults
+class SLIRConfig extends \SLIR\SLIRConfigDefaults
 {
   // override configuration values here
 
@@ -43,4 +41,4 @@ class SLIRConfig extends SLIRConfigDefaults
   }
 }
 
-SLIRConfig::init();
+\SLIRConfig::init();

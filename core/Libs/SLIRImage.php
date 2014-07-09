@@ -1,4 +1,7 @@
 <?php
+
+namespace SLIR\Libs;
+
 abstract class SLIRImage
 {
   /**
@@ -147,7 +150,8 @@ abstract class SLIRImage
    */
   final public function getFullPath()
   {
-    return SLIRConfig::$documentRoot . $this->getPath();
+    $configClass = \SLIR\SLIR::getConfigClass();
+    return $configClass::$documentRoot . $this->getPath();
   }
 
   /**
@@ -506,10 +510,11 @@ abstract class SLIRImage
    */
   public function getCropper()
   {
+    $configClass = \SLIR\SLIR::getConfigClass();
     if ($this->cropper !== null) {
       return $this->cropper;
     } else {
-      return SLIRConfig::$defaultCropper;
+      return $configClass::$defaultCropper;
     }
   }
 
