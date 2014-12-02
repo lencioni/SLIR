@@ -1,4 +1,4 @@
-<phpunit>
+<phpunit bootstrap="vendor/autoload.php">
   <testsuites>
     <testsuite name="Smart Lencioni Image Resizer">
       <directory suffix="Test.php">./Test/</directory>
