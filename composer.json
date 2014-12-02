@@ -18,10 +18,11 @@
     ],
     "description" : "SLIR (Smart Lencioni Image Resizer) resizes images, intelligently sharpens, crops based on width:height ratios, color fills transparent GIFs and PNGs, and caches variations for optimal performance.",
     "homepage": "https://github.com/rezozero/SLIR",
-    "version": "2.1.0",
-    "license": "GPL-3.0",
+    "version": "2.1.1",
+    "license": "MIT",
     "autoload": {
-        "psr-4":{"SLIR\\" : "core/"}
+        "psr-4":{"SLIR\\" : "core/"},
+        "psr-4":{"Risko\\" : "icc/"}
     },
     "require": {
         "php": ">=5.3.3"

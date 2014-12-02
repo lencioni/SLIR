@@ -4,21 +4,28 @@
  *
  * This file is part of SLIR (Smart Lencioni Image Resizer).
  *
- * SLIR is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright (c) 2014 Joe Lencioni <joe.lencioni@gmail.com>
  *
- * SLIR is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * You should have received a copy of the GNU General Public License
- * along with SLIR.  If not, see <http://www.gnu.org/licenses/>.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * @copyright Copyright © 2011, Joe Lencioni
- * @license http://opensource.org/licenses/gpl-3.0.html GNU General Public License version 3 (GPLv3)
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @copyright Copyright © 2014, Joe Lencioni
+ * @license MIT
  * @since 2.0
  * @package SLIR
  */
@@ -113,7 +120,7 @@ class SLIR
 	 * @since 2.0
 	 * @var string
 	 */
-	const VERSION = '2.1.0';
+	const VERSION = '2.1.1';
 
 	/**
 	 * @since 2.0
@@ -539,7 +546,7 @@ class SLIR
 	 * @return string
 	 */
 	final public function getConfigPath()
-	{	
+	{
 		if (defined('SLIR_CONFIG_CLASSNAME')) {
 			return SLIR_CONFIG_CLASSNAME; // Provide a PSR-4 class
 		}
@@ -594,7 +601,7 @@ class SLIR
 		$this->getRendered()->background();
 
 		// Resample the original image into the resized canvas we set up earlier
-		if ($this->getSource()->getWidth() !== $this->getRendered()->getWidth() || 
+		if ($this->getSource()->getWidth() !== $this->getRendered()->getWidth() ||
 				$this->getSource()->getHeight() != $this->getRendered()->getHeight()) {
 
 			$this->getSource()->resample($this->getRendered());
@@ -701,10 +708,10 @@ class SLIR
 	 */
 	private function isSourceImageDesired()
 	{
-		if ($this->isWidthDifferent() || 
-				$this->isHeightDifferent() || 
-				$this->isBackgroundFillOn() || 
-				$this->isQualityOn() || 
+		if ($this->isWidthDifferent() ||
+				$this->isHeightDifferent() ||
+				$this->isBackgroundFillOn() ||
+				$this->isQualityOn() ||
 				$this->isCroppingNeeded()) {
 			return false;
 		} else {
@@ -1124,7 +1131,7 @@ class SLIR
 	 * @param boolean $copyEXIF
 	 * @return string
 	 */
-	private function cacheRequest($imageData, $copyEXIF = true)
+	private function cacheRequest($imageData, $copyEXIF = false)
 	{
 		return $this->cacheFile(
 				$this->requestCacheFilePath(),
@@ -1144,7 +1151,7 @@ class SLIR
 	 * @param string $symlinkToPath
 	 * @return string|boolean
 	 */
-	private function cacheFile($cacheFilePath, $imageData, $copyEXIF = true, $symlinkToPath = null)
+	private function cacheFile($cacheFilePath, $imageData, $copyEXIF = false, $symlinkToPath = null)
 	{
 
 		$configClass = SLIR::getConfigClass();
@@ -1158,16 +1165,6 @@ class SLIR
 		// Create the file
 		if (!file_put_contents($cacheFilePath, $imageData)) {
 			return false;
-		}
-
-		if ($configClass::$copyEXIF == true && $copyEXIF && $this->getSource()->isJPEG()) {
-			// Copy IPTC data
-			if (isset($this->getSource()->iptc) && !$this->copyIPTC($cacheFilePath)) {
-				return false;
-			}
-
-			// Copy EXIF data
-			$imageData = $this->copyEXIF($cacheFilePath);
 		}
 
 		if ($this->getSource()->isJPEG()) {
@@ -1214,37 +1211,6 @@ class SLIR
 	}
 
 	/**
-	 * Copy the source image's EXIF information to the new file in the cache
-	 *
-	 * @since 2.0
-	 * @uses PEL
-	 * @param string $cacheFilePath
-	 * @return mixed string contents of image on success, false on failure
-	 */
-	private function copyEXIF($cacheFilePath)
-	{
-		// Make sure to suppress strict warning thrown by PEL
-		require_once dirname(__FILE__) . '/../pel/src/PelJpeg.php';
-
-		$jpeg   = new \PelJpeg($this->getSource()->getFullPath());
-		$exif   = $jpeg->getExif();
-
-		if ($exif !== null) {
-			$jpeg   = new \PelJpeg($cacheFilePath);
-			$jpeg->setExif($exif);
-			$imageData  = $jpeg->getBytes();
-
-			if (!file_put_contents($cacheFilePath, $imageData)) {
-				return false;
-			}
-
-			return $imageData;
-		} // if
-
-		return file_get_contents($cacheFilePath);
-	}
-
-	/**
 	 * Copy the source images' ICC Profile (color profile) to the new file in the cache
 	 *
 	 * @since 2.0
@@ -1257,13 +1223,12 @@ class SLIR
 	 */
 	private function copyICCProfile($cacheFilePath)
 	{
-		require_once dirname(__FILE__) . '/../icc/class.jpeg_icc.php';
-
 		try {
-			$o = new \JPEG_ICC();
+			$o = new \Risko\JpegIcc();
 			$o->LoadFromJPEG($this->getSource()->getFullPath());
 			$o->SaveToJPEG($cacheFilePath);
 		} catch (\Exception $e) {
+
 		}
 
 		return file_get_contents($cacheFilePath);
@@ -1520,9 +1485,9 @@ class SLIR
 	 * @return boolean true to continue, false to stop
 	 */
 	private function serveHeaders($lastModified, $mimeType, $fileSize, $slirHeader)
-	{	
+	{
 		$configClass = SLIR::getConfigClass();
-		
+
 		$this->header("Last-Modified: $lastModified");
 		$this->header("Content-Type: $mimeType");
 		$this->header("Content-Length: $fileSize");
