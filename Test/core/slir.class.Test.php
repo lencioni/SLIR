@@ -31,7 +31,7 @@ class SLIRTest extends SLIRTestCase
     ob_start();
     $inceptionLevel = ob_get_level();
 
-    SLIR::escapeOutputBuffering();
+    $this->slir->escapeOutputBuffering();
 
     $this->assertLessThan($inceptionLevel, ob_get_level());
   }
