@@ -179,19 +179,19 @@ class JpegIcc
 
     public function SaveToJPEG($fname)
     {
-		if ($this->icc_profile == '') throw new Exception("No profile loaded.\n");
+		if ($this->icc_profile == '') throw new \Exception("No profile loaded.\n");
 
-		if (!file_exists($fname)) throw new Exception("File $fname doesn't exist.\n");
-		if (!is_readable($fname)) throw new Exception("File $fname isn't readable.\n");
+		if (!file_exists($fname)) throw new \Exception("File $fname doesn't exist.\n");
+		if (!is_readable($fname)) throw new \Exception("File $fname isn't readable.\n");
 		$dir = realpath($fname);
-		if (!is_writable($dir)) throw new Exception("Directory $fname isn't writeable.\n");
+		if (!is_writable($dir)) throw new \Exception("Directory $fname isn't writeable.\n");
 
 		$f = file_get_contents($fname);
 		if ($this->insertProfile($f))
 		{
 			$fsize = strlen($f);
 			$ret = file_put_contents($fname, $f);
-			if ($ret === false || $ret < $fsize) throw new Exception ("Write failed.\n");
+			if ($ret === false || $ret < $fsize) throw new \Exception ("Write failed.\n");
 		}
     }
 
@@ -202,8 +202,8 @@ class JpegIcc
 	 */
     public function LoadFromICC($fname)
     {
-		if (!file_exists($fname)) throw new Exception("File $fname doesn't exist.\n");
-		if (!is_readable($fname)) throw new Exception("File $fname isn't readable.\n");
+		if (!file_exists($fname)) throw new \Exception("File $fname doesn't exist.\n");
+		if (!is_readable($fname)) throw new \Exception("File $fname isn't readable.\n");
 
 		$this->SetProfile(file_get_contents($fname));
     }
@@ -216,13 +216,13 @@ class JpegIcc
 	 */
     public function SaveToICC($fname, $force_overwrite = false)
     {
-		if ($this->icc_profile == '') throw new Exception("No profile loaded.\n");
+		if ($this->icc_profile == '') throw new \Exception("No profile loaded.\n");
 		$dir = realpath($fname);
-		if (!is_writable($dir)) throw new Exception("Directory $fname isn't writeable.\n");
-		if (!$force_overwrite && file_exists($fname)) throw new Exception("File $fname exists.\n");
+		if (!is_writable($dir)) throw new \Exception("Directory $fname isn't writeable.\n");
+		if (!$force_overwrite && file_exists($fname)) throw new \Exception("File $fname exists.\n");
 
 		$ret = file_put_contents($fname, $this->icc_profile);
-		if ($ret === false || $ret < $this->icc_size) throw new Exception ("Write failed.\n");
+		if ($ret === false || $ret < $this->icc_size) throw new \Exception ("Write failed.\n");
 	}
 
 	/**
@@ -236,17 +236,17 @@ class JpegIcc
 	 */
     public function RemoveFromJPEG($input, $output, $force_overwrite = false)
     {
-		if (!file_exists($input)) throw new Exception("File $input doesn't exist.\n");
-		if (!is_readable($input)) throw new Exception("File $input isn't readable.\n");
+		if (!file_exists($input)) throw new \Exception("File $input doesn't exist.\n");
+		if (!is_readable($input)) throw new \Exception("File $input isn't readable.\n");
 		$dir = realpath($output);
-		if (!is_writable($dir)) throw new Exception("Directory $output isn't writeable.\n");
-		if (!$force_overwrite && file_exists($output)) throw new Exception("File $output exists.\n");
+		if (!is_writable($dir)) throw new \Exception("Directory $output isn't writeable.\n");
+		if (!$force_overwrite && file_exists($output)) throw new \Exception("File $output exists.\n");
 
 		$f = file_get_contents($input);
 		$this->removeProfile($f);
 		$fsize = strlen($f);
 		$ret = file_put_contents($output, $f);
-		if ($ret === false || $ret < $fsize) throw new Exception ("Write failed.\n");
+		if ($ret === false || $ret < $fsize) throw new \Exception ("Write failed.\n");
 
 		return true; // any other error throws exception
     }
