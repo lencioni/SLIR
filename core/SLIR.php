@@ -26,7 +26,7 @@
  *
  * @copyright Copyright © 2014, Joe Lencioni
  * @license MIT
- * @since 2.0
+ * @since 2.1.1
  * @package SLIR
  */
 
@@ -120,7 +120,7 @@ class SLIR
 	 * @since 2.0
 	 * @var string
 	 */
-	const VERSION = '2.1.1';
+	const VERSION = '2.1.3';
 
 	/**
 	 * @since 2.0
