@@ -282,8 +282,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 				} else {
 					$this->info['width']  = imagesx($this->getImage());
 					$this->info['height']  = imagesy($this->getImage());
-
-					$this->info['mimeType']= image_type_to_mime_type(exif_imagetype($this->getImage()));
+					$this->info['mime'] = image_type_to_mime_type(exif_imagetype($this->getImage()));
 				}
 			} else {
 				// There is a path, so get the info from the file
@@ -296,8 +295,7 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 
 				$this->info['width']  =& $this->info[0];
 				$this->info['height'] =& $this->info[1];
-
-				$this->info['mimeType'] = image_type_to_mime_type(exif_imagetype($this->getFullPath()));
+				$this->info['mime'] = image_type_to_mime_type(exif_imagetype($this->getFullPath()));
 
 				// IPTC
 				if (is_array($extraInfo) && isset($extraInfo['APP13'])) {
@@ -588,12 +586,6 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
 
 		$this->destroy();
 		$this->image  = $palette;
-
-		if (null !== $mime = $this->getInfo('mimeType')) {
-			$this->setMimeType($mime);
-		} else {
-			$this->setMimeType('image/png');
-		}
 	}
 
 	/**
