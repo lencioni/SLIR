@@ -217,7 +217,7 @@ class SLIRConfigDefaults
     }
 
     if (self::$documentRoot === null) {
-      self::$documentRoot = rtrim(realpath(preg_replace('`' . preg_quote($_SERVER['PHP_SELF']) . '$`', '', $_SERVER['SCRIPT_FILENAME'])), '/');
+      self::$documentRoot = $_SERVER['DOCUMENT_ROOT'];
     }
 
     if (self::$pathToSLIR === null) {
