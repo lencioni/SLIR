@@ -601,7 +601,9 @@ class SLIR
     $this->getRendered()->background();
 
     // Resample the original image into the resized canvas we set up earlier
-    if ($this->getSource()->getWidth() !== $this->getRendered()->getWidth() || $this->getSource()->getHeight() != $this->getRendered()->getHeight()) {
+    if ($this->getSource()->getWidth() !== $this->getRendered()->getWidth() || 
+        $this->getSource()->getHeight() != $this->getRendered()->getHeight()) {
+
       $this->getSource()->resample($this->getRendered());
     } else {
       // No resizing is needed, so make a clean copy
@@ -706,7 +708,11 @@ class SLIR
    */
   private function isSourceImageDesired()
   {
-    if ($this->isWidthDifferent() || $this->isHeightDifferent() || $this->isBackgroundFillOn() || $this->isQualityOn() || $this->isCroppingNeeded()) {
+    if ($this->isWidthDifferent() || 
+        $this->isHeightDifferent() || 
+        $this->isBackgroundFillOn() || 
+        $this->isQualityOn() || 
+        $this->isCroppingNeeded()) {
       return false;
     } else {
       return true;

@@ -51,6 +51,8 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   private $data;
 
+  private $transparencyEnabled = false;
+
   /**
    * @param string $path
    * @return void
@@ -330,6 +332,9 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
   {
     imagealphablending($this->getImage(), false);
     imagesavealpha($this->getImage(), true);
+
+    $this->transparencyEnabled = true;
+
     return $this;
   }
 
@@ -340,14 +345,33 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
    */
   public function fill()
   {
-    $color      = $this->getBackground();
+    $color = $this->getBackground();
 
-    $background = imagecolorallocate(
+    if ($color === null) {
+      $color = "ffffff";
+    }
+
+    $background = null;
+
+    if ($this->transparencyEnabled === true) {
+      $background = imagecolorallocatealpha(
         $this->getImage(),
         hexdec($color[0].$color[1]),
         hexdec($color[2].$color[3]),
-        hexdec($color[4].$color[5])
-    );
+        hexdec($color[4].$color[5]),
+        127
+      );
+    }
+    else {
+
+      $background = imagecolorallocate(
+          $this->getImage(),
+          hexdec($color[0].$color[1]),
+          hexdec($color[2].$color[3]),
+          hexdec($color[4].$color[5])
+      );
+
+    }
 
     imagefilledrectangle($this->getImage(), 0, 0, $this->getWidth(), $this->getHeight(), $background);
 
@@ -417,9 +441,13 @@ class SLIRGDImage extends SLIRImage implements SLIRImageLibrary
     $class    = __CLASS__;
     $cropped  = new $class();
 
-    $cropped->setWidth($this->getCropWidth())
-      ->setHeight($this->getCropHeight())
-      ->setBackground($this->getBackground());
+    $cropped->setMimeType($this->getMimeType()) // To enable again transparency on PNGs !
+            ->setWidth($this->getCropWidth())
+            ->setHeight($this->getCropHeight())
+            ->setBackground($this->getBackground());
+           
+
+    $cropped->background();
 
     // Copy rendered image to cropped image
     imagecopy(
