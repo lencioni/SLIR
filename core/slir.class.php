@@ -637,7 +637,7 @@ class SLIR
   private function calculateASharpnessFactor($sourceArea, $destinationArea)
   {
     $final  = sqrt($destinationArea) * (750.0 / sqrt($sourceArea));
-    $a      = 52;
+    $a      = SLIRConfig::$sharpnessFactorBase;
     $b      = -0.27810650887573124;
     $c      = .00047337278106508946;
 
