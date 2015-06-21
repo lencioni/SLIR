@@ -62,6 +62,11 @@ To use SLIR, place an `<img\>` tag with the `src` attribute pointing to the path
       <td>Progressive</td>
       <td><code>/slir/<strong>p1</strong>/path/to/image.jpg</code></td>
     </tr>
+    <tr>
+      <td><var>s</var></td>
+      <td>Sharpen</td>
+      <td><code>/slir/<strong>s0</strong>/path/to/image.jpg</code></td>
+    </tr>
   </tbody>
 </table>
 
