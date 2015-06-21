@@ -61,6 +61,7 @@
  *     - Quality = q
  *     - Background fill color = b
  *     - Progressive = p
+ *     - Sharpen = s
  *
  * Note: filenames that include special characters must be URL-encoded (e.g.
  * plus sign, +, should be encoded as %2B) in order for SLIR to recognize them
@@ -406,6 +407,7 @@ class SLIR
         ->setBackground($this->getBackground())
         ->setQuality($this->getQuality())
         ->setProgressive($this->getProgressive())
+        ->setSharpen($this->getSharpen())
         ->setMimeType($this->getMimeType())
         ->setCropper($this->getRequest()->cropper);
 
@@ -822,6 +824,18 @@ class SLIR
     } else {
       return false;
     }
+  }
+
+  /**
+   * Determine whether the rendered image should be sharpened or not
+   * @return boolean
+   * @since 2.0
+   */
+  private function getSharpen()
+  {
+    return ($this->getRequest()->sharpen !== null)
+      ? $this->getRequest()->sharpen
+      : SLIRConfig::$defaultSharpen;
   }
 
   /**

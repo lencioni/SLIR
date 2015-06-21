@@ -32,6 +32,11 @@ abstract class SLIRImage
   protected $progressive;
 
   /**
+   * @var boolean
+   */
+  protected $sharpen;
+
+  /**
    * @var string specified cropper to use
    */
   protected $cropper;
@@ -103,6 +108,7 @@ abstract class SLIRImage
       $this->getBackground(),
       $this->getSharpeningFactor(),
       $this->getProgressive(),
+      $this->getSharpen(),
       $this->getInfo(),
       $this->getCropper(),
       $this->getQuality()
@@ -223,6 +229,25 @@ abstract class SLIRImage
     return $this;
   }
 
+    /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getSharpen()
+  {
+    return $this->sharpen;
+  }
+
+  /**
+   * @param boolean $sharpen
+   * @return SLIRImageLibrary
+   */
+  public function setSharpen($sharpen)
+  {
+    $this->sharpen = $sharpen;
+    return $this;
+  }
+
   /**
    * Sets the sharpening factor of the image
    * @param float $sharpeningFactor
@@ -329,7 +354,7 @@ abstract class SLIRImage
    */
   final protected function isSharpeningDesired()
   {
-    if ($this->isJPEG()) {
+    if ($this->isJPEG() && $this->getSharpen()) {
       return true;
     } else {
       return false;

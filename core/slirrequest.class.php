@@ -102,6 +102,13 @@ class SLIRRequest
   private $progressive;
 
   /**
+   * Whether or not to sharpen image
+   * @var boolean
+   * @since 2.0
+   */
+  private $sharpen;
+
+  /**
    * Color to fill background of transparent PNGs and GIFs
    * @var string
    * @since 2.0
@@ -159,6 +166,7 @@ class SLIRRequest
     unset($this->cropper);
     unset($this->quality);
     unset($this->progressive);
+    unset($this->sharpen);
     unset($this->background);
     unset($this->isUsingDefaultImagePath);
   }
@@ -195,6 +203,12 @@ class SLIRRequest
       case 'p':
       case 'progressive':
         $this->setProgressive($value);
+          break;
+
+      case 's';
+      case 'sharpen':
+      case 'sharpening':
+        $this->setSharpen($value);
           break;
 
       case 'b';
@@ -262,6 +276,15 @@ class SLIRRequest
   private function setProgressive($value)
   {
     $this->progressive  = (bool) $value;
+  }
+
+  /**
+   * @since 2.0
+   * @return void
+   */
+  private function setSharpen($value)
+  {
+    $this->sharpen  = (bool) $value;
   }
 
   /**
@@ -355,6 +378,7 @@ Available parameters:
  q = Quality (0-100)
  b = Background fill color (RRGGBB or RGB)
  p = Progressive (0 or 1)
+ s = Sharpen (0 or 1)
 
 Example usage:
 /slir/w300-h300-c1.1/path/to/image.jpg');
@@ -389,7 +413,7 @@ Example usage:
   {
     if (SLIRConfig::$forceQueryString === true) {
       return true;
-    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b', 'p'), array_keys($_GET)))) {
+    } else if (!empty($_SERVER['QUERY_STRING']) && count(array_intersect(array('i', 'w', 'h', 'q', 'c', 'b', 's', 'p'), array_keys($_GET)))) {
       return true;
     } else {
       return false;

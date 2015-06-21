@@ -285,6 +285,18 @@ interface SLIRImageLibrary
   public function setProgressive($progressive);
 
   /**
+   * @return boolean
+   * @since 2.0
+   */
+  public function getSharpen();
+
+  /**
+   * @param boolean $sharpen
+   * @return SLIRImageLibrary
+   */
+  public function setSharpen($sharpen);
+
+  /**
    * Turns interlacing on or off
    * @return SLIRImageLibrary
    * @since 2.0
