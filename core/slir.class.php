@@ -450,9 +450,8 @@ class SLIR
     // shown if it eventually ends up on the server
     if (SLIRConfig::$enableRequestCache === true && !$this->getRequest()->isUsingDefaultImagePath()) {
       return true;
-    } else {
-      return false;
-    }
+    } 
+    return false;
   }
 
   /**
@@ -494,9 +493,8 @@ class SLIR
   {
     if (rand(1, SLIRConfig::$garbageCollectDivisor) <= SLIRConfig::$garbageCollectProbability) {
       return true;
-    } else {
-      return false;
-    }
+    } 
+    return false;
   }
 
   /**
@@ -553,9 +551,8 @@ class SLIR
   {
     if (defined('SLIR_CONFIG_FILENAME')) {
       return SLIR_CONFIG_FILENAME;
-    } else {
-      return $this->resolveRelativePath('../' . self::CONFIG_FILENAME);
-    }
+    } 
+    return $this->resolveRelativePath('../' . self::CONFIG_FILENAME);
   }
 
   /**
@@ -714,9 +711,8 @@ class SLIR
         $this->isQualityOn() || 
         $this->isCroppingNeeded()) {
       return false;
-    } else {
-      return true;
-    }
+    } 
+    return true;
   }
 
   /**
@@ -729,9 +725,8 @@ class SLIR
   {
     if ($this->getRequest()->width !== null && $this->getRequest()->width < $this->getSource()->getWidth()) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -744,9 +739,8 @@ class SLIR
   {
     if ($this->getRequest()->height !== null && $this->getRequest()->height < $this->getSource()->getHeight()) {
       return true;
-    } else {
-      return false;
-    }
+    } 
+    return false;
   }
 
   /**
@@ -759,9 +753,8 @@ class SLIR
   {
     if ($this->getRequest()->isBackground() && $this->getSource()->isAbleToHaveTransparency()) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -774,9 +767,8 @@ class SLIR
   {
     if ($this->getQuality() < 100) {
       return true;
-    } else {
-      return false;
-    }
+    } 
+    return false;
   }
 
   /**
@@ -789,9 +781,8 @@ class SLIR
   {
     if ($this->getRequest()->isCropping() && $this->getRequest()->cropRatio['ratio'] != $this->getSource()->getRatio()) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -803,9 +794,8 @@ class SLIR
   {
     if ($this->getRequest()->quality !== null) {
       return $this->getRequest()->quality;
-    } else {
-      return SLIRConfig::$defaultQuality;
     }
+    return SLIRConfig::$defaultQuality;
   }
 
   /**
@@ -819,9 +809,8 @@ class SLIR
       return ($this->getRequest()->progressive !== null)
         ? $this->getRequest()->progressive
         : SLIRConfig::$defaultProgressiveJPEG;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -834,9 +823,8 @@ class SLIR
     if ($this->getSource()->isGIF() || $this->getSource()->isBMP()) {
       // We convert GIFs and BMPs to PNGs
       return 'image/png';
-    } else {
-      return $this->getSource()->getMimeType();
     }
+    return $this->getSource()->getMimeType();
   }
 
   /**
@@ -847,9 +835,8 @@ class SLIR
   {
     if ($this->isBackgroundFillOn()) {
       return $this->getRequest()->background;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -862,9 +849,8 @@ class SLIR
   {
     if (floor($this->resizeWidthFactor() * $this->getSource()->getHeight()) <= $this->getRequest()->height) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -876,9 +862,8 @@ class SLIR
   {
     if (floor($this->resizeHeightFactor() * $this->getSource()->getWidth()) <= $this->getRequest()->width) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -889,9 +874,8 @@ class SLIR
   {
     if ($this->getSource()->getCropWidth() !== 0) {
       return $this->resizeCroppedWidthFactor();
-    } else {
-      return $this->resizeUncroppedWidthFactor();
     }
+    return $this->resizeUncroppedWidthFactor();
   }
 
   /**
@@ -911,9 +895,8 @@ class SLIR
   {
     if ($this->getSource()->getCropWidth() === 0) {
       return false;
-    } else {
-      return $this->getRequest()->width / $this->getSource()->getCropWidth();
     }
+    return $this->getRequest()->width / $this->getSource()->getCropWidth();
   }
 
   /**
@@ -924,9 +907,8 @@ class SLIR
   {
     if ($this->getSource()->getCropHeight() !== 0) {
       return $this->resizeCroppedHeightFactor();
-    } else {
-      return $this->resizeUncroppedHeightFactor();
     }
+    return $this->resizeUncroppedHeightFactor();
   }
 
   /**
@@ -946,9 +928,8 @@ class SLIR
   {
     if ($this->getSource()->getCropHeight() === 0) {
       return false;
-    } else {
-      return $this->getRequest()->height / $this->getSource()->getCropHeight();
     }
+    return $this->getRequest()->height / $this->getSource()->getCropHeight();
   }
 
   /**
@@ -996,9 +977,8 @@ class SLIR
 
     if ($imageModified >= $cacheModified) {
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   /**
@@ -1038,9 +1018,8 @@ class SLIR
       return 'CLI';
     } else if (isset($_SERVER['HTTP_HOST'])) {
       return $_SERVER['HTTP_HOST'];
-    } else {
-      return '';
     }
+    return '';
   }
 
   /**
@@ -1060,9 +1039,8 @@ class SLIR
   {
     if (SLIRConfig::$forceQueryString === true) {
       return $_SERVER['SCRIPT_NAME'] . '?' . http_build_query($_GET);
-    } else {
-      return $_SERVER['REQUEST_URI'];
     }
+    return $_SERVER['REQUEST_URI'];
   }
 
   /**
@@ -1095,9 +1073,8 @@ class SLIR
 
     if ($this->shouldUseRequestCache()) {
       return $this->cacheRequest($this->getRendered()->getData(), true);
-    } else {
-      return true;
     }
+    return true;
   }
 
   /**
